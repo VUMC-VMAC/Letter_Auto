@@ -39,14 +39,18 @@ server <- function(input, output) {
         vmac <- input$n
         #check <- input$check
         
+        vmac <- unlist(strsplit(vmac, ","))
+        print(vmac)
+        
         #if (check) {
         # Run uploader scripts that loop through each ptp
         #}
-        
-        command <- paste0("vmac_fu_uploader(",vmac,")")
-        eval(parse(text = command))
-        #letter_conv <- c("fb"="Feedback", "LP"="LP Previsit", "MAP"="MAP Previsit","ty"="Thank You")
-        lett <- "Registry"
+        for (vmac_i in vmac) {
+            command <- paste0("vmac_fu_uploader(",vmac_i,")")
+            eval(parse(text = command))
+            #letter_conv <- c("fb"="Feedback", "LP"="LP Previsit", "MAP"="MAP Previsit","ty"="Thank You")
+            lett <- "Registry"
+        }
         confirmation <<- paste0(lett," Letter for MAP ID: ",vmac," has been generated!")
     }
     )

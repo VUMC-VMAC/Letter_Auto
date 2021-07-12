@@ -168,7 +168,7 @@ fb_uploader<<- function(epochh,map) {
   pronoun_poss_cap<<- pronoun_conv_poss_cap[sex]
   salutation<<- as.character(pdb_data[i, "salutation"])
   fb_date1_7yr<<- pdb_data[i, "feedback_date_7yr"]
-  if (is.na(fb_date1_7yr)) {feedback_date1_7yr<<- "UNKNOWN"} else {feedback_date1_7yr<<- format(as.Date(fb_date1_7yr), "%m/%d/%Y")}
+  if (is.na(fb_date1_7yr)) {feedback_date1_7yr <<- "UNKNOWN"} else {feedback_date1_7yr <<- format(as.Date(fb_date1_7yr), "%m/%d/%Y")}
   feedback_location_7yr<<- as.character(pdb_data[i, "feedback_location_7yr"])
   
   df <- data.frame(
@@ -258,6 +258,7 @@ fb_uploader<<- function(epochh,map) {
     if (as.integer(df2[6,ii]) > 17.2) {ft2 <- bold(ft2, i = 6, j = ii, bold = TRUE, part = "body")}
     if ((as.integer(df2[7,ii]) > 110) | (as.integer(df2[7,ii]) < 70)) {ft2 <- bold(ft2, i = 7, j = ii, bold = TRUE, part = "body")}
     if ((as.double(df2[8,ii]) > 5) | (as.double(df2[8,ii]) < 0.3)) {ft2 <- bold(ft2, i = 8, j = ii, bold = TRUE, part = "body")}
+    if ((as.double(df2[9,ii]) > 3) | (as.double(df2[9,ii]) < 0.1)) {ft2 <- bold(ft2, i = 9, j = ii, bold = TRUE, part = "body")}
   }
   
   
@@ -298,7 +299,7 @@ fb_uploader<<- function(epochh,map) {
   zip_physician5<<- pdb_data[i, "zip_physician5_7yr"]
   
   if (is.na(first_name_physician1)) {first_name_physician1_7yr<<- ""} else {first_name_physician1_7yr<<- paste0("     1.  ",pdb_data[i, "first_name_physician1_7yr"])}
-  if (is.na(last_name_physician1)) {last_name_physician1_7yr<<- ""} else {last_name_physician1_7yr<<- paste0(pdb_data[i, "last_name_physician1_7yr"],", MD")}
+  if (is.na(last_name_physician1)) {last_name_physician1_7yr<<- ""} else {last_name_physician1_7yr<<- paste0(pdb_data[i, "last_name_physician1_7yr"])}
   if (is.na(street_address_physician1)) {street_address_physician1_7yr<<- ""} else {street_address_physician1_7yr<<- paste0("          ",pdb_data[i, "street_address_physician1_7yr"])}
   if (is.na(city_physician1)) {city_physician1_7yr<<- ""} else {city_physician1_7yr<<- paste0("          ",pdb_data[i, "city_physician1_7yr"],",")}
   state_physician1_7yr<<- pdb_data[i, "state_physician1_7yr"]
@@ -306,7 +307,7 @@ fb_uploader<<- function(epochh,map) {
   zip_physician1_7yr<<- pdb_data[i, "zip_physician1_7yr"]
   if (is.na(zip_physician1_7yr)) {zip_physician1_7yr<<- ""}
   if (is.na(first_name_physician2)) {first_name_physician2_7yr<<- ""} else {first_name_physician2_7yr<<- paste0("     2.  ",pdb_data[i, "first_name_physician2_7yr"])}
-  if (is.na(last_name_physician2)) {last_name_physician2_7yr<<- ""} else {last_name_physician2_7yr<<- paste0(pdb_data[i, "last_name_physician2_7yr"],", MD")}
+  if (is.na(last_name_physician2)) {last_name_physician2_7yr<<- ""} else {last_name_physician2_7yr<<- paste0(pdb_data[i, "last_name_physician2_7yr"])}
   if (is.na(street_address_physician2)) {street_address_physician2_7yr<<- ""} else {street_address_physician2_7yr<<- paste0("          ",pdb_data[i, "street_address_physician2_7yr"])}
   if (is.na(city_physician2)) {city_physician2_7yr<<- ""} else {city_physician2_7yr<<- paste0("          ",pdb_data[i, "city_physician2_7yr"],",")}
   state_physician2_7yr<<- pdb_data[i, "state_physician2_7yr"]
@@ -314,7 +315,7 @@ fb_uploader<<- function(epochh,map) {
   zip_physician2_7yr<<- pdb_data[i, "zip_physician2_7yr"]
   if (is.na(zip_physician2_7yr)) {zip_physician2_7yr<<- ""}
   if (is.na(first_name_physician3)) {first_name_physician3_7yr<<- ""} else {first_name_physician3_7yr<<- paste0("     3.  ",pdb_data[i, "first_name_physician3_7yr"])}
-  if (is.na(last_name_physician3)) {last_name_physician3_7yr<<- ""} else {last_name_physician3_7yr<<- paste0(pdb_data[i, "last_name_physician3_7yr"],", MD")}
+  if (is.na(last_name_physician3)) {last_name_physician3_7yr<<- ""} else {last_name_physician3_7yr<<- paste0(pdb_data[i, "last_name_physician3_7yr"])}
   if (is.na(street_address_physician3)) {street_address_physician3_7yr<<- ""} else {street_address_physician3_7yr<<- paste0("          ",pdb_data[i, "street_address_physician3_7yr"])}
   if (is.na(city_physician3)) {city_physician3_7yr<<- ""} else {city_physician3_7yr<<- paste0("          ",pdb_data[i, "city_physician3_7yr"],",")}
   state_physician3_7yr<<- pdb_data[i, "state_physician3_7yr"]
@@ -322,7 +323,7 @@ fb_uploader<<- function(epochh,map) {
   zip_physician3_7yr<<- pdb_data[i, "zip_physician3_7yr"]
   if (is.na(zip_physician3_7yr)) {zip_physician3_7yr<<- ""}
   if (is.na(first_name_physician4)) {first_name_physician4_7yr<<- ""} else {first_name_physician4_7yr<<- paste0("     3.  ",pdb_data[i, "first_name_physician4_7yr"])}
-  if (is.na(last_name_physician4)) {last_name_physician4_7yr<<- ""} else {last_name_physician4_7yr<<- paste0(pdb_data[i, "last_name_physician4_7yr"],", MD")}
+  if (is.na(last_name_physician4)) {last_name_physician4_7yr<<- ""} else {last_name_physician4_7yr<<- paste0(pdb_data[i, "last_name_physician4_7yr"])}
   if (is.na(street_address_physician4)) {street_address_physician4_7yr<<- ""} else {street_address_physician4_7yr<<- paste0("          ",pdb_data[i, "street_address_physician4_7yr"])}
   if (is.na(city_physician4)) {city_physician4_7yr<<- ""} else {city_physician4_7yr<<- paste0("          ",pdb_data[i, "city_physician4_7yr"],",")}
   state_physician4_7yr<<- pdb_data[i, "state_physician4_7yr"]
@@ -330,7 +331,7 @@ fb_uploader<<- function(epochh,map) {
   zip_physician4_7yr<<- pdb_data[i, "zip_physician4_7yr"]
   if (is.na(zip_physician4_7yr)) {zip_physician4_7yr<<- ""}
   if (is.na(first_name_physician5)) {first_name_physician5_7yr<<- ""} else {first_name_physician5_7yr<<- paste0("     3.  ",pdb_data[i, "first_name_physician5_7yr"])}
-  if (is.na(last_name_physician5)) {last_name_physician5_7yr<<- ""} else {last_name_physician5_7yr<<- paste0(pdb_data[i, "last_name_physician5_7yr"],", MD")}
+  if (is.na(last_name_physician5)) {last_name_physician5_7yr<<- ""} else {last_name_physician5_7yr<<- paste0(pdb_data[i, "last_name_physician5_7yr"])}
   if (is.na(street_address_physician5)) {street_address_physician5_7yr<<- ""} else {street_address_physician5_7yr<<- paste0("          ",pdb_data[i, "street_address_physician5_7yr"])}
   if (is.na(city_physician5)) {city_physician5_7yr<<- ""} else {city_physician5_7yr<<- paste0("          ",pdb_data[i, "city_physician5_7yr"],",")}
   state_physician5_7yr<<- pdb_data[i, "state_physician5_7yr"]
