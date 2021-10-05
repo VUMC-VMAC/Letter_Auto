@@ -36,6 +36,7 @@ fb_uploader<<- function(epochh,vmac) {
   
   pdb_datas <- exportReports(pdb, 267451)
   
+  
   # NP Norm Scores
   dde <- redcapConnection(url = "https://redcap.vanderbilt.edu/api/",
                           token = "0676EDF59CA88377654227BB56028EEE", conn, project = 124389)
@@ -68,9 +69,6 @@ fb_uploader<<- function(epochh,vmac) {
   race <- race_conv[dde_data[2,"race"]]
   
   events <- c("eligibility_arm_1","enrollmentbaseline_arm_1","18month_followup_arm_1","3year_followup_arm_1","5year_followup_arm_1","7year_followup_arm_1")
-  #pdb_datas <- pdb_datas[which(pdb_datas[,"redcap_event_name"]== events[epochh+1]),]
-  
-  #i <- which(pdb_datas["vmac_id"]==as.integer(vmac))
   
   map_data <- pdb_datas[which(pdb_datas["vmac_id"]==as.integer(vmac)),]
   rev_data_frame <- apply(map_data, 2, rev)
@@ -78,11 +76,9 @@ fb_uploader<<- function(epochh,vmac) {
   
   pdb_data <- map_data[which(map_data[,"redcap_event_name"]== events[epochh+1]),]
   
-  #pdb_data <- pdb_datas[i,]
   map_data[,which(is.na(map_data[,"feedback_location"]))]<-"other"
   
   pdb_data <- map_data[which(map_data[,"redcap_event_name"]== events[epochh+1]),]
-  #pdb_data[,which(is.na(pdb_data))]<- "Missing"
   
   # Epoch Selector
   e <- epochh
@@ -607,7 +603,7 @@ fb_uploader<<- function(epochh,vmac) {
     if (val_c=="Normal"){val_c<<-"     2.  No significant"} else {val_c<<-"     2.  Significant"}
     
     visit_depress<<- tm7yr_data["visit_depress"]
-    if (is.na(visit_depress)) {visit_depress <<- }
+    if (is.na(visit_depress)) {visit_depress <<- 0}
     if (visit_depress == 1) {
       gds_phys<<- paste0("On a measure assessing depressive symptoms, ",first_name," scored in a range suggesting mild/moderate/severe symptoms of depression. Based upon this score, we recommended that ",first_name," make an appointment for a more detailed clinical assessment of these symptoms.")
       gds<<- paste0("As discussed on ",feedback_date1,", your scores on a measure assessing depressive symptoms fell in a range suggesting mild/moderate/severe symptoms of depression.  We recommend you make an appointment for a more detailed clinical assessment of these symptoms.  You can request a referral from your primary care doctor.  We would recommend our colleagues who offer clinical services in the Department of Psychiatry at Vanderbilt University.  You can schedule an appointment by calling: 615-936-3555.")
