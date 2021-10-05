@@ -119,9 +119,6 @@ MAP_uploader <- function(epoch,vmac) {
     location_day2_prox<<-""
     location_day3<<-""
     location_day3_prox<<-""
-    map_7yr_date2 <- ""
-    fu_time2_7yr <- ""
-    fu_hrs2_7yr <- ""
     map_7yr_date1 <<- format(as.Date(pdb_data[i, "fu_date_7yr"]), "%A, %B %d, %Y")
     fu_time_7yr <<- as.character(pdb_data[i,"fu_time_7yr"])
     fu_time_7yr <<- paste0(gsub(":00$","",fu_time_7yr), "am")

@@ -8,15 +8,20 @@ LP_uploader <- function(epoch,vmac) {
   library(flextable)
   
   pdb <- redcapConnection(url = "https://redcap.vanderbilt.edu/api/",
-                          token = "CBF02E285BFC1874F0EAF11D3F4E2842", conn, project = 23166)
-  pdb_data <- exportReports(pdb, 252802)
+                          token = "7E1DC8A562246EC4F7043579B863706C", conn, project = 136242)
+  pdb_data <- exportReports(pdb, 267463)
   
-#if (exists("pdb_data")==FALSE) {print("No Updates")} else {
-  #for (i in 1:nrow(pdb_data)) {
-  i <- which(pdb_data["vmac_id"]==as.integer(vmac)) #need to find i for map id
+  #events_n <- c(4,5,1,2,3)
+  events <- c("eligibility_arm_1","enrollmentbaseline_arm_1","18month_followup_arm_1","3year_followup_arm_1","5year_followup_arm_1")
+  pdb_datas <- pdb_data[which(pdb_data[,"redcap_event_name"]== events[epoch+1]),]
+  ii <- which(pdb_datas["vmac_id"]==as.integer(vmac)) #need to find i for map id
+  pdb_data <- pdb_datas[ii,]
+  
   e <- epoch
-  ep_conv <- c("elig","18mos","36mos","60mos","7yr","9yr","11yr","13yr")
-  ep <- ep_conv[e]
+  ep_conv <- c("elig","enroll","18mos","36mos","60mos","7yr","9yr","11yr","13yr")
+  ep <- ep_conv[e+1]
+  
+  i<-1
   
   map_id <- as.character(pdb_data[i,"map_id"])
   if (nchar(map_id)==1) {input <- paste0("00",map_id)} else if (nchar(map_id)==2) {input <- paste0("0",map_id)} else {input <- map_id}
@@ -30,18 +35,18 @@ LP_uploader <- function(epoch,vmac) {
   state <<- pdb_data[i, "state"]
   zipp <<- pdb_data[i, "zip"]
   salutation <<- as.character(pdb_data[i,"salutation"])
-  lp_date_7yr <<- format(as.Date(pdb_data[i,"lp_date_7yr"]), "%A, %B %d, %Y")
-  lp_time_7yr <<- as.character(pdb_data[i,"lp_time_7yr"])
-  lp_time_7yr <<- paste0(lp_time_7yr,"am")
+  lp_date <<- format(as.Date(pdb_data[i,"lp_date"]), "%A, %B %d, %Y")
+  lp_time <<- as.character(pdb_data[i,"lp_time"])
+  lp_time <<- paste0(lp_time,"am")
   
   df <- data.frame(
-    Day1 = c(paste0("Arrival at Vanderbilt Hospital Valet at ",lp_time_7yr),
+    Day1 = c(paste0("Arrival at Vanderbilt Hospital Valet at ",lp_time),
              "Transition to CRC/Change Clothes",
              "Lumbar Puncture",
              "Rest Period",
              "Breakfast, Change Clothes",
              # "[Add Additional Study Components if relevant]",
-             paste0("Return to Valet, Depart at 3 hours past ",lp_time_7yr)))
+             paste0("Return to Valet, Depart at 3 hours past ",lp_time)))
   ft <- flextable(df) # 1-Day
   ft <- set_header_labels(ft, Day1 = "Lumbar Puncture Itinerary")
   ft <- bg(ft, bg="grey",part = "header")
@@ -55,22 +60,22 @@ LP_uploader <- function(epoch,vmac) {
   ft <<- align(ft, align = "center", part="header")
   FT <<- list(ft = ft)
   
-  fu_transport_7yr <- pdb_data[i,"fu_transport_7yr"]
-  if (is.na(fu_transport_7yr)) {fu_transport_7yr<-"No"}
-  if (fu_transport_7yr == "No") {
+  transport <- pdb_data[i,"visit_transport_needed"]
+  if (is.na(transport)) {transport<-"No"}
+  if (transport == "No") {
     directions <<- "Your appointment will be held at the Vanderbilt University Medical Center.  Please use valet to park your car at 1210 Medical Center Drive (noted with a star on the enclosed map).  Valet parking is free.  A member of our team will meet you at the valet to take you to the Clinical Research Center for your visit.  You will be asked to wear a mask throughout your visit; if you do not have a mask, one will be provided."
   } else {
     directions <<- "Your appointment will be held at the Vanderbilt University Medical Center.  We will be providing you with transportation to and from your visit with Jeff Cornelius. Jeff\'s number is (615) 604-1502 in case you need to contact him."
   }
   
-  output <- paste0("C:/Users/sweelyb/Documents/resources/Output/MAP_",ep,"_",input,"_LP_letter.docx")
-  path_in <- paste0("C:/Users/sweelyb/Documents/resources/Templates/Lumbar Puncture/LP_template.docx")
+  output <- paste0("C:/Users/sweelyb/Documents/resources/Output/MAP",input,"_",ep,"_LP_letter.docx")
+  path_in <- paste0("C:/Users/sweelyb/Documents/resources/Templates/Lumbar Puncture/LP_revamp_template.docx")
   temp <- paste0("~/resources/LP_temp.docx")
   
   body_add_flextables(path_in,temp, FT)
   renderInlineCode(temp, output)
   
-  importFiles(rcon = pdb, file = output, record = record, field = "lp_letter_7yr",
+  importFiles(rcon = pdb, file = output, record = record, field = "lp_letter", event = pdb_data[,"redcap_event_name"],
               overwrite = TRUE, repeat_instance = 1)
   #}
 #}

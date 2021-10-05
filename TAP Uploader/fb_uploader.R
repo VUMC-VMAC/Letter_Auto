@@ -11,7 +11,6 @@ fb_uploader<<- function(epochh,vmac) {
   library(ggpattern)
   library(patternplot)
   library(png)
-  library(readxl)
   
   FII <- redcapConnection(url = "https://redcap.vanderbilt.edu/api/",
                           token = "489C53D4DAAE99F87EF37A9D77563BB0",conn,project = 42471)
@@ -44,33 +43,6 @@ fb_uploader<<- function(epochh,vmac) {
   fii36s <- exportReports(FII, 252306)
   fii60s <- exportReports(FII, 252308)
   fii7yrs <- exportReports(FII, 252309)
-  
-  # NP Norm Scores
-  dde <- redcapConnection(url = "https://redcap.vanderbilt.edu/api/",
-                           token = "0676EDF59CA88377654227BB56028EEE", conn, project = 124389)
-  EDC <- redcapConnection(url = "https://redcap.vanderbilt.edu/api/",
-                          token = "09B0A6B7F207F51C6F656BAE567FA390", conn, project = 119047)
-  dde_datas <- exportReports(dde, 275632)
-  edc_datas <- exportReports(EDC, 275637)
-  
-  dde_data <- dde_datas[which(dde_datas["vmac_id"]==as.integer(vmac)),]
-  map_id <- dde_data[1,"map_id"]
-  
-  edc_data <- edc_datas[which(edc_datas["map_id"]==as.integer(map_id)),]
-  
-  age <- dde_data[2,"age"]
-  if (age < 55) {age_r <- "50-54"}; if (age < 60 & age >= 55) {age_r <- "55-59"}; if (age < 65 & age >= 60) {age_r <- "60-64"}
-  if (age < 70 & age >= 65) {age_r <- "65-69"}; if (age < 75 & age >= 70) {age_r <- "70-74"} 
-  if (age < 80 & age >= 75) {age_r <- "75-79"}; if (age >= 80) {age_r <- "80-85"}
-  edu <- dde_data[2,"education"]
-  if (edu < 9) {edu_r <- "7-8"}; if (edu >= 9 & edu < 12 ) {edu_r <- "9-11"}; if (edu == 12 ) {edu_r <- "12"}
-  if (edu >= 13 & edu < 16 ) {edu_r <- "13-15"}; if (edu >= 16 & edu < 18 ) {edu_r <- "16-17"}
-  if (edu >= 18) {edu_r <- "18-20"}
-  sex_conv <- c("M","F","missing","N/A")
-  sex_r <- sex_conv[dde_data[2,"sex"]]
-  race_conv <- c("C","AA","NA","A","O","M","N/A")
-  race <- race_conv[dde_data[2,"race"]]
-  
   
   fii60s[which(is.na(fii60s["extracardiac_incidental"])),"extracardiac_incidental"]<- "No"
   fii60s[which(is.na(fii60s["brain_incidental"])),"brain_incidental"]<- "No"
@@ -112,7 +84,7 @@ fb_uploader<<- function(epochh,vmac) {
   try(indd <- find.matches(tm7yr_datas[, "map_id"],ind),silent = TRUE)
   if (exists("indd")==FALSE) stop("Not Enough Data")
   for (i in (1:length(indd$matches))){if (indd$matches[i]>0){inddd<-c(inddd,i)}}
-  tm7yr_datas[inddd,which(is.na(tm7yr_datas[inddd,1:17]))]<- "Missing"
+  tm7yr_datas[inddd,which(is.na(tm7yr_datas[inddd,]))]<- "Missing"
   tm7yr_data <- tm7yr_datas[inddd,]
   if (nrow(tm7yr_data)==FALSE) {stop("Not Enough Data")}
   
@@ -369,166 +341,49 @@ fb_uploader<<- function(epochh,vmac) {
   zip_physician5_7yr<<- pdb_data[i, "zip_physician5_7yr"]
   if (is.na(zip_physician5_7yr)) {zip_physician5_7yr<<- ""}
   
-  np <- rbind(tme_data[-(1:17)],tm36_data[-(1:17)],tm60_data[-(1:17)],tm7yr_data[-(1:17)][-19])
-  #missing<- matt==-9999
-  #for (ii in 1:ncol(matt)) {for (j in 1:nrow(matt)) {if (missing[j,ii]) {matt[j,ii]<-matt[j-1,ii]}}}
+  matt<- rbind(tme_data[-(1:17)],tm36_data[-(1:17)],tm60_data[-(1:17)],tm7yr_data[-(1:17)][-19])
+  missing<- matt==-9999
+  for (ii in 1:ncol(matt)) {for (j in 1:nrow(matt)) {if (missing[j,ii]) {matt[j,ii]<-matt[j-1,ii]}}}
   
   # Initialize memory variables
-  np_cvlt1to5_tscore <- np$np_cvlt1to5_tscore
-  np_cvlt_sdfr_z <<- np$np_cvlt_sdfr_zscore
-  np_cvlt_ldfr_z <<- np$np_cvlt_ldfr_zscore  
-  np_cvltrecog_discrim_z <<- np$np_cvltrecog_discrim_zscore
-  np_biber_t1to5_z <<- np$np_biber_t1to5_zscore
-  np_biber_sd_z <<- np$np_biber_sd_zscore
-  np_biber_ld_z <<- np$np_biber_ld_zscore
-  np_anim_tscore <- np$np_anim_tscore
-  np_bnt_z <<- np$np_bnt_zscore
-  np_tower_ss <- np$np_tower_sscore
-  np_inhibit_ss <- np$np_inhibit_sscore
-  np_fas_tscore <- np$np_fas_tscore
-  np_tmtb_ss <- np$np_tmtb_sscore
-  np_hvot_tscore <- np$np_hvot_tscore
-  np_digsymb_ss <- np$np_digsymb_sscore
-  np_color_ss <- np$np_color_sscore
-  np_word_ss <- np$np_word_sscore
-  np_tmta_ss <- np$np_tmta_sscore
+  np_cvlt1to5_tscore<<- c(matt[1])
+  np_cvlt_sdfr_z<<- c(matt[2])
+  np_cvlt_ldfr_z<<- c(matt[3])
+  np_cvltrecog_discrim_z<<- c(matt[4])
+  np_biber_t1to5_z<<- c(matt[5])
+  np_biber_sd_z<<- c(matt[6])
+  np_biber_ld_z<<- c(matt[7])
+  np_anim_tscore<<- c(matt[8])
+  np_bnt_z<<- c(matt[9])
+  np_tower_ss<<- c(matt[10])
+  np_inhibit_ss<<- c(matt[11])
+  np_fas_tscore<<- c(matt[12])
+  np_tmtb_ss<<- c(matt[13])
+  np_hvot_tscore<<- c(matt[14])
+  np_digsymb_ss<<- c(matt[15])
+  np_color_ss<<- c(matt[16])
+  np_word_ss<<- c(matt[17])
+  np_tmta_ss<<- c(matt[18])
   
   # transform variables
-  np_cvlt1to5_z <<- (np_cvlt1to5_tscore - 50)/10
-  np_anim_z <<- (np_anim_tscore-50)/10
-  np_tower_z <<- (np_tower_ss-10)/3
-  np_inhibit_z <<- (np_inhibit_ss-10)/3
-  np_fas_z <<- (np_fas_tscore-50)/10
-  np_tmtb_z <<- (np_tmtb_ss-10)/3
-  np_hvot_z <<- -(np_hvot_tscore-50)/10
-  np_digsymb_z <<- (np_digsymb_ss-10)/3
-  np_color_z <<- (np_color_ss-10)/3
-  np_word_z <<- (np_word_ss-10)/3
-  np_tmta_z <<- (np_tmta_ss-10)/3
+  np_cvlt1to5_z<<- (np_cvlt1to5_tscore[[1]] - 50)/10
+  np_anim_z<<- (np_anim_tscore[[1]]-50)/10
+  np_tower_z<<- (np_tower_ss[[1]]-10)/3
+  np_inhibit_z<<- (np_inhibit_ss[[1]]-10)/3
+  np_fas_z<<- (np_fas_tscore[[1]]-50)/10
+  np_tmtb_z<<- (np_tmtb_ss[[1]]-10)/3
+  np_hvot_z<<- -(np_hvot_tscore[[1]]-50)/10
+  np_digsymb_z<<- (np_digsymb_ss[[1]]-10)/3
+  np_color_z<<- (np_color_ss[[1]]-10)/3
+  np_word_z<<- (np_word_ss[[1]]-10)/3
+  np_tmta_z<<- (np_tmta_ss[[1]]-10)/3
   
-  #### If Norm Scores are not available ####
-  
-  # CVLT
-  if (any(is.na(np_cvlt1to5_z))) {
-    np_cvlt1to5_tscore <- edc_data["np_cvlt1to5_tscore"]
-    np_cvlt1to5_z[4] <- (np_cvlt1to5_tscore[[1]] - 50)/10
-  }
-  if (any(is.na(np_cvlt_sdfr_z))) {np_cvlt_sdfr_z[4] <- edc_data["np_cvlt_sdfr_zscore"]}
-  if (any(is.na(np_cvlt_ldfr_z))) {np_cvlt_ldfr_z[4] <- edc_data["np_cvlt_ldfr_zscore"]}
-  if (any(is.na(np_cvltrecog_discrim_z))) {np_cvltrecog_discrim_z[4] <- edc_data["np_cvltrecog_discrim_zscore"]}
-  
-  # Biber
-  if (any(is.na(np_biber_t1to5_z))) {np_biber_t1to5 <- dde_data[2,"np_biber_t1to5"];np_biber_t1to5_z[4] <- (np_biber_t1to5 - 114.5) / 34.7}
-  if (any(is.na(np_biber_sd_z))) {np_biber_sd <- dde_data[2,"np_biber_sd"];np_biber_sd_z[4] <- (np_biber_sd - 26.4) / 7}
-  if (any(is.na(np_biber_ld_z))) {np_biber_ld <- dde_data[2,"np_biber_ld"];np_biber_ld_z[4] <- (np_biber_ld - 28) / 7}
-  
-  #Tower
-  if (any(is.na(np_tower_z))) {
-    np_tower1 <- as.integer(dde_data[2,"np_tower1"])-1
-    np_tower2 <- as.integer(dde_data[2,"np_tower2"])-1
-    np_tower3 <- as.integer(dde_data[2,"np_tower3"])-1
-    np_tower4 <- as.integer(dde_data[2,"np_tower4"])-1
-    np_tower5 <- as.integer(dde_data[2,"np_tower5"])-1
-    np_tower6 <- as.integer(dde_data[2,"np_tower6"])-1
-    np_tower7 <- as.integer(dde_data[2,"np_tower7"])-1
-    np_tower8 <- as.integer(dde_data[2,"np_tower8"])-1
-    np_tower9 <- as.integer(dde_data[2,"np_tower9"])-1
-    np_tower <- sum(np_tower1,np_tower2,np_tower3,np_tower4,np_tower5,np_tower6,np_tower7,np_tower8,np_tower9)
-    tower_ex <- read_excel("~/epoch5dde_lookup.xlsx", sheet = 1)
-    np_tower_ss <- tower_ex[as.integer(ceiling(np_tower))+1,as.character(age)]
-    np_tower_z[4] <- (as.integer(np_tower_ss)-10)/3
-  }
-  
-  # Animal
-  if (any(is.na(np_anim_z))) {
-    np_anim_q1 <- dde_data[2,"np_anim_q1"]
-    np_anim_q2 <- dde_data[2,"np_anim_q2"]
-    np_anim_q3 <- dde_data[2,"np_anim_q3"]
-    np_anim_q4 <- dde_data[2,"np_anim_q4"]
-    np_anim <- sum(c(np_anim_q1, np_anim_q2, np_anim_q3, np_anim_q4))
-    anim_ex <- read_excel("~/epoch5dde_lookup.xlsx", sheet = "heaton_scaled")
-    np_anim_sscore <- anim_ex[as.integer(ceiling(np_anim))+1,4]
-    anim_ex <- read_excel("~/epoch5dde_lookup.xlsx", sheet = "heaton_animals")
-    var_anim <- paste0(sex_r,"/",edu_r,"/",age_r,"/",race)
-    np_anim_tscore <- anim_ex[as.integer(ceiling(20-np_anim_sscore)),var_anim]
-    np_anim_z[4] <- (as.integer(np_anim_tscore) - 50) / 10
-  }
-  
-  if (any(is.na(np_bnt_z))) {
-    np_bnt <- dde_data[2,"np_bnt"]
-    np_bnt_z[4] <- (np_bnt - 26) / 3.4
-  }
-  
-  if (any(is.na(np_inhibit_z))) {
-    np_inhibit <- dde_data[2,"np_inhibit"]
-    inhibit_ex <- read_excel("~/epoch5dde_lookup.xlsx", sheet = 12)
-    np_inhibit_ss <- inhibit_ex[as.integer(ceiling(np_inhibit))+1,as.character(age)]
-    np_inhibit_z[4] <- (as.integer(np_inhibit_ss)-10)/3
-  }
-  
-  if (any(is.na(np_fas_z))) {
-    np_fas <- dde_data[2,"np_fas"]
-    fas_ex <- read_excel("~/epoch5dde_lookup.xlsx", sheet = "heaton_scaled")
-    np_fas_sscore <- fas_ex[as.integer(ceiling(np_fas))+1,5]
-    fas_ex <- read_excel("~/epoch5dde_lookup.xlsx", sheet = "heaton_fas")
-    var_fas <- paste0(sex_r,"/",edu_r,"/",age_r,"/",race)
-    np_fas_tscore <- fas_ex[as.integer(ceiling(20-np_fas_sscore)),var_fas]
-    np_fas_z[4] <- (as.integer(np_fas_tscore) - 50) / 10 
-  }
-  
-  if (any(is.na(np_tmtb_z))) {
-    np_tmtb <- dde_data[2,"np_tmtb"]
-    tmtb_ex <- read_excel("~/epoch5dde_lookup.xlsx", sheet = 6)
-    np_tmtb_ss <- tmtb_ex[as.integer(ceiling(np_tmtb))+1,as.character(age)]
-    np_tmtb_z[4] <- (as.integer(np_tmtb_ss) - 10)/3
-  }
-  
-  if (any(is.na(np_tmta_z))) {
-    np_tmta <- dde_data[2,"np_tmta"]
-    tmta_ex <- read_excel("~/epoch5dde_lookup.xlsx", sheet = 3)
-    np_tmta_ss <- tmta_ex[as.integer(ceiling(np_tmta))+1,as.character(age)]
-    np_tmta_z[4] <- (as.integer(np_tmta_ss) - 10)/3
-  }
-  
-  if (any(is.na(np_hvot_z))) {
-    np_hvot <- dde_data[2,"np_hvot"]
-    if (age < 55) {hvot_ex <- read_excel("~/epoch5dde_lookup.xlsx", sheet = 22)}
-    if (55 <= age | age < 60) {hvot_ex <- read_excel("~/epoch5dde_lookup.xlsx", sheet = 23)}
-    if (60 <= age | age < 65) {hvot_ex <- read_excel("~/epoch5dde_lookup.xlsx", sheet = 24)}
-    if (65 <= age) {hvot_ex <- read_excel("~/epoch5dde_lookup.xlsx", sheet = 25)}
-    np_hvot_corrected <- hvot_ex[as.integer(ceiling(np_hvot))+1,as.integer(edu)+2]
-    hvot_t_ex <- read_excel("~/epoch5dde_lookup.xlsx", sheet = 26)
-    np_hvot_tscore <- hvot_t_ex[as.integer(np_hvot_corrected)+1,2]
-    np_hvot_z[4] <- -(as.integer(np_hvot_tscore) - 50) / 10
-  }
-  
-  if (any(is.na(np_digsymb_z))) {
-    np_digsymb <- dde_data[2,"np_digsymb"]
-    digsymb_ex <- read_excel("~/epoch5dde_lookup.xlsx", sheet = 21)
-    np_digsymb_ss <- digsymb_ex[as.integer(ceiling(np_digsymb))+1,as.character(age)]
-    np_digsymb_z[4] <- (as.integer(np_digsymb_ss)-10)/3
-  }
-  
-  if (any(is.na(np_color_z))) {
-    np_color <- dde_data[2,"np_color"]
-    color_ex <- read_excel("~/epoch5dde_lookup.xlsx", sheet = 10)
-    np_color_ss <- color_ex[as.integer(ceiling(np_color))+1,as.character(age)]
-    np_color_z[4] <- (as.integer(np_color_ss)-10)/3
-  }
-  
-  if (any(is.na(np_word_z))) {
-    np_word <- dde_data[2,"np_word"]
-    word_ex <- read_excel("~/epoch5dde_lookup.xlsx", sheet = 11)
-    np_word_ss <- word_ex[as.integer(ceiling(np_word))+1,as.character(age)]
-    np_word_z[4] <- (as.integer(np_word_ss)-10)/3
-  }
-  
-  #### composite scores ####
-  mem_w<<- cbind(np_cvlt1to5_z,np_cvlt_sdfr_z,np_cvlt_ldfr_z,np_cvltrecog_discrim_z)
+  # composite scores
+  mem_w<<- cbind(np_cvlt1to5_z,np_cvlt_sdfr_z[[1]],np_cvlt_ldfr_z[[1]],np_cvltrecog_discrim_z[[1]])
   memory_words<<- rowMeans(mem_w)
-  mem_s<<- cbind(np_biber_t1to5_z, np_biber_sd_z, np_biber_ld_z)
+  mem_s<<- cbind(np_biber_t1to5_z[[1]], np_biber_sd_z[[1]], np_biber_ld_z[[1]])
   memory_shapes<<- rowMeans(mem_s)
-  lang<<- cbind(np_anim_z,np_bnt_z)
+  lang<<- cbind(np_anim_z,np_bnt_z[[1]])
   language<- rowMeans(lang)
   multitasking<<- rowMeans(cbind(np_tower_z, np_inhibit_z, np_fas_z, np_tmtb_z))
   visuospatial<<- np_hvot_z
@@ -621,7 +476,6 @@ fb_uploader<<- function(epochh,vmac) {
   if (val7yr=="Normal"){val7yr<<-"     2.  No significant"} else {val7yr<<-"     2.  Significant"}
   
   visit_depress<<- tm7yr_data["visit_depress"]
-  if (is.na(visit_depress)) {visit_depress<<-0}
   if (visit_depress == 1) {
     gds_phys<<- paste0("On a measure assessing depressive symptoms, ",first_name," scored in a range suggesting mild/moderate/severe symptoms of depression. Based upon this score, we recommended that ",first_name," make an appointment for a more detailed clinical assessment of these symptoms.")
     gds<<- paste0("As discussed on ",feedback_date1_7yr,", your scores on a measure assessing depressive symptoms fell in a range suggesting mild/moderate/severe symptoms of depression.  We recommend you make an appointment for a more detailed clinical assessment of these symptoms.  You can request a referral from your primary care doctor.  We would recommend our colleagues who offer clinical services in the Department of Psychiatry at Vanderbilt University.  You can schedule an appointment by calling: 615-936-3555.")
@@ -653,8 +507,8 @@ fb_uploader<<- function(epochh,vmac) {
   output<- paste0("C:/Users/sweelyb/Documents/resources/output/feedback_letter_MAP_",input,"_",epoch,".docx")
   renderInlineCode(ptp_temp, output)
   
-  importFiles(rcon = pdb, file = output, record = record, field = "feedback_letter_7yr",
-              overwrite = TRUE, repeat_instance = 1)
+  #importFiles(rcon = pdb, file = output, record = record, field = "feedback_letter_7yr",
+              #overwrite = TRUE, repeat_instance = 1)
   print("Imported File")
   
   if (is.na(first_name_physician1)==FALSE) {
@@ -669,8 +523,8 @@ fb_uploader<<- function(epochh,vmac) {
     output<- paste0("C:/Users/sweelyb/Documents/resources/output/physician_letter_MAP_",input,"_",epoch,".docx")
     renderInlineCode(phys_temp, output)
     
-    importFiles(rcon = pdb, file = output, record = record, field = "feedback_physician_letter",
-                overwrite = TRUE, repeat_instance = 1)
+    #importFiles(rcon = pdb, file = output, record = record, field = "feedback_physician_letter",
+                #overwrite = TRUE, repeat_instance = 1)
   }
   if (is.na(first_name_physician2)==FALSE) {
     first_name_physician<<-first_name_physician2

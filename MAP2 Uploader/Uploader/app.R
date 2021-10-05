@@ -10,12 +10,10 @@
 options(shiny.port = 5000)
 options(shiny.host = '127.0.0.1')
 
-source("~/MAP Uploader/MAP_uploader.R")
-source("~/MAP Uploader/previsit_uploader.R")
-source("~/MAP Uploader/ty_uploader.R")
-source("~/MAP Uploader/fb_uploader.R")
-source("~/MAP Uploader/LP_uploader.R")
-#source("~/MAP Uploader/fb_avail.R")
+source("~/MAP2 Uploader/previsit_uploader.R")
+source("~/MAP2 Uploader/ty_uploader.R")
+source("~/MAP2 Uploader/fb_uploader.R")
+source("~/MAP2 Uploader/LP_uploader.R")
 
 library(shiny)
 library(flextable)
@@ -24,10 +22,10 @@ library(flextable)
 ui <- fluidPage(
 
     # Application title
-    titlePanel("Participant Letter Generator"),
+    titlePanel("Participant Letter Generator 2.0"),
     textInput(inputId = "n", "VMAC ID", ""),
     numericInput(inputId = "d", "Epoch", value=5),
-    selectInput(inputId = "l", "Type of Letter", choices = c("Feedback Letter" = "fb", "LP Previsit Letter" = "LP", "Previsit Letter"="MAP","Thank You"="ty","Revamped Previsit"="previsit")),
+    selectInput(inputId = "l", "Type of Letter", choices = c("Feedback Letter" = "fb", "LP Previsit Letter" = "LP","Thank You"="ty","Previsit"="previsit")),
     actionButton(inputId = "submit",label = "Submit"),
     textOutput(outputId = "d")
 )
@@ -44,22 +42,18 @@ server <- function(input, output) {
             for (vmac_int in vmac) {
                 print(vmac_int)
                 command <- paste0(letter,"_uploader(",epoch,",",vmac_int,")")
-                #command2 <- paste0(letter,"_avail(",epoch,",",vmac_int,")")
                 print(command)
-                #print(command2)
-                #eval(parse(text = command2))
                 eval(parse(text = command))
-                letter_conv <- c("fb"="Feedback", "LP"="LP Previsit", "MAP"="Previsit","ty"="Thank You","previsit"="Previsit")
+                letter_conv <- c("fb"="Feedback", "LP"="LP Previsit","ty"="Thank You","previsit"="Previsit")
                 lett <- letter_conv[letter]
             }
             confirmation <<- paste0(lett," Letter for VMAC ID: ",input$n," has been generated!")
         }
     )
-    #})
+    
     output$d <-
         renderText({
             re()
-            #remove(list = ls())
         })
 }
 

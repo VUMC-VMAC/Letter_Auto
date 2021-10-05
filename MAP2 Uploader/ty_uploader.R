@@ -7,15 +7,18 @@ ty_uploader <- function(epoch,vmac) {
   library(tidyverse)
   
   pdb <- redcapConnection(url = "https://redcap.vanderbilt.edu/api/",
-                          token = "CBF02E285BFC1874F0EAF11D3F4E2842", conn, project = 23166)
-  pdb_data <- exportReports(pdb, 253531)
-  #print(pdb_data)
-  #try(pdb_data <- exportReports(pdb, 253531), silent = TRUE)
-  #if (exists("pdb_data")==FALSE) {print("No Updates")} else {
+                          token = "7E1DC8A562246EC4F7043579B863706C", conn, project = 136242)
+  
+  pdb_data <- exportReports(pdb, 267464)
   
   path_in <- "~/resources/Templates/Thank You/Thank You Template.docx"
   
-  i <- which(pdb_data["vmac_id"]==as.integer(vmac))
+  events <- c("eligibility_arm_1","enrollmentbaseline_arm_1","18month_followup_arm_1","3year_followup_arm_1","5year_followup_arm_1")
+  pdb_datas <- pdb_data[which(pdb_data[,"redcap_event_name"]== events[epoch+1]),]
+  ii <- which(pdb_datas["vmac_id"]==as.integer(vmac)) #need to find i for map id
+  pdb_data <- pdb_datas[ii,]
+  
+  i <- 1
   e <- epoch
   map_id <- as.character(pdb_data[i,"map_id"])
   if (nchar(map_id)==1) {input <- paste0("00",map_id)} else if (nchar(map_id)==2) {input <- paste0("0",map_id)} else {input <- map_id}
@@ -28,16 +31,29 @@ ty_uploader <- function(epoch,vmac) {
   epoch_conv <- c("enrollment","18 month","3 year","5 year","7 year","9 year","11 year","13 year")
   epoch <<- epoch_conv[e]
   epoch_next <<- epoch_conv[e+1]
-  ep_conv <- c("18mos","36mos","60mos","7yr","9yr","11yr","13yr")
-  ep_next <- ep_conv[e]
+  ep_n_conv <- c("","3yr_","5yr_","7yr_","9yr_","11yr_","13yr_")
+  ep_conv <- c("18mos","3yr","5yr","7yr","9yr","11yr","13yr")
+  ep_next <- ep_n_conv[e]
   ep <- ep_conv[e-1]
-  date_next <- paste0("fu_date_estimate_",ep_next)
+  
+  if (e==0){
+    el <-  redcapConnection(url = "https://redcap.vanderbilt.edu/api/",
+                            token = "BFEF4C303E170DDAA850D56C4FB9594A", conn, project = 134345)
+    el_data <- exportReports(el, 271784)
+    
+    ii <- which(el_datas["vmac_id"]==as.integer(vmac)) #need to find i for map id
+    
+    elig_out <- el_data[ii,"elig_outcome"]
+    enroll_stat <- el_data[ii,"enrollment_status"]
+  }
+  
+  date_next <- paste0("visit_estimate_",ep_next,"date")
   date_ty <<- format(as.Date(pdb_data[i, date_next]), "%B %Y")
   
   output <- paste0("~/resources/Output/MAP_",input,"_",ep,"_ty_letter.docx")
   renderInlineCode(path_in, output)
   
-  importFiles(rcon = pdb, file = output, record = record, field = "thank_7yr",
+  importFiles(rcon = pdb, file = output, record = record, field = "card_thank_letter", event = pdb_data[,"redcap_event_name"],
               overwrite = TRUE, repeat_instance = 1)
   }
   
