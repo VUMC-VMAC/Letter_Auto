@@ -309,16 +309,18 @@ fb_uploader<<- function(epochh,vmac) {
     df <- data.frame(
       Test = c("Heart rate", "Blood pressure", "Height", "Weight", "Body Mass Index"),
       Test.1 = c("Heart rate", "Blood pressure", "Height", "Weight", "Body Mass Index"),
-      ER = c(tme_data[i, 2], tme_data[i, 3], paste0(tme_data[i, "height"]," inches"), paste0(tme_data[i, "weight"]," lbs"), round(((tme_data[i, "weight"]/2.205)/((tme_data[i, "height"]/0.393701)/100)^2), digits=1)),
-      ER = c(tme_data[i, 2], tme_data[i, 4], paste0(tme_data[i, "height"]," inches"), paste0(tme_data[i, "weight"]," lbs"), round(((tme_data[i, "weight"]/2.205)/((tme_data[i, "height"]/0.393701)/100)^2), digits=1)),
+      ER = c(tme_data[i, 2], tme_data[i, 3], paste0(tme_data[i, "height"]*0.393701," inches"), paste0(tme_data[i, "weight"]*2.205," lbs"), round(((tme_data[i, "weight"])/((tme_data[i, "height"])/100)^2), digits=1)),
+      ER = c(tme_data[i, 2], tme_data[i, 4], paste0(tme_data[i, "height"]*0.393701," inches"), paste0(tme_data[i, "weight"]*2.205," lbs"), round(((tme_data[i, "weight"])/((tme_data[i, "height"])/100)^2), digits=1)),
       MR_36 = c(tm36_data[i, 2], fii36[i, 4], paste0(round(tm36_data[i, "height"]*0.393701), " inches"), paste0(round(tm36_data[i, "weight"]*2.205), " lbs"), round((tm36_data[i, "weight"]/(tm36_data[i, "height"]/100)^2), digits=1)),
       MR_36 = c(tm36_data[i, 2], fii36[i, 5], paste0(round(tm36_data[i, "height"]*0.393701), " inches"), paste0(round(tm36_data[i, "weight"]*2.205), " lbs"), round((tm36_data[i, "weight"]/(tm36_data[i, "height"]/100)^2), digits=1)),
       MR_60 = c(tm60_data[i, 2], fii60[i, 4], paste0(round(as.integer(tm60_data[i, "height"])*0.393701), " inches"), paste0(round(as.integer(tm60_data[i, "weight"])*2.205), " lbs"), round((as.integer(tm60_data[i, "weight"])/(as.integer(tm60_data[i, "height"])/100)^2), digits=1)),
       MR_60 = c(tm60_data[i, 2], fii60[i, 5], paste0(round(as.integer(tm60_data[i, "height"])*0.393701), " inches"), paste0(round(as.integer(tm60_data[i, "weight"])*2.205), " lbs"), round((as.integer(tm60_data[i, "weight"])/(as.integer(tm60_data[i, "height"])/100)^2), digits=1)),
       CR = c(tm7yr_data[i, 2], fii7yr[i, 4], paste0(round(as.integer(tm7yr_data[i, "height"])*0.393701)," inches"), paste0(round(as.integer(tm7yr_data[i, "weight"])*2.205)," lbs"), round((as.integer(tm7yr_data[i, "weight"])/(as.integer(tm7yr_data[i, "height"])/100)^2), digits=1)),
       CR = c(tm7yr_data[i, 2], fii7yr[i, 5], paste0(round(as.integer(tm7yr_data[i, "height"])*0.393701)," inches"), paste0(round(as.integer(tm7yr_data[i, "weight"])*2.205)," lbs"), round((as.integer(tm7yr_data[i, "weight"])/(as.integer(tm7yr_data[i, "height"])/100)^2), digits=1)),
-      NR = c("60-100", "<120 / <80", "n/a", "n/a", "18.5-24.9")
+      NR=c("60-100", "<120 / <80", "-", "-", "18.5-24.9")
     )
+    
+    df[df == "-9999" | df == "-3937 inches" | df == "-22048 lbs" | df == "-1" | df == "Missing"] <-"-"
     
     ft <- flextable(df)
     ft <- set_header_labels(ft, Test = "Test", Test.1="Test",
@@ -349,11 +351,49 @@ fb_uploader<<- function(epochh,vmac) {
     ft <- align(ft, align = "center", part="header")
     ft <- align(ft, align = "center", part="body")
     ft <- align(ft, i = 1:5, j = 1:2, align="left",part="body")
-    for (ii in 3:(ncol(df)-1)) {if ((as.integer(df[1,ii]) < 60) | (as.integer(df[1,ii]) >100)) {ft <- bold(ft, i = 1, j = ii, bold = TRUE, part = "body")}
-    if (as.integer(df[2,ii]) > 120) {ft <- bold(ft, i = 2, j = ii, bold = TRUE, part = "body")}
-    if ((as.double(df[5,ii]) < 18.5) | (as.double(df[5,ii]) > 24.9)) {ft <- bold(ft, i = 5, j = ii, bold = TRUE, part = "body")}}
-    evens <- c(4,6,8,10)
-    for (ii in evens) {if (as.integer(df[2,ii]) > 80) {ft <- bold(ft, i = 2, j = ii, bold = TRUE, part = "body")}}
+    
+    
+    
+    for (ii in 3:(ncol(df)-1)) {
+      #Heart rate
+      if (df[1,ii]=="-"){
+        #print(paste0(ii,":",df[1,ii]))
+        ft <- bold(ft, i = 1, j = ii, bold = FALSE, part = "body")}
+      else {
+        if ((as.integer(df[1,ii]) < 60) | (as.integer(df[1,ii]) >100)){
+          ft <- bold(ft, i = 1, j = ii, bold = TRUE, part = "body")}
+      }
+      #Blood pressure - systolic
+      if (df[2,ii]=="-"){
+        print(paste0(ii,":",df[2,ii]))
+        ft <- bold(ft, i = 2, j = ii, bold = FALSE, part = "body")}
+      else {
+        if (as.integer(df[2,ii]) > 120){
+          ft <- bold(ft, i = 2, j = ii, bold = TRUE, part = "body")}
+      }
+      
+      #BMI
+      if (df[5,ii]=="-"){
+        print(paste0(ii,":",df[5,ii]))
+        ft <- bold(ft, i = 5, j = ii, bold = FALSE, part = "body")}
+      else {
+        if ((as.double(df[5,ii]) < 18.5 | as.double(df[5,ii]) > 24.9)){
+          ft <- bold(ft, i = 5, j = ii, bold = TRUE, part = "body")}
+      }
+    }
+    #Blood pressure -- diastolic
+    evens<-c(4,6,8,10)
+    for (ii in evens) {
+      #Blood pressure
+      if (df[1,ii]=="-"){
+        #print(paste0(ii,":",df[2,ii]))
+        ft <- bold(ft, i = 2, j = ii, bold = FALSE, part = "body")}
+      else {
+        if ((as.integer(df[2,ii]) > 80)){
+          ft <- bold(ft, i = 2, j = ii, bold = TRUE, part = "body")}
+      }
+    }
+    
     
     df2 <- data.frame(
       Test1 = c("Cholesterol", "Cholesterol", "Cholesterol", "Cholesterol", "Blood Sugar", "Blood Sugar", "Blood Sugar", "Thyroid", "Inflammation"),
@@ -361,9 +401,12 @@ fb_uploader<<- function(epochh,vmac) {
       ER = c(tme_data[i, 5], tme_data[i, 6], tme_data[i,7], tme_data[i,8], tme_data[i,9], tme_data[i,10], tme_data[i,11], tme_data[i,12], tme_data[i,13]),
       MR_36 = c(tm36_data[i, 5], tm36_data[i, 6], tm36_data[i,7], tm36_data[i,8], tm36_data[i,9], tm36_data[i,10], tm36_data[i,11], tm36_data[i,12], tm36_data[i,13]),
       MR_60 = c(tm60_data[i, 5], tm60_data[i, 6], tm60_data[i,7], tm60_data[i,8], tm60_data[i,9], tm60_data[i,10], tm60_data[i,11], tm60_data[i,12], tm60_data[i,13]),
-      CR = c(tm7yr_data[i, 5], tm7yr_data[i, 6], tm7yr_data[i,7], tm7yr_data[i,8], tm7yr_data[i,9], tm7yr_data[i,10], tm7yr_data[i,11], tm7yr_data[i,12], tm7yr_data[i,13]),
+      CR = c(tm7yr_data[i, 5], tm7yr_data[i, 6], tm7yr_data[i,7], tm7yr_data[i,8], tm7yr_data[i,9], tm7yr_data[i,10], tm7yr_data[i,11], tm7yr_data[i,12], tm7yr_data[i,13]),  
       NR = c("<200", "men >40, women >50", "<100", "<150", "4-6.5", "<17.2", "70-110", "0.3-5.0", "0.1-3.0")
     )
+    
+    
+    df2[df2 == "-9999"] <-"-"
     
     ft2 <- flextable(df2)
     ft2 <- width(ft2, j = 1:7, width=.9)
@@ -385,15 +428,25 @@ fb_uploader<<- function(epochh,vmac) {
     ft2 <- height(ft2, height = .4, part = "header")
     ft2 <- width(ft2, j = 1, width = .85)
     ft2 <- width(ft2, j = 2, width = 1.25)
-    for (ii in 3:(ncol(df2)-1)) {if (as.integer(df2[1,ii]) > 200) {ft2 <- bold(ft2, i = 1, j = ii, bold = TRUE, part = "body")}
-      if (if (sex == "Female"){as.integer(df2[2,ii]) < 50} else {as.integer(df2[2,ii]) < 40}) {ft2 <- bold(ft2, i = 2, j = ii, bold = TRUE, part = "body")}
-      if (as.integer(df2[3,ii]) > 100) {ft2 <- bold(ft2, i = 3, j = ii, bold = TRUE, part = "body")}
-      if (as.integer(df2[4,ii]) > 150) {ft2 <- bold(ft2, i = 4, j = ii, bold = TRUE, part = "body")}
-      if ((as.integer(df2[5,ii]) > 6.5) | (as.integer(df2[5,ii]) < 4)) {ft2 <- bold(ft2, i = 5, j = ii, bold = TRUE, part = "body")}
-      if (as.integer(df2[6,ii]) > 17.2) {ft2 <- bold(ft2, i = 6, j = ii, bold = TRUE, part = "body")}
-      if ((as.integer(df2[7,ii]) > 110) | (as.integer(df2[7,ii]) < 70)) {ft2 <- bold(ft2, i = 7, j = ii, bold = TRUE, part = "body")}
-      if ((as.double(df2[8,ii]) > 5) | (as.double(df2[8,ii]) < 0.3)) {ft2 <- bold(ft2, i = 8, j = ii, bold = TRUE, part = "body")}
-      #if ((as.double(df2[9,ii]) > 3) | (as.double(df2[9,ii]) < 0.1)) {ft2 <- bold(ft2, i = 9, j = ii, bold = TRUE, part = "body")}
+    
+    for (ii in 3:(ncol(df2)-1)) {
+      if (df2[1,ii]=="-"){ft2<-bold(ft2, i = 1, j = ii, bold = FALSE, part = "body")}else{if(as.integer(df2[1,ii]) > 200){ft2<-bold(ft2, i = 1, j = ii, bold = TRUE, part = "body")}}
+      if (df2[2,ii]=="-"){
+        ft2<-bold(ft2, i = 2, j = ii, bold = FALSE, part = "body")}
+      else{
+        if (sex == "Female" & as.integer(df2[2,ii]) < 50){ft2 <- bold(ft2, i = 2, j = ii, bold = TRUE, part = "body")}
+        if (sex == "Male" & as.integer(df2[2,ii]) < 40){ft2 <- bold(ft2, i = 2, j = ii, bold = TRUE, part = "body")}
+      }
+      
+      if (df2[3,ii]=="-"){ft2<-bold(ft2, i = 3, j = ii, bold = FALSE, part = "body")}else{if(as.integer(df2[3,ii]) > 100){ft2<-bold(ft2, i = 3, j = ii, bold = TRUE, part = "body")}}
+      if (df2[4,ii]=="-"){ft2<-bold(ft2, i = 4, j = ii, bold = FALSE, part = "body")}else{if(as.integer(df2[4,ii]) > 150){ft2<-bold(ft2, i = 4, j = ii, bold = TRUE, part = "body")}}
+      if (df2[5,ii]=="-"){ft2<-bold(ft2, i = 5, j = ii, bold = FALSE, part = "body")}else{if(as.integer(df2[5,ii]) > 6.5 | as.integer(df2[5,ii] < 4)){ft2<-bold(ft2, i = 5, j = ii, bold = TRUE, part = "body")}}
+      if (df2[6,ii]=="-"){ft2<-bold(ft2, i = 6, j = ii, bold = FALSE, part = "body")}else{if(as.integer(df2[6,ii]) > 17.2){ft2<-bold(ft2, i = 6, j = ii, bold = TRUE, part = "body")}}
+      if (df2[7,ii]=="-"){ft2<-bold(ft2, i = 7, j = ii, bold = FALSE, part = "body")}else{if(as.integer(df2[7,ii]) > 110 | as.integer(df2[7,ii]) < 70){ft2<-bold(ft2, i = 7, j = ii, bold = TRUE, part = "body")}}
+      if (df2[8,ii]=="-"){ft2<-bold(ft2, i = 8, j = ii, bold = FALSE, part = "body")}else{if(as.integer(df2[8,ii]) > 5 | as.integer(df2[8,ii]) < 0.3){ft2<-bold(ft2, i = 8, j = ii, bold = TRUE, part = "body")}}
+      
+      if (is.na(as.double(df2[9,ii]))) {ft2 <- bold(ft2, i = 9, j = ii, bold = TRUE, part = "body")} else {
+        if ((as.double(df2[9,ii]) > 3) | (as.double(df2[9,ii]) < 0.1)) {ft2 <- bold(ft2, i = 9, j = ii, bold = TRUE, part = "body")}}
     }
  
     print("Compiling Memory results")
@@ -680,7 +733,7 @@ fb_uploader<<- function(epochh,vmac) {
     output<- paste0("C:/Users/sweelyb/Documents/resources/output/physician_letter_MAP_",input,"_",epoch,".docx")
     renderInlineCode(phys_temp, output)
     
-    importFiles(rcon = pdb, file = output, record = record, field = "feedback_physician_letter", event = events[e+1],
+    importFiles(rcon = pdb, file = output, record = record, field = "feedback_physician1_letter", event = events[e+1],
                 overwrite = TRUE, repeat_instance = 1)
   }
   if (is.na(first_name_physician2)==FALSE) {

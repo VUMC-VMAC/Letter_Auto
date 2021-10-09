@@ -50,7 +50,8 @@ previsit_uploader <- function(epoch,vmac) {
   if (nchar(vmac_id)==1) {record <- paste0("0000",vmac_id)} else if (nchar(vmac_id)==2) {record <- paste0("000",vmac_id)} else if (nchar(vmac_id)==3) {record <- paste0("00",vmac_id)} else if (nchar(vmac_id)==4) {record <- paste0("0",vmac_id)} else {record <- vmac_id}
   input <- record
   
-  first_name <<- pdb_data[i,"preferred_name"] #change to preferred name
+  first_name <<- pdb_data[i,"preferred_name"] 
+  if (is.na(first_name)) {first_name <<- pdb_data$first_name}
   last_name <<- pdb_data[i, "last_name"]
   street_address <<- pdb_data[i, "street_address"]
   city <<- pdb_data[i, "city"]
@@ -120,7 +121,7 @@ previsit_uploader <- function(epoch,vmac) {
     location_day1_prox_extra <<- ""; if (loc_day1 == 4) {location_day1_prox_extra <<- paste0("After completing the scheduled study assessments at the Vanderbilt Memory & Alzheimer\'s Center, ",pronoun," will travel to the Vanderbilt University Medical Center, 1210 Medical Center Drive, and arrive at the valet park station at the hospital entrance- valet parking is free. A VMAP team member will meet ",pronoun_obj," inside the hospital lobby.")}
     location_day1_extra <<- ""; if (loc_day1 == 4) {location_day1_extra <<- paste0("After completing the scheduled study assessments at the Vanderbilt Memory & Alzheimer\'s Center, you will travel to the Vanderbilt University Medical Center, 1210 Medical Center Drive, and arrive at the valet park station at the hospital entrance- valet parking is free. A VMAP team member will meet you inside the hospital lobby.")}
     #fu_time_7yr <- sub("0","",fu_time_7yr)
-    if (visit_type==1 | visit_type==3 | visit_type==5 | visit_type==6){
+    if (visit_type == 2 | visit_type==3 | visit_type==4 | visit_type==6 | visit_type == 7 | visit_type == 8 | visit_type == 9){
       visit2_date <<- format(as.Date(pdb_data[i, "visit2_date"]), "%A, %B %d, %Y")
       visit2_time <- as.character(pdb_data[i,"visit2_time"])
       visit2_time <<- paste0(gsub(":00$","",visit2_time),"am")
@@ -133,7 +134,7 @@ previsit_uploader <- function(epoch,vmac) {
       add_day2_prox <<- paste0("The second day of ",pronoun_poss," visit is scheduled for ",visit2_date," at ",visit2_time," and will last approximately ",visit2_hours," hours.")
       itin2 <<- "INSTRUCTIONS FOR 2DAY VISIT"
       #fu_time2_7yr <- sub("0","",fu_time2_7yr)
-      if (visit_type==3) {
+      if (visit_type==3 | visit_type == 4 | visit_type == 8 | visit_type == 9) {
         visit3_date <<- format(as.Date(pdb_data[i, "visit3_date"]), "%A, %B %d, %Y")
         visit3_time <- as.character(pdb_data[i,"visit3_time"])
         visit3_time <<- paste0(gsub(":00$","",visit3_time),"am")
@@ -146,7 +147,7 @@ previsit_uploader <- function(epoch,vmac) {
         add_day3_prox <<- paste0("The third day of ",pronoun_poss," visit is scheduled for ",visit3_date," at ",visit3_time," and will last approximately ",visit3_hours," hours.")
         #fu_time3_7yr <- sub("0","",fu_time3_7yr)
       }
-      if (visit_type==4) {
+      if (visit_type== 4 | visit_type == 9) {
         visit4_date <<- format(as.Date(pdb_data[i, "visit4_date"]), "%A, %B %d, %Y")
         visit4_time <- as.character(pdb_data[i,"visit4_time"])
         visit4_time <<- paste0(gsub(":00$","",visit4_time),"am")
@@ -156,41 +157,11 @@ previsit_uploader <- function(epoch,vmac) {
       }
     }
     cdrq<<-"";cdrq_prox<<-"";envel<<-""
-    if (visit_type==7) {
+    if (visit_type==10 | visit_type == 11 | visit_type == 12) {
       cdrq <<- "Because you will only be completing a phone interview and questionnaires, most of this consent document does not apply to you. There is a note on the first page of the document stating that you will be completing the questionnaires and interview by phone only. 
     We have already marked \"No\" for each optional piece in the document because these items do not apply to you. 
     We have enclosed two copies of the consent form labeled \'RETURN\' and \'KEEP\' on the top of the first page. 
     We will call you to ensure you have received the consent form and have had a chance to review it and ask questions before signing and returning it. Please do not return this form until we have had a chance to review it with you. 
-    The copy labeled \'KEEP\' is for you to keep for your records. 
-    "
-      cdrq_prox <<- paste0("Because ",pronoun," will only be completing a phone interview and questionnaires, most of this consent document do not apply. There is a note on the first page of the document stating that ",pronoun," will be completing the questionnaires and interview by phone only. 
-    We have already marked \"No\" for each optional piece in the document because these items do not apply. 
-    We have enclosed two copies of the consent form labeled \'RETURN\' and \'KEEP\' on the top of the first page. 
-    We will call you to ensure you have received the consent form and have had a chance to review it and ask questions before signing and returning it. Please do not return this form until we have had a chance to review it with you. 
-    The copy labeled \'KEEP\' is for you to keep for your records. 
-    ")
-      envel <<- "Stamped/Addressed Envelope. We have included a stamped and pre-addressed envelope for you to mail back your paperwork."
-    }
-    if (visit_type==8) {
-      cdrq <<- "Because you will only be completing a phone interview and questionnaires, most of this consent document does not apply to you. There is a note on the first page of the document stating that you will be completing the questionnaires and interview by phone only. 
-    We have already marked \"No\" for each optional piece in the document because these items do not apply to you. 
-    We have enclosed two copies of the consent form labeled \'RETURN\' and \'KEEP\' on the top of the first page. 
-    We will call you to ensure you have received the consent form and have had a chance to review it and ask questions before signing and returning it. Please do not return this form until we have had a chance to review it with you.  
-    The copy labeled \'KEEP\' is for you to keep for your records. 
-    "
-      cdrq_prox <<- paste0("Because ",pronoun," will only be completing a phone interview and questionnaires, most of this consent document do not apply. There is a note on the first page of the document stating that ",pronoun," will be completing the questionnaires and interview by phone only. 
-    We have already marked \"No\" for each optional piece in the document because these items do not apply. 
-    We have enclosed two copies of the consent form labeled \'RETURN\' and \'KEEP\' on the top of the first page. 
-    We will call you to ensure you have received the consent form and have had a chance to review it and ask questions before signing and returning it. Please do not return this form until we have had a chance to review it with you. 
-    The copy labeled \'KEEP\' is for you to keep for your records. 
-    ")
-      envel <<- "Stamped/Addressed Envelope. We have included a stamped and pre-addressed envelope for you to mail back your paperwork."
-    }
-    if (visit_type==9) {
-      cdrq <<- "Because you will only be completing a phone interview and questionnaires, most of this consent document does not apply to you. There is a note on the first page of the document stating that you will be completing the questionnaires and interview by phone only. 
-    We have already marked \"No\" for each optional piece in the document because these items do not apply to you. 
-    We have enclosed two copies of the consent form labeled \'RETURN\' and \'KEEP\' on the top of the first page. 
-    We will call you to ensure you have received the consent form and have had a chance to review it and ask questions before signing and returning it. Please do not return this form until we have had a chance to review it with you.  
     The copy labeled \'KEEP\' is for you to keep for your records. 
     "
       cdrq_prox <<- paste0("Because ",pronoun," will only be completing a phone interview and questionnaires, most of this consent document do not apply. There is a note on the first page of the document stating that ",pronoun," will be completing the questionnaires and interview by phone only. 
@@ -202,9 +173,9 @@ previsit_uploader <- function(epoch,vmac) {
       envel <<- "Stamped/Addressed Envelope. We have included a stamped and pre-addressed envelope for you to mail back your paperwork."
     }
     
-    fu_proxy_7yr <- pdb_data[i,"visit_proxy_require"]
-    if (is.na(fu_proxy_7yr)) {fu_proxy_7yr<-"No"}
-    if (fu_proxy_7yr == "Yes") {
+    fu_proxy <- pdb_data[i,"visit_proxy_require"]
+    if (is.na(fu_proxy)) {fu_proxy<-"No"}
+    if (fu_proxy == "Yes") {
       p_req <<- "Your presence is required for all study visits. Feel free to bring a book or other form of entertainment to keep you occupied during your waiting period."
       p_imp <<- paste0("In addition to your questionnaires, please complete the following forms & questionnaires on behalf of ",first_name,": The Medical Authorization of Release, Health History Questionnaire, Minnesota Leisure, Quick Food Scan, CHAMPS, and Pittsburgh Sleep Quality Index.")
       histor <<- ""
@@ -214,15 +185,15 @@ previsit_uploader <- function(epoch,vmac) {
       histor <<- paste0("Medical History Forms & Questionnaires. Prior to your appointment, please complete ALL questionnaires. Please be sure to bring your medications to the visit so our team can review them with you.")
     }
     
-    fu_hotel_7yr <- pdb_data[i,"visit_hotel"]
-    if (is.na(fu_hotel_7yr)) {fu_hotel_7yr<-"No"}
-    if (fu_hotel_7yr=="Yes") {hotel <<- "You will be residing at XX - located at XX - on the nights of DAY, MONTH DATE, YEAR and DAY, MONTH DATE, YEAR. Your hotel confirmation is: XXXXXXXX."
+    fu_hotel <- pdb_data[i,"visit_hotel"]
+    if (is.na(fu_hotel)) {fu_hotel<-"No"}
+    if (fu_hotel=="Yes") {hotel <<- "You will be residing at XX - located at XX - on the nights of DAY, MONTH DATE, YEAR and DAY, MONTH DATE, YEAR. Your hotel confirmation is: XXXXXXXX."
     hotel_proxy <<- paste0("You will be residing at XX - located at XX - on the nights of DAY, MONTH DATE, YEAR and DAY, MONTH DATE, YEAR. ",pronoun_poss_cap," hotel confirmation is: XXXXXXXX.")
     } else {hotel <<- "";hotel_proxy<<-""}
     
-    fu_transport_7yr <- pdb_data[i,"visit_transport_needed"]
-    if (is.na(fu_transport_7yr)) {fu_transport_7yr<-"No"}
-    if (fu_transport_7yr=="Yes") {t_need <<- "Your appointment will be held at the Vanderbilt University Medical Center. We will be providing you with transportation to and from your visit with Jeff Cornelius. Jeff\'s number is 615-604-1502 in case you need to contact him."
+    fu_transport <- pdb_data[i,"visit_transport_needed"]
+    if (is.na(fu_transport)) {fu_transport<-"No"}
+    if (fu_transport=="Yes") {t_need <<- "Your appointment will be held at the Vanderbilt University Medical Center. We will be providing you with transportation to and from your visit with Jeff Cornelius. Jeff\'s number is 615-604-1502 in case you need to contact him."
     t_need_proxy <<- paste0(pronoun_poss_cap," appointment will be held at the Vanderbilt University Medical Center.  We will be providing transportation to and from ",pronoun_poss," visit with Jeff Cornelius. Jeff\'s number is 615-604-1502 in case ",pronoun," needs to contact him.")
     } else {t_need <<- ""; t_need_proxy <<- ""}
     consent <<- paste0("Consent Statement. This document describes the VMAP Study. You completed this form when you originally came in for your eligibility visit, but we ask that you complete and sign this document again at each follow-up visit. Please read the form thoroughly before the appointment. We will ask you and your study partner, ",proxy_first_name,", to sign the consent form after we review it with you at the appointment. If your study partner does not plan to attend, we will mail them a copy to sign and return prior to your visit.")
@@ -239,13 +210,18 @@ previsit_uploader <- function(epoch,vmac) {
     field <- "visit_letter"
     field_proxy <- "visit_letter_proxy"
     
+    path_in <- paste0("/srv/shiny-server/resources/Templates/Previsit/MAP_template.docx")
+    temp <- "/app/Output/previsit_temp.docx"
+    path_in_proxy <- paste0("/srv/shiny-server/resources/Templates/Previsit/MAP_proxy_template.docx")
+    temp_proxy <- "/app/Output/previsit_temp_prox.docx"
+    
     #################### EPOCH 5 Ends HERE
     
   } else {
     #################### EPOCH 0 Starts HERE ############################
     
-    location_ptp <<- paste0("Your eligibility visit will be held at the Vanderbilt Memory and Alzheimer\'s Center, located on 1207 17th Avenue S., Suite 302. Upon arriving at the Vanderbilt Memory & Alzheimer\'s Center, please park in lot 128, to the right of the building, in a spot labeled \"VMAC Participant Parking\". Call 615-347-6937 and a team member will come down to greet you.")
-    location_prox <<- paste0("The eligibility visit will be held at the Vanderbilt Memory and Alzheimer\'s Center, located on 1207 17th Avenue S., Suite 302. Upon arriving at the Vanderbilt Memory & Alzheimer\'s Center, please park in lot 128, to the right of the building, in a spot labeled \"VMAC Participant Parking\". Call 615-347-6937 and a team member will come down to greet you.")
+    location_ptp <<- paste0("Your eligibility visit will be held at the Vanderbilt Memory and Alzheimer\'s Center, located on 1207 17th Avenue S., Suite 302. Upon arrival, please park in lot 128, to the right of the building, in a spot labeled \"VMAC Participant Parking\". Call 615-347-6937 and a team member will come down to greet you.")
+    location_prox <<- paste0("The eligibility visit will be held at the Vanderbilt Memory and Alzheimer\'s Center, located on 1207 17th Avenue S., Suite 302. Upon arrival, please park in lot 128, to the right of the building, in a spot labeled \"VMAC Participant Parking\". Call 615-347-6937 and a team member will come down to greet you.")
     
     elig_date <<- format(as.Date(pdb_data[i, "elig_date"]), "%A, %B %d, %Y")
     elig_time <<- as.character(pdb_data[i,"elig_time"])
@@ -270,12 +246,12 @@ previsit_uploader <- function(epoch,vmac) {
     
     field <- paste0("elig_letter")
     field_proxy <- paste0("elig_letter_proxy")
+    
+    path_in <- paste0("/srv/shiny-server/resources/Templates/Previsit/MAP_elig_template.docx")
+    temp <- "/app/Output/previsit_temp.docx"
+    path_in_proxy <- paste0("/srv/shiny-server/resources/Templates/Previsit/MAP_elig_proxy_template.docx")
+    temp_proxy <- "/app/Output/previsit_temp_prox.docx"
   }
-  
-  path_in <- paste0("/srv/shiny-server/resources/Templates/Previsit/MAP_template.docx")
-  temp <- "/app/Output/previsit_temp.docx"
-  path_in_proxy <- paste0("/srv/shiny-server/resources/Templates/Previsit/MAP_proxy_template.docx")
-  temp_proxy <- "/app/Output/previsit_temp_prox.docx"
   
   is.even <- function(x) x %% 2 == 0
   

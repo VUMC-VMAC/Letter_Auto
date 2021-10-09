@@ -11,8 +11,7 @@ LP_uploader <- function(epoch,vmac) {
                           token = "7E1DC8A562246EC4F7043579B863706C", conn, project = 136242)
   pdb_data <- exportReports(pdb, 267463)
   
-  #events_n <- c(4,5,1,2,3)
-  events <- c("eligibility_arm_1","enrollmentbaseline_arm_1","18month_followup_arm_1","3year_followup_arm_1","5year_followup_arm_1")
+  events <- c("eligibility_arm_1","enrollmentbaseline_arm_1","18month_followup_arm_1","3year_followup_arm_1","5year_followup_arm_1","7year_followup_arm_1")
   pdb_datas <- pdb_data[which(pdb_data[,"redcap_event_name"]== events[epoch+1]),]
   ii <- which(pdb_datas["vmac_id"]==as.integer(vmac)) #need to find i for map id
   pdb_data <- pdb_datas[ii,]
@@ -28,7 +27,8 @@ LP_uploader <- function(epoch,vmac) {
   vmac_id <- as.character(pdb_data[i,"vmac_id"])
   if (nchar(vmac_id)==1) {record <- paste0("0000",vmac_id)} else if (nchar(vmac_id)==2) {record <- paste0("000",vmac_id)} else if (nchar(vmac_id)==3) {record <- paste0("00",vmac_id)} else if (nchar(vmac_id)==4) {record <- paste0("0",vmac_id)} else {record <- vmac_id}
   
-  first_name <<- pdb_data[i,"first_name"] #change to preferred name
+  first_name <<- pdb_data[i,"preferred_name"] #change to preferred name
+  if (is.na(first_name)) {first_name <<- pdb_data$first_name}
   last_name <<- pdb_data[i, "last_name"]
   street_address <<- pdb_data[i, "street_address"]
   city <<- pdb_data[i, "city"]
@@ -53,6 +53,8 @@ LP_uploader <- function(epoch,vmac) {
   ft <- bg(ft, i=c(2,4,6),bg="grey",part = "body")
   ft <- fontsize(ft,size = 13)
   ft <- fontsize(ft,size = 13,part = "header")
+  ft <- font(ft,fontname = "Arial",part = "body")
+  ft <- font(ft,fontname="Arial",part="header")
   ft <- width(ft,width = 4.5)
   ft <- theme_box(ft)
   ft <- bold(ft,bold = TRUE,part = "body")
@@ -77,6 +79,4 @@ LP_uploader <- function(epoch,vmac) {
   
   importFiles(rcon = pdb, file = output, record = record, field = "lp_letter", event = pdb_data[,"redcap_event_name"],
               overwrite = TRUE, repeat_instance = 1)
-  #}
-#}
 }

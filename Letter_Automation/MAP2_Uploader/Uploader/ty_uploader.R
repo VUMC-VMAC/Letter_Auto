@@ -10,9 +10,7 @@ ty_uploader <- function(epoch,vmac) {
                           token = "7E1DC8A562246EC4F7043579B863706C", conn, project = 136242)
   pdb_data <- exportReports(pdb, 267464)
   
-  path_in <- "/srv/shiny-server/resources/Templates/Thank You/Thank You Template.docx"
-  
-  events <- c("eligibility_arm_1","enrollmentbaseline_arm_1","18month_followup_arm_1","3year_followup_arm_1","5year_followup_arm_1")
+  events <- c("eligibility_arm_1","enrollmentbaseline_arm_1","18month_followup_arm_1","3year_followup_arm_1","5year_followup_arm_1","7year_followup_arm_1")
   pdb_datas <- pdb_data[which(pdb_data[,"redcap_event_name"]== events[epoch+1]),]
   ii <- which(pdb_datas["vmac_id"]==as.integer(vmac)) #need to find i for map id
   pdb_data <- pdb_datas[ii,]
@@ -31,11 +29,26 @@ ty_uploader <- function(epoch,vmac) {
   epoch <<- epoch_conv[e]
   epoch_next <<- epoch_conv[e+1]
   ep_n_conv <- c("","3yr_","5yr_","7yr_","9yr_","11yr_","13yr_")
-  ep_conv <- c("18mos","3yr","5yr","7yr","9yr","11yr","13yr")
+  ep_conv <- c("elig","enroll","18mos","3yr","5yr","7yr","9yr","11yr","13yr")
   ep_next <- ep_n_conv[e]
-  ep <- ep_conv[e-1]
+  ep <- ep_conv[e+1]
   
-  
+  if (e==0){
+    el <-  redcapConnection(url = "https://redcap.vanderbilt.edu/api/",
+                            token = "BFEF4C303E170DDAA850D56C4FB9594A", conn, project = 134345)
+    el_data <- exportReports(el, 271784)
+    
+    ii <- which(el_data["vmac_id"]==as.integer(vmac)) #need to find i for map id
+    
+    elig_out <- el_data[ii,"elig_outcome"]
+    enroll_stat <- el_data[ii,"enrollment_status"]
+    
+    path_in <- "/srv/shiny-server/resources/Templates/Thank You/Thank You Template_e.docx"
+  } else {
+    path_in <- "/srv/shiny-server/resources/Templates/Thank You/Thank You Template.docx"
+    
+    fu <<- "To date, your participation has helped generate more than 130 scientific publications and conference presentations, and it has provided significant teaching opportunities for more than 40 investigators and clinicians-in-training."
+  }
   
   date_next <- paste0("visit_estimate_",ep_next,"date")
   date_ty <<- format(as.Date(pdb_data[i, date_next]), "%B %Y")

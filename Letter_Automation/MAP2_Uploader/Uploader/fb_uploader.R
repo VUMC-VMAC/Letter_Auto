@@ -565,9 +565,9 @@ fb_uploader<<- function(epochh,vmac) {
     counts<- c(memory_words[1:4],memory_shapes[1:4],language[1:4],multitasking[1:4],visuospatial[1:4],attention[1:4]) # Why 1 thru 4?
     
     specie<- c(rep("Memory for\n Words",4),rep("Memory for\n Shapes",4),rep("Language",4),rep("Multi-tasking\n and planning",4),rep("Visuospatial\nskills",4),rep("Attention",4))
-    condition<- rep(c(enroll_date, fu_date_36mos, fu_date_60mos, fu_date_7yr),6)
+    condition<- rep(c(enroll_date, fu_date_prev2, fu_date_prev, fu_date_c),6)
     level_order<- c("Memory for\n Words","Memory for\n Shapes","Language","Multi-tasking\n and planning","Visuospatial\nskills","Attention")
-    cond_order<- c(enroll_date, fu_date_36mos, fu_date_60mos, fu_date_7yr)
+    cond_order<- c(enroll_date, fu_date_prev2, fu_date_prev, fu_date_c)
     spec<- factor(specie,levels = level_order)
     cond<- factor(condition,levels = cond_order)
     data<- data.frame(specie,condition,counts)
@@ -586,50 +586,51 @@ fb_uploader<<- function(epochh,vmac) {
     
     print("Compiling Heart Results and Incidentals")
     
-    lvd36<<- as.character(fii36[i,6])
-    val36<<- as.character(fii36[i,7])
-    if (val36=="Normal"){val36<<-"     3.  No significant"} else {val36<<-"     3.  Significant"}
-    lvs36<<- as.character(fii36[i,8])
-    if (is.na(lvs36)) {
-      lvs36<<-""
-      lvd36<<- paste0("     1.  ", lvd36)
-    } else {lvs36<<- paste0("     1.  ",as.character(fii36[i,8])," left ventricular systolic function; ")}
-    rv36<<- as.character(fii36[i,9])
-    if (is.na(rv36)) {
-      rv36<<- ""
-    } else {rv36<<- paste0("     2.  ",as.character(fii36[i,9])," right ventricular size and systolic function\n")}
-    lv60<<- paste0("     1.  ",as.character(fii60[i,6]))
-    val60<<- as.character(fii60[i,7])
-    if (val60=="Normal"){val60<<-"     2.  No significant"} else {val60<<-"     2.  Significant"}
-    lv7yr<<- paste0("     1.  ",as.character(fii7yr[i,6]))
-    val7yr<<- as.character(fii7yr[i,7])
-    if (val7yr=="Normal"){val7yr<<-"     2.  No significant"} else {val7yr<<-"     2.  Significant"}
+    lvd_p2<<- as.character(fii36[i,6])
+    val_p2<<- as.character(fii36[i,7])
+    if (val_p2=="Normal"){val_p2<<-"     3.  No significant"} else {val_p2<<-"     3.  Significant"}
+    lvs_p2<<- as.character(fii36[i,8])
+    if (is.na(lvs_p2)) {
+      lvs_p2<<-""
+      lvd_p2<<- paste0("     1.  ", lvd_p2)
+    } else {lvs_p2<<- paste0("     1.  ",as.character(fii36[i,8])," left ventricular systolic function; ")}
+    rv_p2<<- as.character(fii36[i,9])
+    if (is.na(rv_p2)) {
+      rv_p2<<- ""
+    } else {rv_p2<<- paste0("     2.  ",as.character(fii36[i,9])," right ventricular size and systolic function\n")}
+    lv_p<<- paste0("     1.  ",as.character(fii60[i,6]))
+    val_p<<- as.character(fii60[i,7])
+    if (val_p=="Normal"){val_p<<-"     2.  No significant"} else {val_p<<-"     2.  Significant"}
+    lv_c <<- paste0("     1.  ",as.character(fii7yr[i,6]))
+    val_c<<- as.character(fii7yr[i,7])
+    if (val_c=="Normal"){val_c<<-"     2.  No significant"} else {val_c<<-"     2.  Significant"}
     
     visit_depress<<- tm7yr_data["visit_depress"]
+    if (is.na(visit_depress)) {visit_depress <<- 0}
     if (visit_depress == 1) {
       gds_phys<<- paste0("On a measure assessing depressive symptoms, ",first_name," scored in a range suggesting mild/moderate/severe symptoms of depression. Based upon this score, we recommended that ",first_name," make an appointment for a more detailed clinical assessment of these symptoms.")
-      gds<<- paste0("As discussed on ",feedback_date1_7yr,", your scores on a measure assessing depressive symptoms fell in a range suggesting mild/moderate/severe symptoms of depression.  We recommend you make an appointment for a more detailed clinical assessment of these symptoms.  You can request a referral from your primary care doctor.  We would recommend our colleagues who offer clinical services in the Department of Psychiatry at Vanderbilt University.  You can schedule an appointment by calling: 615-936-3555.")
+      gds<<- paste0("As discussed on ",feedback_date1,", your scores on a measure assessing depressive symptoms fell in a range suggesting mild/moderate/severe symptoms of depression.  We recommend you make an appointment for a more detailed clinical assessment of these symptoms.  You can request a referral from your primary care doctor.  We would recommend our colleagues who offer clinical services in the Department of Psychiatry at Vanderbilt University.  You can schedule an appointment by calling: 615-936-3555.")
     } else {gds<<- ""; gds_phys<<- ""}
     
     if (any(countss < 1.5)) {
       decline_phys<<- paste0("Based upon the cognitive scores, we suggested that ",first_name," follow-up with a clinical memory work-up for more detailed memory testing. This evaluation can be completed by our colleagues in the Cognitive & Behavioral Neurology Division at Vanderbilt University Medical Center, with a doctor\'s referral (615-936-0060). ")
-      decline<<- paste0("As we discussed on ",feedback_date1_7yr,", we recommend that you make an appointment for a clinical memory workup for more detailed cognitive testing. You can request a referral from your primary care doctor. We would recommend our colleagues in the Cognitive & Behavioral Neurology Division at Vanderbilt University Medical Center. With a doctor's referral, you can schedule an appointment by calling: 615-936-0060.")
+      decline<<- paste0("As we discussed on ",feedback_date1,", we recommend that you make an appointment for a clinical memory workup for more detailed cognitive testing. You can request a referral from your primary care doctor. We would recommend our colleagues in the Cognitive & Behavioral Neurology Division at Vanderbilt University Medical Center. With a doctor's referral, you can schedule an appointment by calling: 615-936-0060.")
     } else {decline<<- ""; decline_phys<<- ""}
     
-    if (fii36["extracardiac_incidental"]=="Yes") {lung36<<-paste("     4.  ",fii36["extracardiac_incidental_describe"])} else {lung36<<-""}
-    if (fii60["extracardiac_incidental"]=="Yes") {lung60<<-paste("     3.  ",fii60["extracardiac_incidental_describe"])} else {lung60<<-""}
-    if (fii7yr["extracardiac_incidental"]=="Yes") {lung7yr<<-paste("     3.  ",fii7yr["extracardiac_incidental_describe"])} else {lung7yr<<-""}
+    if (fii36["extracardiac_incidental"]=="Yes") {lung_p2<<-paste("     4.  ",fii36["extracardiac_incidental_describe"])} else {lung_p2<<-""}
+    if (fii60["extracardiac_incidental"]=="Yes") {lung_p<<-paste("     3.  ",fii60["extracardiac_incidental_describe"])} else {lung_p<<-""}
+    if (fii7yr["extracardiac_incidental"]=="Yes") {lung_c<<-paste("     3.  ",fii7yr["extracardiac_incidental_describe"])} else {lung_c<<-""}
     
     if (fii36["brain_incidental"]=="Yes" | fii60["brain_incidental"]=="Yes" | fii7yr["brain_incidental"]=="Yes") {
       brain_intro1<<-"Brain Test Results"
       brain_intro2<<-"You underwent brain testing, which was read by board-certified neuroradiologists."
     } else {brain_intro1<<-""; brain_intro2<<-""}
     
-    if (fii36["brain_incidental"]=="Yes") {brain_intro36<<-paste0("Your _ results on ",fu_date_36mos," were as follows:"); brain36<<-fii36["brain_incidental_davis"]} else {brain_intro36<<-""; brain36<<-""}
+    if (fii36["brain_incidental"]=="Yes") {brain_ip2 <<-paste0("Your _ results on ",fu_date_prev2," were as follows:"); brain_p2 <<-fii36["brain_incidental_davis"]} else {brain_ip2 <<-""; brain_p2 <<-""}
     
-    if (fii60["brain_incidental"]=="Yes") {brain_intro60<<-paste0("Your _ results on ",fu_date_60mos," were as follows:"); brain60<<-fii60["brain_incidental_davis"]} else {brain_intro60<<-""; brain60<<-""}
+    if (fii60["brain_incidental"]=="Yes") {brain_ip <<-paste0("Your _ results on ",fu_date_prev," were as follows:"); brain_p <<-fii60["brain_incidental_davis"]} else {brain_ip <<-""; brain_p <<-""}
     
-    if (fii7yr["brain_incidental"]=="Yes") {brain_intro7yr<<-paste0("Your _ results on ",fu_date_7yr," were as follows:"); brain7yr<<-fii7yr["brain_incidental_davis"]} else {brain_intro7yr<<-""; brain7yr<<-""}
+    if (fii7yr["brain_incidental"]=="Yes") {brain_ic <<-paste0("Your _ results on ",fu_date_c," were as follows:"); brain_c <<-fii7yr["brain_incidental_davis"]} else {brain_ic <<-""; brain_c <<-""}
     
     ptp_path<<- paste0("/srv/shiny-server/resources/Templates/Feedback/MAP2_fb_temp.docx")
     phys_path<<- paste0("/srv/shiny-server/resources/Templates/Feedback/MAP2_phys_temp.docx")
@@ -683,7 +684,7 @@ fb_uploader<<- function(epochh,vmac) {
     output<- paste0("/app/Output/physician_letter_MAP_",input,"_",epoch,".docx")
     renderInlineCode(phys_temp, output)
     
-    importFiles(rcon = pdb, file = output, record = record, field = "feedback_physician_letter", event = events[e+1],
+    importFiles(rcon = pdb, file = output, record = record, field = "feedback_physician1_letter", event = events[e+1],
                 overwrite = TRUE, repeat_instance = 1)
   }
   if (is.na(first_name_physician2)==FALSE) {
