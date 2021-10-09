@@ -54,18 +54,6 @@ fb_uploader<<- function(epochh,vmac) {
   
   edc_data <- edc_datas[which(edc_datas["map_id"]==as.integer(map_id)),]
   
-  age <- dde_data[2,"age"]
-  if (age < 55) {age_r <- "50-54"}; if (age < 60 & age >= 55) {age_r <- "55-59"}; if (age < 65 & age >= 60) {age_r <- "60-64"}
-  if (age < 70 & age >= 65) {age_r <- "65-69"}; if (age < 75 & age >= 70) {age_r <- "70-74"} 
-  if (age < 80 & age >= 75) {age_r <- "75-79"}; if (age >= 80) {age_r <- "80-85"}
-  edu <- dde_data[2,"education"]
-  if (edu < 9) {edu_r <- "7-8"}; if (edu >= 9 & edu < 12 ) {edu_r <- "9-11"}; if (edu == 12 ) {edu_r <- "12"}
-  if (edu >= 13 & edu < 16 ) {edu_r <- "13-15"}; if (edu >= 16 & edu < 18 ) {edu_r <- "16-17"}
-  if (edu >= 18) {edu_r <- "18-20"}
-  sex_conv <- c("M","F","missing","N/A")
-  sex_r <- sex_conv[dde_data[2,"sex"]]
-  race_conv <- c("C","AA","NA","A","O","M","N/A")
-  race <- race_conv[dde_data[2,"race"]]
   
   events <- c("eligibility_arm_1","enrollmentbaseline_arm_1","18month_followup_arm_1","3year_followup_arm_1","5year_followup_arm_1","7year_followup_arm_1")
   
@@ -500,6 +488,8 @@ fb_uploader<<- function(epochh,vmac) {
     
     #Tower
     if (any(is.na(np_tower_z))) {
+      age <- dde_data[2,"age"]
+      
       np_tower1 <- as.integer(dde_data[2,"np_tower1"])-1
       np_tower2 <- as.integer(dde_data[2,"np_tower2"])-1
       np_tower3 <- as.integer(dde_data[2,"np_tower3"])-1
@@ -510,21 +500,34 @@ fb_uploader<<- function(epochh,vmac) {
       np_tower8 <- as.integer(dde_data[2,"np_tower8"])-1
       np_tower9 <- as.integer(dde_data[2,"np_tower9"])-1
       np_tower <- sum(np_tower1,np_tower2,np_tower3,np_tower4,np_tower5,np_tower6,np_tower7,np_tower8,np_tower9)
-      tower_ex <- read_excel("/app/epoch5dde_lookup.xlsx", sheet = 1)
+      tower_ex <- read_excel("~/epoch5dde_lookup.xlsx", sheet = 1)
       np_tower_ss <- tower_ex[as.integer(ceiling(np_tower))+1,as.character(age)]
       np_tower_z[4] <- (as.integer(np_tower_ss)-10)/3
     }
     
     # Animal
     if (any(is.na(np_anim_z))) {
+      age <- dde_data[2,"age"]
+      if (age < 55) {age_r <- "50-54"}; if (age < 60 & age >= 55) {age_r <- "55-59"}; if (age < 65 & age >= 60) {age_r <- "60-64"}
+      if (age < 70 & age >= 65) {age_r <- "65-69"}; if (age < 75 & age >= 70) {age_r <- "70-74"} 
+      if (age < 80 & age >= 75) {age_r <- "75-79"}; if (age >= 80) {age_r <- "80-85"}
+      edu <- dde_data[2,"education"]
+      if (edu < 9) {edu_r <- "7-8"}; if (edu >= 9 & edu < 12 ) {edu_r <- "9-11"}; if (edu == 12 ) {edu_r <- "12"}
+      if (edu >= 13 & edu < 16 ) {edu_r <- "13-15"}; if (edu >= 16 & edu < 18 ) {edu_r <- "16-17"}
+      if (edu >= 18) {edu_r <- "18-20"}
+      sex_conv <- c("M","F","missing","N/A")
+      sex_r <- sex_conv[dde_data[2,"sex"]]
+      race_conv <- c("C","AA","NA","A","O","M","N/A")
+      race <- race_conv[dde_data[2,"race"]]
+      
       np_anim_q1 <- dde_data[2,"np_anim_q1"]
       np_anim_q2 <- dde_data[2,"np_anim_q2"]
       np_anim_q3 <- dde_data[2,"np_anim_q3"]
       np_anim_q4 <- dde_data[2,"np_anim_q4"]
       np_anim <- sum(c(np_anim_q1, np_anim_q2, np_anim_q3, np_anim_q4))
-      anim_ex <- read_excel("/app/epoch5dde_lookup.xlsx", sheet = "heaton_scaled")
+      anim_ex <- read_excel("~/epoch5dde_lookup.xlsx", sheet = "heaton_scaled")
       np_anim_sscore <- anim_ex[as.integer(ceiling(np_anim))+1,4]
-      anim_ex <- read_excel("/app/epoch5dde_lookup.xlsx", sheet = "heaton_animals")
+      anim_ex <- read_excel("~/epoch5dde_lookup.xlsx", sheet = "heaton_animals")
       var_anim <- paste0(sex_r,"/",edu_r,"/",age_r,"/",race)
       np_anim_tscore <- anim_ex[as.integer(ceiling(20-np_anim_sscore)),var_anim]
       np_anim_z[4] <- (as.integer(np_anim_tscore) - 50) / 10
@@ -536,65 +539,89 @@ fb_uploader<<- function(epochh,vmac) {
     }
     
     if (any(is.na(np_inhibit_z))) {
+      age <- dde_data[2,"age"]
       np_inhibit <- dde_data[2,"np_inhibit"]
-      inhibit_ex <- read_excel("/app/epoch5dde_lookup.xlsx", sheet = 12)
+      inhibit_ex <- read_excel("~/epoch5dde_lookup.xlsx", sheet = 12)
       np_inhibit_ss <- inhibit_ex[as.integer(ceiling(np_inhibit))+1,as.character(age)]
       np_inhibit_z[4] <- (as.integer(np_inhibit_ss)-10)/3
     }
     
     if (any(is.na(np_fas_z))) {
+      age <- dde_data[2,"age"]
+      if (age < 55) {age_r <- "50-54"}; if (age < 60 & age >= 55) {age_r <- "55-59"}; if (age < 65 & age >= 60) {age_r <- "60-64"}
+      if (age < 70 & age >= 65) {age_r <- "65-69"}; if (age < 75 & age >= 70) {age_r <- "70-74"} 
+      if (age < 80 & age >= 75) {age_r <- "75-79"}; if (age >= 80) {age_r <- "80-85"}
+      edu <- dde_data[2,"education"]
+      if (edu < 9) {edu_r <- "7-8"}; if (edu >= 9 & edu < 12 ) {edu_r <- "9-11"}; if (edu == 12 ) {edu_r <- "12"}
+      if (edu >= 13 & edu < 16 ) {edu_r <- "13-15"}; if (edu >= 16 & edu < 18 ) {edu_r <- "16-17"}
+      if (edu >= 18) {edu_r <- "18-20"}
+      sex_conv <- c("M","F","missing","N/A")
+      sex_r <- sex_conv[dde_data[2,"sex"]]
+      race_conv <- c("C","AA","NA","A","O","M","N/A")
+      race <- race_conv[dde_data[2,"race"]]
+      
       np_fas <- dde_data[2,"np_fas"]
-      fas_ex <- read_excel("/app/epoch5dde_lookup.xlsx", sheet = "heaton_scaled")
+      fas_ex <- read_excel("~/epoch5dde_lookup.xlsx", sheet = "heaton_scaled")
       np_fas_sscore <- fas_ex[as.integer(ceiling(np_fas))+1,5]
-      fas_ex <- read_excel("/app/epoch5dde_lookup.xlsx", sheet = "heaton_fas")
+      fas_ex <- read_excel("~/epoch5dde_lookup.xlsx", sheet = "heaton_fas")
       var_fas <- paste0(sex_r,"/",edu_r,"/",age_r,"/",race)
       np_fas_tscore <- fas_ex[as.integer(ceiling(20-np_fas_sscore)),var_fas]
       np_fas_z[4] <- (as.integer(np_fas_tscore) - 50) / 10 
     }
     
     if (any(is.na(np_tmtb_z))) {
+      age <- dde_data[2,"age"]
       np_tmtb <- dde_data[2,"np_tmtb"]
-      tmtb_ex <- read_excel("/app/epoch5dde_lookup.xlsx", sheet = 6)
+      tmtb_ex <- read_excel("~/epoch5dde_lookup.xlsx", sheet = 6)
       np_tmtb_ss <- tmtb_ex[as.integer(ceiling(np_tmtb))+1,as.character(age)]
       np_tmtb_z[4] <- (as.integer(np_tmtb_ss) - 10)/3
     }
     
     if (any(is.na(np_tmta_z))) {
+      age <- dde_data[2,"age"]
+      
       np_tmta <- dde_data[2,"np_tmta"]
-      tmta_ex <- read_excel("/app/epoch5dde_lookup.xlsx", sheet = 3)
+      tmta_ex <- read_excel("~/epoch5dde_lookup.xlsx", sheet = 3)
       np_tmta_ss <- tmta_ex[as.integer(ceiling(np_tmta))+1,as.character(age)]
       np_tmta_z[4] <- (as.integer(np_tmta_ss) - 10)/3
     }
     
     if (any(is.na(np_hvot_z))) {
+      age <- dde_data[2,"age"]
+      edu <- dde_data[2,"education"]
       np_hvot <- dde_data[2,"np_hvot"]
-      if (age < 55) {hvot_ex <- read_excel("/app/epoch5dde_lookup.xlsx", sheet = 22)}
-      if (55 <= age | age < 60) {hvot_ex <- read_excel("/app/epoch5dde_lookup.xlsx", sheet = 23)}
-      if (60 <= age | age < 65) {hvot_ex <- read_excel("/app/epoch5dde_lookup.xlsx", sheet = 24)}
-      if (65 <= age) {hvot_ex <- read_excel("/app/epoch5dde_lookup.xlsx", sheet = 25)}
+      if (age < 55) {hvot_ex <- read_excel("~/epoch5dde_lookup.xlsx", sheet = 22)}
+      if (55 <= age | age < 60) {hvot_ex <- read_excel("~/epoch5dde_lookup.xlsx", sheet = 23)}
+      if (60 <= age | age < 65) {hvot_ex <- read_excel("~/epoch5dde_lookup.xlsx", sheet = 24)}
+      if (65 <= age) {hvot_ex <- read_excel("~/epoch5dde_lookup.xlsx", sheet = 25)}
       np_hvot_corrected <- hvot_ex[as.integer(ceiling(np_hvot))+1,as.integer(edu)+2]
-      hvot_t_ex <- read_excel("/app/epoch5dde_lookup.xlsx", sheet = 26)
+      hvot_t_ex <- read_excel("~/epoch5dde_lookup.xlsx", sheet = 26)
       np_hvot_tscore <- hvot_t_ex[as.integer(np_hvot_corrected)+1,2]
       np_hvot_z[4] <- -(as.integer(np_hvot_tscore) - 50) / 10
     }
     
     if (any(is.na(np_digsymb_z))) {
+      age <- dde_data[2,"age"]
       np_digsymb <- dde_data[2,"np_digsymb"]
-      digsymb_ex <- read_excel("/app/epoch5dde_lookup.xlsx", sheet = 21)
+      digsymb_ex <- read_excel("~/epoch5dde_lookup.xlsx", sheet = 21)
       np_digsymb_ss <- digsymb_ex[as.integer(ceiling(np_digsymb))+1,as.character(age)]
       np_digsymb_z[4] <- (as.integer(np_digsymb_ss)-10)/3
     }
     
     if (any(is.na(np_color_z))) {
+      age <- dde_data[2,"age"]
+      
       np_color <- dde_data[2,"np_color"]
-      color_ex <- read_excel("/app/epoch5dde_lookup.xlsx", sheet = 10)
+      color_ex <- read_excel("~/epoch5dde_lookup.xlsx", sheet = 10)
       np_color_ss <- color_ex[as.integer(ceiling(np_color))+1,as.character(age)]
       np_color_z[4] <- (as.integer(np_color_ss)-10)/3
     }
     
     if (any(is.na(np_word_z))) {
+      age <- dde_data[2,"age"]
+      
       np_word <- dde_data[2,"np_word"]
-      word_ex <- read_excel("/app/epoch5dde_lookup.xlsx", sheet = 11)
+      word_ex <- read_excel("~/epoch5dde_lookup.xlsx", sheet = 11)
       np_word_ss <- word_ex[as.integer(ceiling(np_word))+1,as.character(age)]
       np_word_z[4] <- (as.integer(np_word_ss)-10)/3
     }
