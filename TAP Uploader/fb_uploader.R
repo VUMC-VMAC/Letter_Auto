@@ -12,55 +12,29 @@ fb_uploader<<- function(epochh,vmac) {
   library(patternplot)
   library(png)
   
-  FII <- redcapConnection(url = "https://redcap.vanderbilt.edu/api/",
-                          token = "489C53D4DAAE99F87EF37A9D77563BB0",conn,project = 42471)
-  
-  tm7yr <- redcapConnection(url = "https://redcap.vanderbilt.edu/api/",
-                            token = "1769F48432D599795BAA88493EFFCF3F",conn,project = 117460)
-  
-  tm60 <- redcapConnection(url = "https://redcap.vanderbilt.edu/api/",
-                           token = "54A5137E46FFC775D9BC1117DA32B30A",conn,project = 80145)
-  
-  tm36 <- redcapConnection(url = "https://redcap.vanderbilt.edu/api/",
-                           token = "3CCD5E3C8A09BE5F6E940B291A9BC6B4",conn,project = 73222)
-  
-  tm18 <- redcapConnection(url = "https://redcap.vanderbilt.edu/api/",
-                           token = "04661B3930D4F892AB1F194C287EE98B",conn,project = 56822)
-  
-  tme <- redcapConnection(url = "https://redcap.vanderbilt.edu/api/",
-                          token = "1A5DACDD0A80C92D60FCCC27A501286E",conn,project = 39332)
-  
+  edc <- redcapConnection(url = "https://redcap.vanderbilt.edu/api/",
+                         token = "", conn, project = 135160)
+  np <- redcapConnection(url = "https://redcap.vanderbilt.edu/api/",
+                          token = "", conn, project = 136221)
   pdb <- redcapConnection(url = "https://redcap.vanderbilt.edu/api/",
-                          token = "CBF02E285BFC1874F0EAF11D3F4E2842", conn, project = 23166)
+                          token = "0E16F65FB0A51C570781384D91AA1A78", conn, project = 137402)
+  pdb_datas <- exportReports(pdb, 270431)
+  np_data <- exportReports(pdb, 280482)
+  edc_data <- exportReports(pdb, 280483)
   
-  pdb_datas <- exportReports(pdb, 241869)
-  #try(pdb_datas <- exportReports(pdb, 241869), silent = TRUE)
-#if (exists("pdb_datas")==FALSE) {print("No Updates")} else {
-  tm7yr_datas <- exportReports(tm7yr, 248514)
-  tm60_datas <- exportReports(tm60, 248512)
-  tm36_datas <- exportReports(tm36, 248500)
-  tme_datas <- exportReports(tme, 248431)
-  fii36s <- exportReports(FII, 252306)
-  fii60s <- exportReports(FII, 252308)
-  fii7yrs <- exportReports(FII, 252309)
+  #pdb_data[which(is.na(pdb_data[,"proxy_diff_address"])),"proxy_diff_address"]<- "No"
   
-  fii60s[which(is.na(fii60s["extracardiac_incidental"])),"extracardiac_incidental"]<- "No"
-  fii60s[which(is.na(fii60s["brain_incidental"])),"brain_incidental"]<- "No"
-  fii7yrs[which(is.na(fii7yrs["brain_incidental"])),"brain_incidental"]<- "No"
-  fii7yrs[which(is.na(fii7yrs["extracardiac_incidental"])),"extracardiac_incidental"]<- "No"
-  fii36s[which(is.na(fii36s["extracardiac_incidental"])),"extracardiac_incidental"]<- "No"
-  fii36s[which(is.na(fii36s["brain_incidental"])),"brain_incidental"]<- "No"
   
-  #for (i in 1:nrow(pdb_datas)) {
+  pdb_datas <- pdb_datas[which(as.integer(as.factor(pdb_datas[,"redcap_event_name"]))== epochh),]
+  
   
   i <- which(pdb_datas["vmac_id"]==as.integer(vmac))
   
   pdb_data <- pdb_datas[i,]
-  pdb_data[,which(is.na(pdb_data[,"feedback_location_7yr"]))]<-"other"
-  #pdb_data[,which(is.na(pdb_data))]<- "Missing"
   
-  # Epoch Selector
-  #ep_sel <- c(is.na(pdb_data$fu_date_18mos),is.na(pdb_data$fu_date_36mos),is.na(pdb_data$fu_date_60mos),is.na(pdb_data$fu_date_7yr),is.na(pdb_data$fu_date_9yr)) 
+  pdb_data[,which(is.na(pdb_data[,"feedback_location"]))]<-"other"
+  
+  
   e <- epochh
   Epoch_conv <- c("Enrollment","18-Month","3-Year","5-Year","7-Year","9-Year","11-Year","13-Year")
   Epoc_conv <- c("enrollment","18-month","3-year","5-year","7-year","9-year","11-year","13-year")
@@ -74,81 +48,16 @@ fb_uploader<<- function(epochh,vmac) {
   ep_next <<- epoch_conv[e]
   ep <- epoch
   date_next <<- paste0("fu_date_estimate_",ep_next)
-  date_ty <<- format(as.Date(pdb_data[, date_next]), "%B %Y")
+  #date_ty <<- format(as.Date(pdb_data[, date_next]), "%B %Y")
   
   
-  map_id <- as.character(pdb_data[,"map_id"])
-  ind <- as.integer(map_id)
-  inddd <- c()
-  if (exists("indd")==TRUE) remove("indd")
-  try(indd <- find.matches(tm7yr_datas[, "map_id"],ind),silent = TRUE)
-  if (exists("indd")==FALSE) stop("Not Enough Data")
-  for (i in (1:length(indd$matches))){if (indd$matches[i]>0){inddd<-c(inddd,i)}}
-  tm7yr_datas[inddd,which(is.na(tm7yr_datas[inddd,]))]<- "Missing"
-  tm7yr_data <- tm7yr_datas[inddd,]
-  if (nrow(tm7yr_data)==FALSE) {stop("Not Enough Data")}
-  
-  inddd <- c()
-  if (exists("indd")==TRUE) remove("indd")
-  try(indd <- find.matches(tm60_datas[, "map_id"],ind),silent = TRUE)
-  if (exists("indd")==FALSE) stop("Not Enough Data")
-  for (i in (1:length(indd$matches))){if (indd$matches[i]>0){inddd<-c(inddd,i)}}
-  tm60_datas[inddd,which(is.na(tm60_datas[inddd,]))]<- "Missing"
-  tm60_data <- tm60_datas[inddd,]
-  if (nrow(tm60_data)==FALSE) {stop("Not Enough Data")}
-  
-  inddd <- c()
-  if (exists("indd")==TRUE) remove("indd")
-  try(indd <- find.matches(tm36_datas[, "map_id"],ind),silent = TRUE)
-  if (exists("indd")==FALSE) stop("Not Enough Data")
-  for (i in (1:length(indd$matches))){if (indd$matches[i]>0){inddd<-c(inddd,i)}}
-  tm36_datas[inddd,which(is.na(tm36_datas[inddd,]))]<- "Missing"
-  tm36_data <- tm36_datas[inddd,]
-  if (nrow(tm36_data)==FALSE) {stop("Not Enough Data")}
-  
-  inddd <- c()
-  if (exists("indd")==TRUE) remove("indd")
-  try(indd <- find.matches(tme_datas[, "map_id"],ind),silent = TRUE)
-  if (exists("indd")==FALSE) stop("Not Enough Data")
-  for (i in (1:length(indd$matches))){if (indd$matches[i]>0){inddd<-c(inddd,i)}}
-  tme_datas[inddd,which(is.na(tme_datas[inddd,]))]<- "Missing"
-  tme_data <- tme_datas[inddd,]
-  if (nrow(tme_data)==FALSE) {stop("Not Enough Data")}
-  
-  inddd <- c()
-  if (exists("indd")==TRUE) remove("indd")
-  try(indd <- find.matches(fii36s[, "map_id"],ind),silent = TRUE)
-  if (exists("indd")==FALSE) stop("Not Enough Data")
-  for (i in (1:length(indd$matches))){if (indd$matches[i]>0){inddd<-c(inddd,i)}}
-  fii36s[inddd,which(is.na(fii36s[inddd,]))]<- "Missing"
-  fii36 <- fii36s[inddd,]
-  if (nrow(fii36)==FALSE) {stop("Not Enough Data")}
-  
-  inddd <- c()
-  if (exists("indd")==TRUE) remove("indd")
-  try(indd <- find.matches(fii60s[, "map_id"],ind),silent = TRUE)
-  if (exists("indd")==FALSE) stop("Not Enough Data")
-  for (i in (1:length(indd$matches))){if (indd$matches[i]>0){inddd<-c(inddd,i)}}
-  fii60s[inddd,which(is.na(fii60s[inddd,]))]<- "Missing"
-  fii60 <- fii60s[inddd,]
-  if (nrow(fii60)==FALSE) {stop("Not Enough Data")}
-  
-  inddd <- c()
-  if (exists("indd")==TRUE) remove("indd")
-  try(indd <- find.matches(fii7yrs[, "map_id"],ind),silent = TRUE)
-  if (exists("indd")==FALSE) stop("Not Enough Data")
-  for (i in (1:length(indd$matches))){if (indd$matches[i]>0){inddd<-c(inddd,i)}}
-  fii7yrs[inddd,which(is.na(fii7yrs[inddd,]))] <- "Missing"
-  fii7yr <- fii7yrs[inddd,]
-  if (nrow(fii7yr)==FALSE) {stop("Not Enough Data")}
+  tap_id <- as.character(pdb_data[,"tap_id"])
+  ind <- as.integer(tap_id)
   
   i<-1
   
-  enroll_date <<- format(as.Date(pdb_data[i, "enroll_date"]), "%m/%d/%Y")
-  fu_date_36mos <<- format(as.Date(pdb_data[i, "fu_date_36mos"]), "%m/%d/%Y")
-  fu_date_60mos <<- format(as.Date(pdb_data[i, "fu_date_60mos"]), "%m/%d/%Y")
-  fu_date_7yr <<- format(as.Date(pdb_data[i, "fu_date_7yr"]), "%m/%d/%Y")
-  
+  enroll_date <<- format(as.Date(pdb_data[i, "visit1_date"]), "%m/%d/%Y")
+
   first_name <<- pdb_data[i,"preferred_name"]
   last_name <<- pdb_data[i, "last_name"]
   street_address <<- pdb_data[i, "street_address"]
@@ -169,29 +78,20 @@ fb_uploader<<- function(epochh,vmac) {
   pronoun_poss<<- pronoun_conv_poss[sex]
   pronoun_poss_cap<<- pronoun_conv_poss_cap[sex]
   salutation<<- as.character(pdb_data[i, "salutation"])
-  fb_date1_7yr<<- pdb_data[i, "feedback_date_7yr"]
-  if (is.na(fb_date1_7yr)) {feedback_date1_7yr <<- "UNKNOWN"} else {feedback_date1_7yr <<- format(as.Date(fb_date1_7yr), "%m/%d/%Y")}
-  feedback_location_7yr<<- as.character(pdb_data[i, "feedback_location_7yr"])
+  fb_date <<- pdb_data[i, "feedback_sched1_date"]
+  if (is.na(fb_date)) {feedback_date <<- "UNKNOWN"} else {feedback_date <<- format(as.Date(fb_date), "%m/%d/%Y")}
+  feedback_location <<- as.character(pdb_data[i, "feedback_location"])
   
-  df <- data.frame(
-    Test = c("Heart rate", "Blood pressure", "Height", "Weight", "Body Mass Index"),
-    Test.1 = c("Heart rate", "Blood pressure", "Height", "Weight", "Body Mass Index"),
-    ER = c(tme_data[i, 2], tme_data[i, 3], paste0(pdb_data[i, "height_total"]," inches"), paste0(pdb_data[i, "weight"]," lbs"), round(((pdb_data[i, "weight"]/2.205)/((pdb_data[i, "height_total"]/0.393701)/100)^2), digits=1)),
-    ER = c(tme_data[i, 2], tme_data[i, 4], paste0(pdb_data[i, "height_total"]," inches"), paste0(pdb_data[i, "weight"]," lbs"), round(((pdb_data[i, "weight"]/2.205)/((pdb_data[i, "height_total"]/0.393701)/100)^2), digits=1)),
-    MR_36 = c(tm36_data[i, 2], fii36[i, 4], paste0(round(pdb_data[i, "height_36mos"]*0.393701), " inches"), paste0(round(pdb_data[i, "weight_36mos"]*2.205), " lbs"), round((pdb_data[i, "weight_36mos"]/(pdb_data[i, "height_36mos"]/100)^2), digits=1)),
-    MR_36 = c(tm36_data[i, 2], fii36[i, 5], paste0(round(pdb_data[i, "height_36mos"]*0.393701), " inches"), paste0(round(pdb_data[i, "weight_36mos"]*2.205), " lbs"), round((pdb_data[i, "weight_36mos"]/(pdb_data[i, "height_36mos"]/100)^2), digits=1)),
-    MR_60 = c(tm60_data[i, 2], fii60[i, 4], paste0(round(as.integer(pdb_data[i, "height_60mos"])*0.393701), " inches"), paste0(round(as.integer(pdb_data[i, "weight_60mos"])*2.205), " lbs"), round((as.integer(pdb_data[i, "weight_60mos"])/(as.integer(pdb_data[i, "height_60mos"])/100)^2), digits=1)),
-    MR_60 = c(tm60_data[i, 2], fii60[i, 5], paste0(round(as.integer(pdb_data[i, "height_60mos"])*0.393701), " inches"), paste0(round(as.integer(pdb_data[i, "weight_60mos"])*2.205), " lbs"), round((as.integer(pdb_data[i, "weight_60mos"])/(as.integer(pdb_data[i, "height_60mos"])/100)^2), digits=1)),
-    CR = c(tm7yr_data[i, 2], fii7yr[i, 4], paste0(round(as.integer(pdb_data[i, "height_7yr"])*0.393701)," inches"), paste0(round(as.integer(pdb_data[i, "weight_7yr"])*2.205)," lbs"), round((as.integer(pdb_data[i, "weight_7yr"])/(as.integer(pdb_data[i, "height_7yr"])/100)^2), digits=1)),
-    CR = c(tm7yr_data[i, 2], fii7yr[i, 5], paste0(round(as.integer(pdb_data[i, "height_7yr"])*0.393701)," inches"), paste0(round(as.integer(pdb_data[i, "weight_7yr"])*2.205)," lbs"), round((as.integer(pdb_data[i, "weight_7yr"])/(as.integer(pdb_data[i, "height_7yr"])/100)^2), digits=1)),
-    NR = c("60-100", "<120 / <80", "n/a", "n/a", "18.5-24.9")
-  )
+  #df <- data.frame(
+  #  Test = c("Heart rate", "Blood pressure", "Height", "Weight", "Body Mass Index"),
+  #  Test.1 = c("Heart rate", "Blood pressure", "Height", "Weight", "Body Mass Index"),
+  #  CR = c(tm7yr_data[i, 2], fii7yr[i, 4], paste0(round(as.integer(pdb_data[i, "height_7yr"])*0.393701)," inches"), paste0(round(as.integer(pdb_data[i, "weight_7yr"])*2.205)," lbs"), round((as.integer(pdb_data[i, "weight_7yr"])/(as.integer(pdb_data[i, "height_7yr"])/100)^2), digits=1)),
+  #  CR = c(tm7yr_data[i, 2], fii7yr[i, 5], paste0(round(as.integer(pdb_data[i, "height_7yr"])*0.393701)," inches"), paste0(round(as.integer(pdb_data[i, "weight_7yr"])*2.205)," lbs"), round((as.integer(pdb_data[i, "weight_7yr"])/(as.integer(pdb_data[i, "height_7yr"])/100)^2), digits=1)),
+  #  NR = c("60-100", "<120 / <80", "n/a", "n/a", "18.5-24.9")
+  #)
   
   ft <- flextable(df)
   ft <- set_header_labels(ft, Test = "Test", Test.1="Test",
-                          ER = paste0("Enrollment Results ",enroll_date),ER.1 = paste0("Enrollment Results ",enroll_date), 
-                          MR_36 = paste0(Epoch2," Results ", fu_date_36mos),MR_36.1 = paste0(Epoch2," Results ", fu_date_36mos),
-                          MR_60 = paste0(Epoch1," Results ", fu_date_60mos),MR_60.1 = paste0(Epoch1," Results ", fu_date_60mos), 
                           CR = paste0("Current ",Epoch," Results ", fu_date_7yr),CR.1 = paste0("Current ",Epoch," Results ", fu_date_7yr),
                           NR = "Normal Range*" )
   ft <- bg(ft, bg="grey",part = "header")
@@ -225,18 +125,13 @@ fb_uploader<<- function(epochh,vmac) {
   df2 <- data.frame(
     Test1 = c("Cholesterol", "Cholesterol", "Cholesterol", "Cholesterol", "Blood Sugar", "Blood Sugar", "Blood Sugar", "Thyroid", "Inflammation"),
     Test2 = c("Total","HDL", "LDL", "Triglycerides", "Hemoglobin A1C", "Fasting Insulin", "Fasting Glucose", "Thyroid Stimulating Hormone (TSH)", "High Sensitivity C-Reactive Protein"),
-    ER = c(tme_data[i, 5], tme_data[i, 6], tme_data[i,7], tme_data[i,8], tme_data[i,9], tme_data[i,10], tme_data[i,11], tme_data[i,12], tme_data[i,13]),
-    MR_36 = c(tm36_data[i, 5], tm36_data[i, 6], tm36_data[i,7], tm36_data[i,8], tm36_data[i,9], tm36_data[i,10], tm36_data[i,11], tm36_data[i,12], tm36_data[i,13]),
-    MR_60 = c(tm60_data[i, 5], tm60_data[i, 6], tm60_data[i,7], tm60_data[i,8], tm60_data[i,9], tm60_data[i,10], tm60_data[i,11], tm60_data[i,12], tm60_data[i,13]),
     CR = c(tm7yr_data[i, 5], tm7yr_data[i, 6], tm7yr_data[i,7], tm7yr_data[i,8], tm7yr_data[i,9], tm7yr_data[i,10], tm7yr_data[i,11], tm7yr_data[i,12], tm7yr_data[i,13]),
     NR = c("<200", "men >40, women >50", "<100", "<150", "4-6.5", "<17.2", "70-110", "0.3-5.0", "0.1-3.0")
   )
   
   ft2 <- flextable(df2)
   ft2 <- width(ft2, j = 1:7, width=.9)
-  ft2 <- set_header_labels(ft2, Test1 = "Test", Test2 = "Test", ER = paste0("Enrollment Results ",enroll_date), 
-                           MR_36 = paste0(Epoch2," Results ", fu_date_36mos),
-                           MR_60 = paste0(Epoch1," Results ", fu_date_60mos), CR = paste0("Current ",Epoch," Results ", fu_date_7yr), NR = "Normal Range/\nCut-off*" )
+  ft2 <- set_header_labels(ft2, Test1 = "Test", Test2 = "Test", CR = paste0("Current ",Epoch," Results ", fu_date_7yr), NR = "Normal Range/\nCut-off*" )
   ft2 <- merge_at(ft2, i = 1, j = 1:2, part = "header")
   ft2 <- merge_at(ft2, i = 1:4, j = 1, part = "body")
   ft2 <- merge_at(ft2, i = 5:7, j = 1, part = "body")
@@ -341,42 +236,41 @@ fb_uploader<<- function(epochh,vmac) {
   zip_physician5_7yr<<- pdb_data[i, "zip_physician5_7yr"]
   if (is.na(zip_physician5_7yr)) {zip_physician5_7yr<<- ""}
   
-  matt<- rbind(tme_data[-(1:17)],tm36_data[-(1:17)],tm60_data[-(1:17)],tm7yr_data[-(1:17)][-19])
-  missing<- matt==-9999
-  for (ii in 1:ncol(matt)) {for (j in 1:nrow(matt)) {if (missing[j,ii]) {matt[j,ii]<-matt[j-1,ii]}}}
-  
   # Initialize memory variables
-  np_cvlt1to5_tscore<<- c(matt[1])
-  np_cvlt_sdfr_z<<- c(matt[2])
-  np_cvlt_ldfr_z<<- c(matt[3])
-  np_cvltrecog_discrim_z<<- c(matt[4])
-  np_biber_t1to5_z<<- c(matt[5])
-  np_biber_sd_z<<- c(matt[6])
-  np_biber_ld_z<<- c(matt[7])
-  np_anim_tscore<<- c(matt[8])
-  np_bnt_z<<- c(matt[9])
-  np_tower_ss<<- c(matt[10])
-  np_inhibit_ss<<- c(matt[11])
-  np_fas_tscore<<- c(matt[12])
-  np_tmtb_ss<<- c(matt[13])
-  np_hvot_tscore<<- c(matt[14])
-  np_digsymb_ss<<- c(matt[15])
-  np_color_ss<<- c(matt[16])
-  np_word_ss<<- c(matt[17])
-  np_tmta_ss<<- c(matt[18])
+  age <- np_data$age
+  if (age<60) {age_r <- 1}; if (age < 70 & age >= 60) {age_r <- 2}; if (age < 80 & age >= 70) {age_r <- 3}; if (age < 90 & age >= 80) {age_r <- 4}; if (age >= 90) {age_r <- 5}
+  edu <- np_data$education
+  if (edu<=12) {edu_r <- 1}; if (edu < 16 & edu >= 13) {edu_r <- 2}; if (edu == 16) {edu_r <- 3}; if (edu >= 17) {edu_r <- 4}
+  ind <- age_r + edu_r
+  if (sex=="Male") {sex_r <- 0} else {sex_r <- 2}
+  
+  np_moca_total <<- np_data$np_moca_total
+  craftvrs <<- np_data$craftvrs
+  crafturs <<- np_data$crafturs
+  craftdvr <<- np_data$craftdvr
+  craftdre <<- np_data$craftdre
+  udsbentc <<- np_data$udsbentc
+  udsbentd <<- np_data$udsbentd
+  digforct <<- np_data$digforct
+  digforsl <<- np_data$digforsl
+  digbacct <<- np_data$digbacct
+  digbacls <<- np_data$digbacls
+  minttots <<- np_data$minttots
+  udsverfc <<- np_data$udsverfc
+  udsverlc <<- np_data$udsverlc
+  udsvertn <<- np_data$udsvertn
+  animals_c2 <<- np_data$animals_c2
+  veg_c2 <<- np_data$veg_c2
+  traila_c2 <<- np_data$traila_c2
+  trailb_c2 <<- np_data$trailb_c2
+  
+  # GET MEAN and SD
+  moca_ex #excel sheet
+  moca_mean <- moca_ex[ind,1+sex_r]
+  moca_sd <- moca_ex[ind,2+sex_r]
   
   # transform variables
-  np_cvlt1to5_z<<- (np_cvlt1to5_tscore[[1]] - 50)/10
-  np_anim_z<<- (np_anim_tscore[[1]]-50)/10
-  np_tower_z<<- (np_tower_ss[[1]]-10)/3
-  np_inhibit_z<<- (np_inhibit_ss[[1]]-10)/3
-  np_fas_z<<- (np_fas_tscore[[1]]-50)/10
-  np_tmtb_z<<- (np_tmtb_ss[[1]]-10)/3
-  np_hvot_z<<- -(np_hvot_tscore[[1]]-50)/10
-  np_digsymb_z<<- (np_digsymb_ss[[1]]-10)/3
-  np_color_z<<- (np_color_ss[[1]]-10)/3
-  np_word_z<<- (np_word_ss[[1]]-10)/3
-  np_tmta_z<<- (np_tmta_ss[[1]]-10)/3
+  
   
   # composite scores
   mem_w<<- cbind(np_cvlt1to5_z,np_cvlt_sdfr_z[[1]],np_cvlt_ldfr_z[[1]],np_cvltrecog_discrim_z[[1]])

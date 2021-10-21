@@ -217,8 +217,8 @@ previsit_uploader <- function(epoch,vmac) {
   if (transport=="Yes") {t_need <<- "Your appointment will be held at the Vanderbilt University Medical Center. We will be providing you with transportation to and from your visit with Jeff Cornelius. Jeff\'s number is 615-604-1502 in case you need to contact him."
   t_need_proxy <<- paste0(pronoun_poss_cap," appointment will be held at the Vanderbilt University Medical Center.  We will be providing transportation to and from ",pronoun_poss," visit with Jeff Cornelius. Jeff\'s number is 615-604-1502 in case ",pronoun," needs to contact him.")
   } else {t_need <<- ""; t_need_proxy <<- ""}
-  consent <<- paste0("Consent Statement. This document describes the VMAP Study. You completed this form when you originally came in for your eligibility visit, but we ask that you complete and sign this document again at each follow-up visit. Please read the form thoroughly before the appointment. We will ask you and your study partner, ",proxy_first_name,", to sign the consent form after we review it with you at the appointment. If your study partner does not plan to attend, we will mail them a copy to sign and return prior to your visit.")
-  consent_prox <<- paste0("Consent Statement. This document describes the VMAP Study. You and ",first_name," already completed this form at the eligibility visit, but we ask that both of you sign this document again at each follow-up visit. Please read the form thoroughly. If you have questions, please let us know. If you will not be attending the visit, please return the signed copy prior to your visit.")
+  #consent <<- paste0("Consent Statement. This document describes the VMAP Study. You completed this form when you originally came in for your eligibility visit, but we ask that you complete and sign this document again at each follow-up visit. Please read the form thoroughly before the appointment. We will ask you and your study partner, ",proxy_first_name,", to sign the consent form after we review it with you at the appointment. If your study partner does not plan to attend, we will mail them a copy to sign and return prior to your visit.")
+  #consent_prox <<- paste0("Consent Statement. This document describes the VMAP Study. You and ",first_name," already completed this form at the eligibility visit, but we ask that both of you sign this document again at each follow-up visit. Please read the form thoroughly. If you have questions, please let us know. If you will not be attending the visit, please return the signed copy prior to your visit.")
   
   if (pdb_data["proxy_diff_address"] == "Yes") {
     partner <<- paste0("Study Partner Packet. We have mailed a packet of material to your study partner, ",proxy_first_name,", which we ask that ",proxy_pronoun," complete prior to your visit.")
@@ -384,8 +384,4 @@ previsit_uploader <- function(epoch,vmac) {
     importFiles(rcon = pdb, file = output_proxy, record = record, field = field_proxy, event = pdb_data[,"redcap_event_name"],
                 overwrite = TRUE, repeat_instance = 1)
   }
-    
-    #}
-  #}
-  
 }
