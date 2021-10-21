@@ -316,6 +316,8 @@ fb_uploader<<- function(epochh,vmac) {
     ft <- bg(ft, bg="grey",part = "header")
     ft <- fontsize(ft, j=1:11, size = 10, part="header")
     ft <- fontsize(ft, j=1:11, size = 10, part="body")
+    ft <- font(ft,fontname = "Arial",part = "header")
+    ft <- font(ft,fontname = "Arial",part = "body")
     ft <- width(ft,j = 11, width = 1)
     
     ft <- merge_h(ft,part = "header")
@@ -404,6 +406,8 @@ fb_uploader<<- function(epochh,vmac) {
     ft2 <- fontsize(ft2, j=1, size = 9, part="body")
     ft2 <- fontsize(ft2, j=1:7, size = 10, part="header")
     ft2 <- fontsize(ft2, j=2:7, size = 10, part="body")
+    ft2 <- font(ft2,fontname = "Arial",part = "header")
+    ft2 <- font(ft2,fontname = "Arial",part = "body")
     ft2 <- theme_box(ft2)
     ft2 <- align(ft2, align = "center", part="header")
     ft2 <- align(ft2, align = "center", part="body")
@@ -429,8 +433,11 @@ fb_uploader<<- function(epochh,vmac) {
       if (df2[7,ii]=="-"){ft2<-bold(ft2, i = 7, j = ii, bold = FALSE, part = "body")}else{if(as.integer(df2[7,ii]) > 110 | as.integer(df2[7,ii]) < 70){ft2<-bold(ft2, i = 7, j = ii, bold = TRUE, part = "body")}}
       if (df2[8,ii]=="-"){ft2<-bold(ft2, i = 8, j = ii, bold = FALSE, part = "body")}else{if(as.integer(df2[8,ii]) > 5 | as.integer(df2[8,ii]) < 0.3){ft2<-bold(ft2, i = 8, j = ii, bold = TRUE, part = "body")}}
       
-      if (is.na(as.double(df2[9,ii]))) {ft2 <- bold(ft2, i = 9, j = ii, bold = TRUE, part = "body")} else {
-        if ((as.double(df2[9,ii]) > 3) | (as.double(df2[9,ii]) < 0.1)) {ft2 <- bold(ft2, i = 9, j = ii, bold = TRUE, part = "body")}}
+      if(class(df2[9,ii])=="character") {df2[9,ii] <- NA} else {
+        if (is.na(as.double(df2[9,ii]))) {ft2 <- bold(ft2, i = 9, j = ii, bold = TRUE, part = "body")} else {
+          if ((as.double(df2[9,ii]) > 3) | (as.double(df2[9,ii]) < 0.1)) {ft2 <- bold(ft2, i = 9, j = ii, bold = TRUE, part = "body")}}
+      }
+      }
     }
     
     print("Compiling Memory Results")
@@ -647,14 +654,14 @@ fb_uploader<<- function(epochh,vmac) {
     cond<- factor(condition,levels = cond_order)
     data<- data.frame(specie,condition,counts)
     countss<- counts+3
-    patterns<- rep(c('crosshatch','circle','none','crosshatch'),6)
+    patterns<- rep(c('none','stripe','none','circle'),6)
     pattern_factor<- c('crosshatch','stripe','circle','none')
     patternss<- factor(patterns,levels = pattern_factor)
     for (ii in 1:length(countss)) {if (countss[ii]<0.25) {countss[ii]<-0.25}}
     
     barr <- ggplot(data) + theme_bw(14) + 
-      scale_fill_manual(values = c("black","white","white","black"))+
-      ggpattern::geom_bar_pattern(width = .75,position="dodge", stat="identity",aes(fill=cond, y=countss, x=spec,pattern=patterns),pattern_spacing=.01,pattern_density=rep(c(0.2,0.2,0.2,0.2),6),pattern_colour=rep(c("black","black","black","white"),6),pattern_fill = rep(c("white","black","black","white"),6),color="black") +
+      scale_fill_manual(values = c("black","white","black","white"))+
+      ggpattern::geom_bar_pattern(width = .75,position="dodge", stat="identity",aes(fill=cond, y=countss, x=spec,pattern=patterns),pattern_density=rep(c(0.075,0.075,0.2,0.2),6),pattern_spacing=rep(c(0.015,0.02,0.02,0.02),6),pattern_colour=rep(c("white","black","black","black"),6),pattern_fill = rep(c("black","white","black","black"),6),color="black") +
       scale_y_continuous(name=NULL,breaks=c(1.5,3,4.5),labels = c("Below\nNormal","Normal","Above\nNormal"),limits = c(0,6),expand = c(0, 0))+
       scale_x_discrete(name=NULL) + theme(panel.spacing.x = unit(1,"lines"),plot.background = element_rect(fill = "white",colour = "black",size = 1),plot.margin = unit(c(.3, .8, .3, .3), "cm"),legend.key.size = unit(.21, 'cm'),panel.grid.major.y = element_line(c(1.5,3,4.5),color=c("black","black","black")),panel.grid.minor.y=element_blank(),panel.grid.major.x=element_blank(),axis.text = element_text(colour = "black"),plot.title = element_text(size = 14,face = "bold",hjust = 0.5),axis.ticks = element_blank(),legend.position = "bottom", legend.title = element_blank(),legend.box.margin=margin(-15,0,0,0))+
       coord_fixed(ratio = .4) + labs(title = "Memory Testing Results")
