@@ -100,7 +100,6 @@ fb_uploader<<- function(epochh,vmac) {
     for (i in (1:length(indd$matches))){if (indd$matches[i]>0){inddd<-c(inddd,i)}}
     tm7yr_datas[inddd,which(is.na(tm7yr_datas[inddd,1:17]))]<- "Missing"
     tm7yr_data <- tm7yr_datas[inddd,]
-    if (nrow(tm7yr_data)==FALSE) {stop("Not Enough Data")}
     
     inddd <- c()
     if (exists("indd")==TRUE) remove("indd")
@@ -109,7 +108,7 @@ fb_uploader<<- function(epochh,vmac) {
     for (i in (1:length(indd$matches))){if (indd$matches[i]>0){inddd<-c(inddd,i)}}
     fii7yrs[inddd,which(is.na(fii7yrs[inddd,]))] <- "Missing"
     fii7yr <- fii7yrs[inddd,]
-    if (nrow(fii7yr)==FALSE) {stop("Not Enough Data")}
+    #if (nrow(fii7yr)==FALSE) {stop("Not Enough Data")}
   }
   
   if (e > 3) {
@@ -126,7 +125,7 @@ fb_uploader<<- function(epochh,vmac) {
     for (i in (1:length(indd$matches))){if (indd$matches[i]>0){inddd<-c(inddd,i)}}
     tm60_datas[inddd,which(is.na(tm60_datas[inddd,]))]<- "Missing"
     tm60_data <- tm60_datas[inddd,]
-    if (nrow(tm60_data)==FALSE) {stop("Not Enough Data")}
+    #if (nrow(tm60_data)==FALSE) {stop("Not Enough Data")}
     
     inddd <- c()
     if (exists("indd")==TRUE) remove("indd")
@@ -135,7 +134,7 @@ fb_uploader<<- function(epochh,vmac) {
     for (i in (1:length(indd$matches))){if (indd$matches[i]>0){inddd<-c(inddd,i)}}
     fii60s[inddd,which(is.na(fii60s[inddd,]))]<- "Missing"
     fii60 <- fii60s[inddd,]
-    if (nrow(fii60)==FALSE) {stop("Not Enough Data")}
+    #if (nrow(fii60)==FALSE) {stop("Not Enough Data")}
   }
   
   if (e > 2) {
@@ -152,7 +151,7 @@ fb_uploader<<- function(epochh,vmac) {
     for (i in (1:length(indd$matches))){if (indd$matches[i]>0){inddd<-c(inddd,i)}}
     tm36_datas[inddd,which(is.na(tm36_datas[inddd,]))]<- "Missing"
     tm36_data <- tm36_datas[inddd,]
-    if (nrow(tm36_data)==FALSE) {stop("Not Enough Data")}
+    #if (nrow(tm36_data)==FALSE) {stop("Not Enough Data")}
     
     inddd <- c()
     if (exists("indd")==TRUE) remove("indd")
@@ -161,7 +160,7 @@ fb_uploader<<- function(epochh,vmac) {
     for (i in (1:length(indd$matches))){if (indd$matches[i]>0){inddd<-c(inddd,i)}}
     fii36s[inddd,which(is.na(fii36s[inddd,]))]<- "Missing"
     fii36 <- fii36s[inddd,]
-    if (nrow(fii36)==FALSE) {stop("Not Enough Data")}
+    #if (nrow(fii36)==FALSE) {stop("Not Enough Data")}
   }
   
   # Enrollment Data
@@ -437,8 +436,8 @@ fb_uploader<<- function(epochh,vmac) {
         if (is.na(as.double(df2[9,ii]))) {ft2 <- bold(ft2, i = 9, j = ii, bold = TRUE, part = "body")} else {
           if ((as.double(df2[9,ii]) > 3) | (as.double(df2[9,ii]) < 0.1)) {ft2 <- bold(ft2, i = 9, j = ii, bold = TRUE, part = "body")}}
       }
-      }
     }
+    
     
     print("Compiling Memory Results")
     
@@ -716,8 +715,7 @@ fb_uploader<<- function(epochh,vmac) {
     
     ptp_path<<- paste0("/srv/shiny-server/resources/Templates/Feedback/MAP2_fb_temp.docx")
     phys_path<<- paste0("/srv/shiny-server/resources/Templates/Feedback/MAP2_phys_temp.docx")
-    
-  }
+  }  
   
   if (e == 1) {
     
@@ -830,7 +828,4 @@ fb_uploader<<- function(epochh,vmac) {
                 overwrite = TRUE, repeat_instance = 1)
   }
       
-      
-    #}
-  #}
 }
