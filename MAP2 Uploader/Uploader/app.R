@@ -14,6 +14,7 @@ source("~/MAP2 Uploader/previsit_uploader.R")
 source("~/MAP2 Uploader/ty_uploader.R")
 source("~/MAP2 Uploader/fb_uploader.R")
 source("~/MAP2 Uploader/LP_uploader.R")
+source("~/MAP2 Uploader/np_uploader.R")
 
 library(shiny)
 library(flextable)
@@ -22,13 +23,26 @@ library(flextable)
 ui <- fluidPage(
 
     # Application title
-    titlePanel("Participant Letter Generator 2.0"),
-    textInput(inputId = "n", "VMAC ID", ""),
-    numericInput(inputId = "d", "Epoch", value=5),
-    selectInput(inputId = "l", "Type of Letter", choices = c("Feedback Letter" = "fb", "LP Previsit Letter" = "LP","Thank You"="ty","Previsit"="previsit")),
-    actionButton(inputId = "submit",label = "Submit"),
-    textOutput(outputId = "d")
+    titlePanel("Letter Generator 2.0"),
+    tabsetPanel(
+        tabPanel("Letters", fluid = TRUE,
+            textInput(inputId = "n", "VMAC ID", ""),
+            numericInput(inputId = "d", "Epoch", value=5),
+            selectInput(inputId = "l", "Type of Letter", choices = c("Feedback Letter" = "fb", "LP Previsit Letter" = "LP","Thank You"="ty","Previsit"="previsit")),
+            actionButton(inputId = "submit",label = "Submit"),
+            textOutput(outputId = "d")
+        ),
+        tabPanel("Tables", fluid = TRUE,
+             textInput(inputId = "vmac", "VMAC ID", ""),
+             numericInput(inputId = "epoch", "Epoch", value=5),
+             selectInput(inputId = "type", "Type of Table", choices = c("Neuropsych"="np")),
+             actionButton(inputId = "submit2",label = "Submit"),
+             dataTableOutput(outputId = "ses"),
+             #textOutput("exp1")
+        )
+    )
 )
+
 
 # Define server logic required to draw a histogram
 server <- function(input, output) {
@@ -55,6 +69,26 @@ server <- function(input, output) {
         renderText({
             re()
         })
+    re2 <- eventReactive( input$submit2, {
+        tab <- input$type
+        epoch <- input$epoch
+        vmac <- input$vmac
+        
+        command <- paste0(tab,"_uploader(",epoch,",",vmac,")")
+        
+        dat <- eval(parse(text = command))
+        
+        results <- data.frame(
+            "Epoch" = c("Enrollment", "3 Year", "5 Year", "7 Year"),
+            dat
+        )
+        
+        results <<- as.matrix(results)
+        return(results)
+        
+    })
+    output$ses <- renderDataTable({re2()})
+    #output$exp1 <- renderText("Table has been Generated")
 }
 
 # Run the application 

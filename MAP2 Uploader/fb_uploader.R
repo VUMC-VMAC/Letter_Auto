@@ -129,7 +129,7 @@ fb_uploader<<- function(epochh,vmac) {
     for (i in (1:length(indd$matches))){if (indd$matches[i]>0){inddd<-c(inddd,i)}}
     tm60_datas[inddd,which(is.na(tm60_datas[inddd,]))]<- "Missing"
     tm60_data <- tm60_datas[inddd,]
-    if (nrow(tm60_data)==FALSE) {stop("Not Enough Data")}
+    #if (nrow(tm60_data)==FALSE) {stop("Not Enough Data")}
     
     inddd <- c()
     if (exists("indd")==TRUE) remove("indd")
@@ -138,7 +138,7 @@ fb_uploader<<- function(epochh,vmac) {
     for (i in (1:length(indd$matches))){if (indd$matches[i]>0){inddd<-c(inddd,i)}}
     fii60s[inddd,which(is.na(fii60s[inddd,]))]<- "Missing"
     fii60 <- fii60s[inddd,]
-    if (nrow(fii60)==FALSE) {stop("Not Enough Data")}
+    #if (nrow(fii60)==FALSE) {stop("Not Enough Data")}
   }
   
   if (e > 2) {
@@ -156,7 +156,7 @@ fb_uploader<<- function(epochh,vmac) {
     for (i in (1:length(indd$matches))){if (indd$matches[i]>0){inddd<-c(inddd,i)}}
     tm36_datas[inddd,which(is.na(tm36_datas[inddd,]))]<- "Missing"
     tm36_data <- tm36_datas[inddd,]
-    if (nrow(tm36_data)==FALSE) {stop("Not Enough Data")}
+    #if (nrow(tm36_data)==FALSE) {stop("Not Enough Data")}
     
     inddd <- c()
     if (exists("indd")==TRUE) remove("indd")
@@ -165,7 +165,7 @@ fb_uploader<<- function(epochh,vmac) {
     for (i in (1:length(indd$matches))){if (indd$matches[i]>0){inddd<-c(inddd,i)}}
     fii36s[inddd,which(is.na(fii36s[inddd,]))]<- "Missing"
     fii36 <- fii36s[inddd,]
-    if (nrow(fii36)==FALSE) {stop("Not Enough Data")}
+    #if (nrow(fii36)==FALSE) {stop("Not Enough Data")}
   }
   
   # Enrollment Data
