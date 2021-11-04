@@ -59,7 +59,6 @@ fb_uploader<<- function(epochh,vmac) {
   edc_data <- edc_datas[which(edc_datas["map_id"]==as.integer(map_id)),]
   echo_data <- echo_datas[which(echo_datas["map_id"]==as.integer(map_id)),]
   
-  
   events <- c("eligibility_arm_1","enrollmentbaseline_arm_1","18month_followup_arm_1","3year_followup_arm_1","5year_followup_arm_1","7year_followup_arm_1")
   
   map_data <- pdb_datas[which(pdb_datas["vmac_id"]==as.integer(vmac)),]
@@ -297,7 +296,8 @@ fb_uploader<<- function(epochh,vmac) {
     enroll_date <<- format(as.Date(map_data[1, "visit1_date"]), "%m/%d/%Y")
     fu_date_prev2 <<- format(as.Date(map_data[5, "visit1_date"]), "%m/%d/%Y")
     fu_date_prev <<- format(as.Date(map_data[4, "visit1_date"]), "%m/%d/%Y")
-    fu_date_c <<- format(as.Date(map_data[3, "visit1_date"]), "%m/%d/%Y")
+    fu_date_c <<- format(as.Date(echo_data$vf_wrapup_date_time), "%m/%d/%Y")
+    if (is.na(fu_date_c)) {fu_date_c <<- format(as.Date(map_data[3, "visit1_date"]), "%m/%d/%Y")}
     
     print("Creating Data Tables")
     
@@ -326,7 +326,7 @@ fb_uploader<<- function(epochh,vmac) {
                             ER = paste0("Enrollment Results ",enroll_date),ER.1 = paste0("Enrollment Results ",enroll_date), 
                             MR_36 = paste0(Epoch2," Results ", fu_date_prev2),MR_36.1 = paste0(Epoch2," Results ", fu_date_prev2),
                             MR_60 = paste0(Epoch1," Results ", fu_date_prev),MR_60.1 = paste0(Epoch1," Results ", fu_date_prev), 
-                            CR = paste0("Current ",Epoch," Results ", fu_date_c),CR.1 = paste0("Current ",Epoch," Results ", fu_date_c),
+                            CR = paste0("Current Results ", fu_date_c),CR.1 = paste0("Current ",Epoch," Results ", fu_date_c),
                             NR = "Normal Range*" )
     ft <- bg(ft, bg="grey",part = "header")
     ft <- font(ft,fontname = "Arial",part = "header")
@@ -435,7 +435,7 @@ fb_uploader<<- function(epochh,vmac) {
     ft2 <- flextable(df2)
     ft2 <- set_header_labels(ft2, Test1 = "Test", Test2 = "Test", ER = paste0("Enrollment Results ",enroll_date), 
                              MR_36 = paste0(Epoch2," Results ", fu_date_prev2),
-                             MR_60 = paste0(Epoch1," Results ", fu_date_prev), CR = paste0("Current ",Epoch," Results ", fu_date_c), NR = "Normal Range/\nCut-off*" )
+                             MR_60 = paste0(Epoch1," Results ", fu_date_prev), CR = paste0("Current Results ", fu_date_c), NR = "Normal Range/\nCut-off*" )
     ft2 <- bg(ft2, bg="grey",part = "header")
     ft2 <- font(ft2,fontname = "Arial",part = "header")
     ft2 <- font(ft2,fontname = "Arial",part = "body")
@@ -453,9 +453,9 @@ fb_uploader<<- function(epochh,vmac) {
       ft2 <- align(ft2, align = "center", part="header")
       ft2 <- align(ft2, align = "center", part="body")
       ft2 <- align(ft2, i=1:9, j=2, align="left",part="body")
-      ft2 <- valign(ft2, i=1:9, j=3:7, valign="top", part="body")
+      ft2 <- valign(ft2, i=1:9, j=3:7, valign="center", part="body")
       ft2 <- height(ft2, height = .4, part = "header")
-      ft2 <- width(ft2, j = 1, width = .85)
+      #ft2 <- width(ft2, j = 1, width = .85)
       ft2 <- width(ft2, j = 2, width = 1.25)
     } else {
       ft2 <- width(ft2, j = 1:6, width=.9)
@@ -468,9 +468,9 @@ fb_uploader<<- function(epochh,vmac) {
       ft2 <- align(ft2, align = "center", part="header")
       ft2 <- align(ft2, align = "center", part="body")
       ft2 <- align(ft2, i=1:9, j=2, align="left",part="body")
-      ft2 <- valign(ft2, i=1:9, j=3:6, valign="top", part="body")
+      ft2 <- valign(ft2, i=1:9, j=3:6, valign="center", part="body")
       ft2 <- height(ft2, height = .4, part = "header")
-      ft2 <- width(ft2, j = 1, width = .85)
+      #ft2 <- width(ft2, j = 1, width = .85)
       ft2 <- width(ft2, j = 2, width = 1.25)
     }
     
@@ -537,21 +537,21 @@ fb_uploader<<- function(epochh,vmac) {
     #### If Norm Scores are not available ####
     
     # CVLT
-    if (any(is.na(np_cvlt1to5_z))) {
+    if (is.na(np_cvlt1to5_z[4])) {
       np_cvlt1to5_tscore <- edc_data["np_cvlt1to5_tscore"]
       np_cvlt1to5_z[4] <- (np_cvlt1to5_tscore[[1]] - 50)/10
     }
-    if (any(is.na(np_cvlt_sdfr_z))) {np_cvlt_sdfr_z[4] <- edc_data["np_cvlt_sdfr_zscore"]}
-    if (any(is.na(np_cvlt_ldfr_z))) {np_cvlt_ldfr_z[4] <- edc_data["np_cvlt_ldfr_zscore"]}
-    if (any(is.na(np_cvltrecog_discrim_z))) {np_cvltrecog_discrim_z[4] <- edc_data["np_cvltrecog_discrim_zscore"]}
+    if (is.na(np_cvlt_sdfr_z[4])) {np_cvlt_sdfr_z[4] <- edc_data["np_cvlt_sdfr_zscore"]}
+    if (is.na(np_cvlt_ldfr_z[4])) {np_cvlt_ldfr_z[4] <- edc_data["np_cvlt_ldfr_zscore"]}
+    if (is.na(np_cvltrecog_discrim_z[4])) {np_cvltrecog_discrim_z[4] <- edc_data["np_cvltrecog_discrim_zscore"]}
     
     # Biber
-    if (any(is.na(np_biber_t1to5_z))) {np_biber_t1to5 <- dde_data[ij,"np_biber_t1to5"];np_biber_t1to5_z[4] <- (np_biber_t1to5 - 114.5) / 34.7}
-    if (any(is.na(np_biber_sd_z))) {np_biber_sd <- dde_data[ij,"np_biber_sd"];np_biber_sd_z[4] <- (np_biber_sd - 26.4) / 7}
-    if (any(is.na(np_biber_ld_z))) {np_biber_ld <- dde_data[ij,"np_biber_ld"];np_biber_ld_z[4] <- (np_biber_ld - 28) / 7}
+    if (is.na(np_biber_t1to5_z[4])) {np_biber_t1to5 <- dde_data[ij,"np_biber_t1to5"];np_biber_t1to5_z[4] <- (np_biber_t1to5 - 114.5) / 34.7}
+    if (is.na(np_biber_sd_z[4])) {np_biber_sd <- dde_data[ij,"np_biber_sd"];np_biber_sd_z[4] <- (np_biber_sd - 26.4) / 7}
+    if (is.na(np_biber_ld_z[4])) {np_biber_ld <- dde_data[ij,"np_biber_ld"];np_biber_ld_z[4] <- (np_biber_ld - 28) / 7}
     
     #Tower
-    if (any(is.na(np_tower_z))) {
+    if (is.na(np_tower_z[4])) {
       age <- dde_data[ij,"age"]
       
       np_tower1 <- as.integer(dde_data[ij,"np_tower1"])-1
@@ -570,7 +570,7 @@ fb_uploader<<- function(epochh,vmac) {
     }
     
     # Animal
-    if (any(is.na(np_anim_z))) {
+    if (is.na(np_anim_z[4])) {
       age <- dde_data[ij,"age"]
       if (age < 55) {age_r <- "50-54"}; if (age < 60 & age >= 55) {age_r <- "55-59"}; if (age < 65 & age >= 60) {age_r <- "60-64"}
       if (age < 70 & age >= 65) {age_r <- "65-69"}; if (age < 75 & age >= 70) {age_r <- "70-74"} 
@@ -597,12 +597,12 @@ fb_uploader<<- function(epochh,vmac) {
       np_anim_z[4] <- (as.integer(np_anim_tscore) - 50) / 10
     }
     
-    if (any(is.na(np_bnt_z))) {
+    if (is.na(np_bnt_z[4])) {
       np_bnt <- dde_data[ij,"np_bnt"]
       np_bnt_z[4] <- (np_bnt - 26) / 3.4
     }
     
-    if (any(is.na(np_inhibit_z))) {
+    if (is.na(np_inhibit_z[4])) {
       age <- dde_data[ij,"age"]
       np_inhibit <- dde_data[ij,"np_inhibit"]
       inhibit_ex <- read_excel("~/epoch5dde_lookup.xlsx", sheet = 12)
@@ -610,7 +610,7 @@ fb_uploader<<- function(epochh,vmac) {
       np_inhibit_z[4] <- (as.integer(np_inhibit_ss)-10)/3
     }
     
-    if (any(is.na(np_fas_z))) {
+    if (is.na(np_fas_z[4])) {
       age <- dde_data[ij,"age"]
       if (age < 55) {age_r <- "50-54"}; if (age < 60 & age >= 55) {age_r <- "55-59"}; if (age < 65 & age >= 60) {age_r <- "60-64"}
       if (age < 70 & age >= 65) {age_r <- "65-69"}; if (age < 75 & age >= 70) {age_r <- "70-74"} 
@@ -633,7 +633,7 @@ fb_uploader<<- function(epochh,vmac) {
       np_fas_z[4] <- (as.integer(np_fas_tscore) - 50) / 10 
     }
     
-    if (any(is.na(np_tmtb_z))) {
+    if (is.na(np_tmtb_z[4])) {
       age <- dde_data[ij,"age"]
       np_tmtb <- dde_data[ij,"np_tmtb"]
       tmtb_ex <- read_excel("~/epoch5dde_lookup.xlsx", sheet = 6)
@@ -641,7 +641,7 @@ fb_uploader<<- function(epochh,vmac) {
       np_tmtb_z[4] <- (as.integer(np_tmtb_ss) - 10)/3
     }
     
-    if (any(is.na(np_tmta_z))) {
+    if (is.na(np_tmta_z[4])) {
       age <- dde_data[ij,"age"]
       
       np_tmta <- dde_data[ij,"np_tmta"]
@@ -650,7 +650,7 @@ fb_uploader<<- function(epochh,vmac) {
       np_tmta_z[4] <- (as.integer(np_tmta_ss) - 10)/3
     }
     
-    if (any(is.na(np_hvot_z))) {
+    if (is.na(np_hvot_z[4])) {
       age <- dde_data[ij,"age"]
       edu <- dde_data[ij,"education"]
       np_hvot <- dde_data[ij,"np_hvot"]
@@ -664,7 +664,7 @@ fb_uploader<<- function(epochh,vmac) {
       np_hvot_z[4] <- -(as.integer(np_hvot_tscore) - 50) / 10
     }
     
-    if (any(is.na(np_digsymb_z))) {
+    if (is.na(np_digsymb_z[4])) {
       age <- dde_data[ij,"age"]
       np_digsymb <- dde_data[ij,"np_digsymb"]
       digsymb_ex <- read_excel("~/epoch5dde_lookup.xlsx", sheet = 21)
@@ -672,7 +672,7 @@ fb_uploader<<- function(epochh,vmac) {
       np_digsymb_z[4] <- (as.integer(np_digsymb_ss)-10)/3
     }
     
-    if (any(is.na(np_color_z))) {
+    if (is.na(np_color_z[4])) {
       age <- dde_data[ij,"age"]
       
       np_color <- dde_data[ij,"np_color"]
@@ -681,7 +681,7 @@ fb_uploader<<- function(epochh,vmac) {
       np_color_z[4] <- (as.integer(np_color_ss)-10)/3
     }
     
-    if (any(is.na(np_word_z))) {
+    if (is.na(np_word_z[4])) {
       age <- dde_data[ij,"age"]
       
       np_word <- dde_data[ij,"np_word"]
@@ -744,6 +744,7 @@ fb_uploader<<- function(epochh,vmac) {
     if (val_c=="Normal"){val_c<<-"     2.  No significant"} else {val_c<<-"     2.  Significant"}
     
     visit_depress<<- tm7yr_data["visit_depress"]
+    if (is.null(row.names(visit_depress))==FALSE) {visit_depress <<- 0}
     if (is.na(visit_depress)) {visit_depress <<- 0}
     if (visit_depress == 1) {
       gds_phys<<- paste0("On a measure assessing depressive symptoms, ",first_name," scored in a range suggesting mild/moderate/severe symptoms of depression. Based upon this score, we recommended that ",first_name," make an appointment for a more detailed clinical assessment of these symptoms.")
