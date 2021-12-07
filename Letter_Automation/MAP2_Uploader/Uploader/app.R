@@ -27,9 +27,10 @@ ui <- fluidPage(
         tabPanel("Letters", fluid = TRUE,
                  textInput(inputId = "n", "VMAC ID", ""),
                  numericInput(inputId = "d", "Epoch", value=5),
-                 selectInput(inputId = "l", "Type of Letter", choices = c("Feedback Letter" = "fb", "LP Previsit Letter" = "LP","Thank You"="ty","Previsit"="previsit")),
+                 selectInput(inputId = "l", "Type of Letter", choices = c("Feedback Letter" = "fb", "LP Previsit Letter" = "LP","Thank You"="ty","Previsit"="previsit","Full Previsit"="pv")),
                  actionButton(inputId = "submit",label = "Submit"),
-                 textOutput(outputId = "d")
+                 textOutput(outputId = "d"),
+                 textOutput(outputId = "error")
         ),
         tabPanel("Tables", fluid = TRUE,
                  textInput(inputId = "vmac", "VMAC ID", ""),
@@ -56,17 +57,26 @@ server <- function(input, output) {
             print(vmac_int)
             command <- paste0(letter,"_uploader(",epoch,",",vmac_int,")")
             print(command)
-            eval(parse(text = command))
-            letter_conv <- c("fb"="Feedback", "LP"="LP Previsit","ty"="Thank You","previsit"="Previsit")
+            err <- eval(parse(text = command))
+            letter_conv <- c("fb"="Feedback", "LP"="LP Previsit","ty"="Thank You","previsit"="Previsit","pv"="Full Previsit")
             lett <- letter_conv[letter]
+            conf <- ""
+            if (err=="") {conf <- paste0(lett," Letter for VMAC ID: ",input$n," has been generated!")} else {conf <- "An error has occurred."}
         }
-        confirmation <<- paste0(lett," Letter for VMAC ID: ",input$n," has been generated!")
+        rea <<- list(confirm = conf,error = err)
+        
     }
     )
     
     output$d <-
         renderText({
-            re()
+            rea <- re()
+            rea$confirm
+        })
+    output$error <-
+        renderText({
+            rea <- re()
+            rea$error
         })
     re2 <- eventReactive( input$submit2, {
         tab <- input$type
