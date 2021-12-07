@@ -30,7 +30,7 @@ np_uploader<<- function(epochh,vmac) {
                           token = "1A5DACDD0A80C92D60FCCC27A501286E",conn,project = 39332)
   
   pdb <- redcapConnection(url = "https://redcap.vanderbilt.edu/api/",
-                          token = "7E1DC8A562246EC4F7043579B863706C", conn, project = 136242)
+                          token = "496ED1BD518B29CB96B5CFD9C48844FE", conn, project = 136242)
   
   pdb_datas <- exportReports(pdb, 267451)
   
@@ -65,8 +65,6 @@ np_uploader<<- function(epochh,vmac) {
   pdb_data <- map_data[which(map_data[,"redcap_event_name"]== events[epochh+1]),]
   
   map_data[,which(is.na(map_data[,"feedback_location"]))]<-"other"
-  
-  pdb_data <- map_data[which(map_data[,"redcap_event_name"]== events[epochh+1]),]
   
   edc_data <- edc_data[which(edc_data[,"redcap_event_name"]== events[epochh+1]),]
   
@@ -115,6 +113,7 @@ np_uploader<<- function(epochh,vmac) {
     tm60_datas[inddd,which(is.na(tm60_datas[inddd,]))]<- "Missing"
     tm60_data <- tm60_datas[inddd,]
     #if (nrow(tm60_data)==FALSE) {stop("Not Enough Data")}
+    if (nrow(tm60_data)==FALSE) {tm60_data <- c(rep(NA,38))}
   }
   
   if (e > 2) {
@@ -130,6 +129,7 @@ np_uploader<<- function(epochh,vmac) {
     tm36_datas[inddd,which(is.na(tm36_datas[inddd,]))]<- "Missing"
     tm36_data <- tm36_datas[inddd,]
     #if (nrow(tm36_data)==FALSE) {stop("Not Enough Data")}
+    if (nrow(tm36_data)==FALSE) {tm36_data <- c(rep(NA,38))}
   }
   
   # Enrollment Data
@@ -141,7 +141,8 @@ np_uploader<<- function(epochh,vmac) {
   for (i in (1:length(indd$matches))){if (indd$matches[i]>0){inddd<-c(inddd,i)}}
   tme_datas[inddd,which(is.na(tme_datas[inddd,]))]<- "Missing"
   tme_data <- tme_datas[inddd,]
-  if (nrow(tme_data)==FALSE) {stop("Not Enough Data")}
+  #if (nrow(tme_data)==FALSE) {stop("Not Enough Data")}
+  if (nrow(tme_data)==FALSE) {tme_data <- c(rep(NA,38))}
   
   i<-1
   
