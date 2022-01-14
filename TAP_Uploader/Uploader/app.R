@@ -10,12 +10,12 @@
 options(shiny.port = 5000)
 options(shiny.host = '127.0.0.1')
 
-source("~/TAP Uploader/previsit_uploader.R")
-source("~/TAP Uploader/ty_uploader.R")
-source("~/TAP Uploader/fb_uploader.R")
-source("~/TAP Uploader/LP_uploader.R")
-source("~/TAP Uploader/np_uploader.R")
-source("~/TAP Uploader/pv_uploader.R")
+source("~/Letter_Automation/TAP_Uploader/previsit_uploader.R")
+source("~/Letter_Automation/TAP_Uploader/ty_uploader.R")
+source("~/Letter_Automation/TAP_Uploader/fb_uploader.R")
+source("~/Letter_Automation/TAP_Uploader/LP_uploader.R")
+source("~/Letter_Automation/TAP_Uploader/np_uploader.R")
+source("~/Letter_Automation/TAP_Uploader/pv_uploader.R")
 
 library(shiny)
 library(flextable)

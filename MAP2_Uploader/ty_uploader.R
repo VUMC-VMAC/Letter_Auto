@@ -6,6 +6,21 @@ ty_uploader <- function(epoch,vmac) {
   library(Hmisc)
   library(tidyverse)
   
+  # Global Pathing
+  local <- 1
+  online <- 0
+  if (local) {
+    # Add Local Paths Here
+    out_path <- "C:/Users/sweelyb/Documents/output/"
+    main_path <- "C:/Users/sweelyb/Documents/Letter_Automation/"
+    
+  } else if (online) {
+    # Add Global Paths Here
+    out_path <- "/app/"
+    main_path <- "/srv/shiny-server/"
+    
+  }
+  
   pdb <- redcapConnection(url = "https://redcap.vanderbilt.edu/api/",
                           token = "496ED1BD518B29CB96B5CFD9C48844FE", conn, project = 136242)
   EDC <- redcapConnection(url = "https://redcap.vanderbilt.edu/api/",
@@ -14,7 +29,7 @@ ty_uploader <- function(epoch,vmac) {
   pdb_datas <- exportReports(pdb, 267464)
   cond_datas <- exportReports(EDC,284613)
   
-  path_in <- "~/resources/Templates/Thank You/Thank You Template.docx"
+  path_in <- paste0(main_path,"resources/Templates/Thank You/Thank You Template.docx")
   
   events <- c("eligibility_arm_1","enrollmentbaseline_arm_1","18month_followup_arm_1","3year_followup_arm_1","5year_followup_arm_1","7year_followup_arm_1")
   pdb_datas <- pdb_datas[which(pdb_datas[,"redcap_event_name"]== events[epoch+1]),]
@@ -68,9 +83,9 @@ ty_uploader <- function(epoch,vmac) {
       elig_out <- el_data[ii,"elig_outcome"]
       enroll_stat <- el_data[ii,"enrollment_status"]
       
-      path_in <- "~/resources/Templates/Thank You/Thank You Template_e.docx"
+      path_in <- paste0(main_path,"resources/Templates/Thank You/Thank You Template_e.docx")
     } else {
-      path_in <- "~/resources/Templates/Thank You/Thank You Template.docx"
+      path_in <- paste0(main_path,"resources/Templates/Thank You/Thank You Template.docx")
       
       fu <<- "To date, your participation has helped generate more than 130 scientific publications and conference presentations, and it has provided significant teaching opportunities for more than 40 investigators and clinicians-in-training."
     }
@@ -78,7 +93,7 @@ ty_uploader <- function(epoch,vmac) {
     date_next <- paste0("visit_estimate_",ep_next,"date")
     date_ty <<- format(as.Date(pdb_data[i, date_next]), "%B %Y")
     
-    output <- paste0("~/resources/Output/MAP_",input,"_",ep,"_ty_letter.docx")
+    output <- paste0(out_path,"MAP_",input,"_",ep,"_ty_letter.docx")
     renderInlineCode(path_in, output)
     
     importFiles(rcon = pdb, file = output, record = record, field = "card_thank_letter", event = pdb_data[,"redcap_event_name"],

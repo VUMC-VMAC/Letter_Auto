@@ -10,12 +10,12 @@
 options(shiny.port = 5000)
 options(shiny.host = '127.0.0.1')
 
-source("~/MAP Uploader/MAP_uploader.R")
-source("~/MAP Uploader/previsit_uploader.R")
-source("~/MAP Uploader/ty_uploader.R")
-source("~/MAP Uploader/fb_uploader.R")
-source("~/MAP Uploader/LP_uploader.R")
-#source("~/MAP Uploader/fb_avail.R")
+source("~/Letter_Automation/MAP_Uploader/MAP_uploader.R")
+source("~/Letter_Automation/MAP_Uploader/previsit_uploader.R")
+source("~/Letter_Automation/MAP_Uploader/ty_uploader.R")
+source("~/Letter_Automation/MAP_Uploader/fb_uploader.R")
+source("~/Letter_Automation/MAP_Uploader/LP_uploader.R")
+#source("~/Letter_Automation/MAP_Uploader/fb_avail.R")
 
 library(shiny)
 library(flextable)

@@ -13,6 +13,23 @@ fb_uploader<<- function(epochh,vmac) {
   library(png)
   library(readxl)
   
+  # Global Pathing
+  local <- 1
+  online <- 0
+  if (local) {
+    # Add Local Paths Here
+    out_path <- "C:/Users/sweelyb/Documents/output/"
+    main_path <- "C:/Users/sweelyb/Documents/Letter_Automation/"
+    
+  } else if (online) {
+    # Add Global Paths Here
+    out_path <- "/app/"
+    main_path <- "/srv/shiny-server/"
+    
+  }
+  
+  ex_path <- paste0(main_path,"epoch5dde_lookup.xlsx")
+  
   FII <- redcapConnection(url = "https://redcap.vanderbilt.edu/api/",
                           token = "489C53D4DAAE99F87EF37A9D77563BB0",conn,project = 42471)
   
@@ -637,7 +654,7 @@ fb_uploader<<- function(epochh,vmac) {
               np_tower8 <- as.integer(dde_data[ij,"np_tower8"])-1
               np_tower9 <- as.integer(dde_data[ij,"np_tower9"])-1
               np_tower <- sum(np_tower1,np_tower2,np_tower3,np_tower4,np_tower5,np_tower6,np_tower7,np_tower8,np_tower9)
-              tower_ex <- read_excel("~/epoch5dde_lookup.xlsx", sheet = 1)
+              tower_ex <- read_excel(ex_path, sheet = 1)
               np_tower_ss <- tower_ex[as.integer(ceiling(np_tower))+1,as.character(age)]
               np_tower_z[4] <- (as.integer(np_tower_ss)-10)/3
             }
@@ -662,9 +679,9 @@ fb_uploader<<- function(epochh,vmac) {
               np_anim_q3 <- dde_data[ij,"np_anim_q3"]
               np_anim_q4 <- dde_data[ij,"np_anim_q4"]
               np_anim <- sum(c(np_anim_q1, np_anim_q2, np_anim_q3, np_anim_q4))
-              anim_ex <- read_excel("~/epoch5dde_lookup.xlsx", sheet = "heaton_scaled")
+              anim_ex <- read_excel(ex_path, sheet = "heaton_scaled")
               np_anim_sscore <- anim_ex[as.integer(ceiling(np_anim))+1,4]
-              anim_ex <- read_excel("~/epoch5dde_lookup.xlsx", sheet = "heaton_animals")
+              anim_ex <- read_excel(ex_path, sheet = "heaton_animals")
               var_anim <- paste0(sex_r,"/",edu_r,"/",age_r,"/",race)
               np_anim_tscore <- anim_ex[as.integer(ceiling(20-np_anim_sscore)),var_anim]
               np_anim_z[4] <- (as.integer(np_anim_tscore) - 50) / 10
@@ -678,7 +695,7 @@ fb_uploader<<- function(epochh,vmac) {
             if (is.na(np_inhibit_z[4])) {
               age <- dde_data[ij,"age"]
               np_inhibit <- dde_data[ij,"np_inhibit"]
-              inhibit_ex <- read_excel("~/epoch5dde_lookup.xlsx", sheet = 12)
+              inhibit_ex <- read_excel(ex_path, sheet = 12)
               np_inhibit_ss <- inhibit_ex[as.integer(ceiling(np_inhibit))+1,as.character(age)]
               np_inhibit_z[4] <- (as.integer(np_inhibit_ss)-10)/3
             }
@@ -698,9 +715,9 @@ fb_uploader<<- function(epochh,vmac) {
               race <- race_conv[pdb_data$np_norm_race]
               
               np_fas <- dde_data[ij,"np_fas"]
-              fas_ex <- read_excel("~/epoch5dde_lookup.xlsx", sheet = "heaton_scaled")
+              fas_ex <- read_excel(ex_path, sheet = "heaton_scaled")
               np_fas_sscore <- fas_ex[as.integer(ceiling(np_fas))+1,5]
-              fas_ex <- read_excel("~/epoch5dde_lookup.xlsx", sheet = "heaton_fas")
+              fas_ex <- read_excel(ex_path, sheet = "heaton_fas")
               var_fas <- paste0(sex_r,"/",edu_r,"/",age_r,"/",race)
               np_fas_tscore <- fas_ex[as.integer(ceiling(20-np_fas_sscore)),var_fas]
               np_fas_z[4] <- (as.integer(np_fas_tscore) - 50) / 10 
@@ -710,7 +727,7 @@ fb_uploader<<- function(epochh,vmac) {
               age <- dde_data[ij,"age"]
               np_tmtb <- dde_data[ij,"np_tmtb"]
               if (np_tmtb>599) {np_tmtb <- 599}
-              tmtb_ex <- read_excel("~/epoch5dde_lookup.xlsx", sheet = 6)
+              tmtb_ex <- read_excel(ex_path, sheet = 6)
               np_tmtb_ss <- tmtb_ex[as.integer(ceiling(np_tmtb))+1,as.character(age)]
               np_tmtb_z[4] <- (as.integer(np_tmtb_ss) - 10)/3
             }
@@ -720,7 +737,7 @@ fb_uploader<<- function(epochh,vmac) {
               
               np_tmta <- dde_data[ij,"np_tmta"]
               if (np_tmta>599) {np_tmta <- 599}
-              tmta_ex <- read_excel("~/epoch5dde_lookup.xlsx", sheet = 3)
+              tmta_ex <- read_excel(ex_path, sheet = 3)
               np_tmta_ss <- tmta_ex[as.integer(ceiling(np_tmta))+1,as.character(age)]
               np_tmta_z[4] <- (as.integer(np_tmta_ss) - 10)/3
             }
@@ -729,12 +746,12 @@ fb_uploader<<- function(epochh,vmac) {
               age <- dde_data[ij,"age"]
               edu <- dde_data[ij,"education"]
               np_hvot <- dde_data[ij,"np_hvot"]
-              if (age < 55) {hvot_ex <- read_excel("~/epoch5dde_lookup.xlsx", sheet = 22)}
-              if (55 <= age | age < 60) {hvot_ex <- read_excel("~/epoch5dde_lookup.xlsx", sheet = 23)}
-              if (60 <= age | age < 65) {hvot_ex <- read_excel("~/epoch5dde_lookup.xlsx", sheet = 24)}
-              if (65 <= age) {hvot_ex <- read_excel("~/epoch5dde_lookup.xlsx", sheet = 25)}
+              if (age < 55) {hvot_ex <- read_excel(ex_path, sheet = 22)}
+              if (55 <= age | age < 60) {hvot_ex <- read_excel(ex_path, sheet = 23)}
+              if (60 <= age | age < 65) {hvot_ex <- read_excel(ex_path, sheet = 24)}
+              if (65 <= age) {hvot_ex <- read_excel(ex_path, sheet = 25)}
               np_hvot_corrected <- hvot_ex[as.integer(ceiling(np_hvot))+1,as.integer(edu)+2]
-              hvot_t_ex <- read_excel("~/epoch5dde_lookup.xlsx", sheet = 26)
+              hvot_t_ex <- read_excel(ex_path, sheet = 26)
               np_hvot_tscore <- hvot_t_ex[as.integer(np_hvot_corrected)+1,2]
               np_hvot_z[4] <- -(as.integer(np_hvot_tscore) - 50) / 10
             }
@@ -742,7 +759,7 @@ fb_uploader<<- function(epochh,vmac) {
             if (is.na(np_digsymb_z[4])) {
               age <- dde_data[ij,"age"]
               np_digsymb <- dde_data[ij,"np_digsymb"]
-              digsymb_ex <- read_excel("~/epoch5dde_lookup.xlsx", sheet = 21)
+              digsymb_ex <- read_excel(ex_path, sheet = 21)
               np_digsymb_ss <- digsymb_ex[as.integer(ceiling(np_digsymb))+1,as.character(age)]
               np_digsymb_z[4] <- (as.integer(np_digsymb_ss)-10)/3
             }
@@ -751,7 +768,7 @@ fb_uploader<<- function(epochh,vmac) {
               age <- dde_data[ij,"age"]
               
               np_color <- dde_data[ij,"np_color"]
-              color_ex <- read_excel("~/epoch5dde_lookup.xlsx", sheet = 10)
+              color_ex <- read_excel(ex_path, sheet = 10)
               np_color_ss <- color_ex[as.integer(ceiling(np_color))+1,as.character(age)]
               np_color_z[4] <- (as.integer(np_color_ss)-10)/3
             }
@@ -760,7 +777,7 @@ fb_uploader<<- function(epochh,vmac) {
               age <- dde_data[ij,"age"]
               
               np_word <- dde_data[ij,"np_word"]
-              word_ex <- read_excel("~/epoch5dde_lookup.xlsx", sheet = 11)
+              word_ex <- read_excel(ex_path, sheet = 11)
               np_word_ss <- word_ex[as.integer(ceiling(np_word))+1,as.character(age)]
               np_word_z[4] <- (as.integer(np_word_ss)-10)/3
             }
@@ -890,8 +907,8 @@ fb_uploader<<- function(epochh,vmac) {
       
       if (bi_c=="Yes") {brain_ic <<-paste0("Your _ results on ",fu_date_c," were as follows:"); brain_c <<-echo_c$brain_incidental_davis} else {brain_ic <<-""; brain_c <<-""}
       
-      ptp_path<<- paste0("C:/Users/sweelyb/Documents/resources/Templates/Feedback/MAP2_fb_temp.docx")
-      phys_path<<- paste0("C:/Users/sweelyb/Documents/resources/Templates/Feedback/MAP2_phys_temp.docx")
+      ptp_path<<- paste0(main_path,"resources/Templates/Feedback/MAP2_fb_temp.docx")
+      phys_path<<- paste0(main_path,"resources/Templates/Feedback/MAP2_phys_temp.docx")
     }
     
     if (e == 1) {
@@ -905,12 +922,12 @@ fb_uploader<<- function(epochh,vmac) {
       print("Enrollment Heart Results")
       # final impressions here
       
-      ptp_path<<- paste0("C:/Users/sweelyb/Documents/resources/Templates/Feedback/MAP2_fb_temp_e.docx")
-      phys_path<<- paste0("C:/Users/sweelyb/Documents/resources/Templates/Feedback/MAP2_phys_temp_e.docx")
+      ptp_path<<- paste0(main_path,"resources/Templates/Feedback/MAP2_fb_temp_e.docx")
+      phys_path<<- paste0(main_path,"resources/Templates/Feedback/MAP2_phys_temp_e.docx")
     }
     
-    ptp_temp<<- paste0("C:/Users/sweelyb/Documents/resources/output/ptp_temp.docx")
-    phys_temp<<- paste0("C:/Users/sweelyb/Documents/resources/output/phys_temp.docx")
+    ptp_temp<<- paste0(out_path,"ptp_temp.docx")
+    phys_temp<<- paste0(out_path,"phys_temp.docx")
     Plots<<- list(membar = function() print(barr))
     addPlots(ptp_path,ptp_temp,Plots,width = 7.3,height = 3.6)
     addPlots(phys_path,phys_temp,Plots,width = 7.3,height = 3.6)
@@ -921,7 +938,7 @@ fb_uploader<<- function(epochh,vmac) {
     if (nchar(map_id)==1) {input<<- paste0("00",map_id)} else if (nchar(map_id)==2) {input<<- paste0("0",map_id)} else {input<<- map_id}
     vmac_id<<- as.character(pdb_data[i,"vmac_id"])
     if (nchar(vmac_id)==1) {record<<- paste0("0000",vmac_id)} else if (nchar(vmac_id)==2) {record<<- paste0("000",vmac_id)} else if (nchar(vmac_id)==3) {record<<- paste0("00",vmac_id)} else if (nchar(vmac_id)==4) {record<<- paste0("0",vmac_id)} else {record<<- vmac_id}
-    output<- paste0("C:/Users/sweelyb/Documents/resources/output/feedback_MAP",input,"_",epoch,".docx")
+    output<- paste0(out_path,"feedback_MAP",input,"_",epoch,".docx")
     renderInlineCode(ptp_temp, output)
     
     #importFiles(rcon = pdb, file = output, record = record, field = "feedback_letter", event = events[e+1],
@@ -938,7 +955,7 @@ fb_uploader<<- function(epochh,vmac) {
       state_physician<<- state_physician1
       zip_physician<<- zip_physician1
       
-      output<- paste0("C:/Users/sweelyb/Documents/resources/output/physician_letter_MAP_",input,"_",epoch,".docx")
+      output<- paste0(out_path,"physician_letter_MAP_",input,"_",epoch,".docx")
       renderInlineCode(phys_temp, output)
       
       #importFiles(rcon = pdb, file = output, record = record, field = "feedback_physician1_letter", event = events[e+1],
@@ -953,7 +970,7 @@ fb_uploader<<- function(epochh,vmac) {
       state_physician<<- state_physician2
       zip_physician<<- zip_physician2
       
-      output<- paste0("C:/Users/sweelyb/Documents/resources/output/physician2_letter_MAP_",input,"_",epoch,".docx")
+      output<- paste0(out_path,"physician2_letter_MAP_",input,"_",epoch,".docx")
       renderInlineCode(phys_temp, output)
       
       #importFiles(rcon = pdb, file = output, record = record, field = "feedback_physician2_letter", event = events[e+1],
@@ -968,7 +985,7 @@ fb_uploader<<- function(epochh,vmac) {
       state_physician<<- state_physician3
       zip_physician<<- zip_physician3
       
-      output<- paste0("C:/Users/sweelyb/Documents/resources/output/physician3_letter_MAP_",input,"_",epoch,".docx")
+      output<- paste0(out_path,"physician3_letter_MAP_",input,"_",epoch,".docx")
       renderInlineCode(phys_temp, output)
       
       #importFiles(rcon = pdb, file = output, record = record, field = "feedback_physician3_letter",event = events[e+1],
@@ -983,7 +1000,7 @@ fb_uploader<<- function(epochh,vmac) {
       state_physician<<- state_physician4
       zip_physician<<- zip_physician4
       
-      output<- paste0("C:/Users/sweelyb/Documents/resources/output/physician4_letter_MAP_",input,"_",epoch,".docx")
+      output<- paste0(out_path,"physician4_letter_MAP_",input,"_",epoch,".docx")
       renderInlineCode(phys_temp, output)
       
       #importFiles(rcon = pdb, file = output, record = record, field = "feedback_physician4_letter",event = events[e+1],
@@ -998,7 +1015,7 @@ fb_uploader<<- function(epochh,vmac) {
       state_physician<<- state_physician5
       zip_physician<<- zip_physician5
       
-      output<- paste0("C:/Users/sweelyb/Documents/resources/output/physician5_letter_MAP_",input,"_",epoch,".docx")
+      output<- paste0(out_path,"physician5_letter_MAP_",input,"_",epoch,".docx")
       renderInlineCode(phys_temp, output)
       
       #importFiles(rcon = pdb, file = output, record = record, field = "feedback_physician5_letter",event = events[e+1],

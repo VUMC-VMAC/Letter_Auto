@@ -7,6 +7,21 @@ LP_uploader <- function(epoch,vmac) {
   library(tidyverse)
   library(flextable)
   
+  # Global Pathing
+  local <- 1
+  online <- 0
+  if (local) {
+    # Add Local Paths Here
+    out_path <- "C:/Users/sweelyb/Documents/output/"
+    main_path <- "C:/Users/sweelyb/Documents/Letter_Automation/"
+    
+  } else if (online) {
+    # Add Global Paths Here
+    out_path <- "/app/"
+    main_path <- "/srv/shiny-server/"
+    
+  }
+  
   pdb <- redcapConnection(url = "https://redcap.vanderbilt.edu/api/",
                           token = "496ED1BD518B29CB96B5CFD9C48844FE", conn, project = 136242)
   pdb_data <- exportReports(pdb, 267463)
@@ -75,9 +90,9 @@ LP_uploader <- function(epoch,vmac) {
       directions <<- "Your appointment will be held at the Vanderbilt University Medical Center.  We will be providing you with transportation to and from your visit with Jeff Cornelius. Jeff\'s number is (615) 604-1502 in case you need to contact him."
     }
     
-    output <- paste0("C:/Users/sweelyb/Documents/resources/Output/MAP",input,"_",ep,"_LP_letter.docx")
-    path_in <- paste0("C:/Users/sweelyb/Documents/resources/Templates/Lumbar Puncture/LP_revamp_template.docx")
-    temp <- paste0("~/resources/LP_temp.docx")
+    output <- paste0(out_path,"MAP",input,"_",ep,"_LP_letter.docx")
+    path_in <- paste0(main_path,"resources/Templates/Lumbar Puncture/LP_revamp_template.docx")
+    temp <- paste0(out_path,"LP_temp.docx")
     
     body_add_flextables(path_in,temp, FT)
     renderInlineCode(temp, output)

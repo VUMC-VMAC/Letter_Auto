@@ -9,7 +9,7 @@ vmac_fu_uploader <- function(vmac_id) {
   library(reticulate)
   library(RCurl)
   
-  dir(path = paste0(getwd(), "/resources/Templates/VMAC Registry"), pattern = ".docx")
+  dir(path = paste0(getwd(), "/Letter_Automation/resources/Templates/VMAC Registry"), pattern = ".docx")
   
   token <- "B07286F2BCFC9B49C157FD44A62F3320"
   url <- "https://redcap.vanderbilt.edu/api/"
@@ -54,12 +54,12 @@ vmac_fu_uploader <- function(vmac_id) {
     screen_person <<- screen_conv[screen_p]
     initial <<- initial_conv[screen_p]
     #letter_sent <- vmac[["vmac_followup_letter_mailing"]]
-    output <- paste0("C:/Users/sweelyb/Documents/resources/Output/VMAC_registry/VMAC_",vmac[["vmac_id"]],"_",initial,".docx")
-    path_in <- paste0("C:/Users/sweelyb/Documents/resources/Templates/VMAC Registry/VMAC_template.docx")
+    output <- paste0("C:/Users/sweelyb/Documents/Output/VMAC_registry/VMAC_",vmac[["vmac_id"]],"_",initial,".docx")
+    path_in <- paste0("C:/Users/sweelyb/Documents/Letter_Automation/resources/Templates/VMAC Registry/VMAC_template.docx")
     renderInlineCode(path_in, output)
     #importFiles(rcon = vmac_database, file = output, record = vmac_id, field = "vmac_letter", event='initial_vmac_call_arm_1',
     #            overwrite = TRUE, repeat_instance = 1)
-    cmmd <- paste0("python C:/Users/sweelyb/Documents/resources/fu_uploader.py -v ",vmac[["vmac_id"]]," -f \"",output,"\"")
+    cmmd <- paste0("python C:/Users/sweelyb/Documents/Letter_Automation/resources/fu_uploader.py -v ",vmac[["vmac_id"]]," -f \"",output,"\"")
     system(cmmd)
     #}
   }
