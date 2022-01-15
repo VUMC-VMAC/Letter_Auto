@@ -11,6 +11,7 @@ options(shiny.port = 5000)
 options(shiny.host = '127.0.0.1')
 
 source("/srv/shiny-server/previsit_uploader.R")
+source("/srv/shiny-server/pv_uploader.R")
 source("/srv/shiny-server/ty_uploader.R")
 source("/srv/shiny-server/fb_uploader.R")
 source("/srv/shiny-server/LP_uploader.R")
