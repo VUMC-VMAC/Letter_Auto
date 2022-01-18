@@ -83,7 +83,6 @@ pv_uploader <- function(epoch,vmac) {
     gender <- ""
     if (sex=="Female") {gender<<- "women"} else {gender <<- "men"}
     if (sex=="Female") {gender_cap<<- "Women"} else {gender_cap <<- "Men"}
-    proxy_sex <<- as.character(pdb_data[i,"proxy_sex"])
     pronoun_conv <- c("Female" = "she", "Male" = "he")
     pronoun_conv_obj <- c("Female" = "her", "Male" = "him")
     pronoun_conv_poss <- c("Female" = "her", "Male" = "his")
@@ -95,6 +94,7 @@ pv_uploader <- function(epoch,vmac) {
     pronoun_poss <<- pronoun_conv_poss[sex]
     pronoun_poss_cap <<- pronoun_conv_poss_cap[sex]
     
+    proxy_sex <<- as.character(pdb_data[i,"proxy_sex"])
     proxy_pronoun <<- pronoun_conv[proxy_sex]
     proxy_first_name <<- pdb_data[i,"proxy_first_name"]
     proxy_last_name <<- pdb_data[i,"proxy_last_name"]

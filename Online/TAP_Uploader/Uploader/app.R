@@ -16,6 +16,7 @@ source("/srv/shiny-server/fb_uploader.R")
 source("/srv/shiny-server/LP_uploader.R")
 source("/srv/shiny-server/np_uploader.R")
 source("/srv/shiny-server/pv_uploader.R")
+source("/srv/shiny-server/cond_uploader.R")
 
 library(shiny)
 library(flextable)
@@ -29,7 +30,7 @@ ui <- fluidPage(
         tabPanel("Letters", fluid = TRUE,
                  textInput(inputId = "n", "Record ID", ""),
                  numericInput(inputId = "d", "Epoch", value=1),
-                 selectInput(inputId = "l", "Type of Letter", choices = c("Feedback Letter" = "fb", "LP Previsit Letter" = "LP","Thank You"="ty","Previsit"="pv")),
+                 selectInput(inputId = "l", "Type of Letter", choices = c("Feedback Letter" = "fb", "LP Previsit Letter" = "LP","Thank You"="ty","Previsit"="pv","Condolence"="cond")),
                  actionButton(inputId = "submit",label = "Submit"),
                  textOutput(outputId = "d"),
                  #textOutput(outputId = "error")
@@ -59,7 +60,7 @@ server <- function(input, output) {
             command <- paste0(letter,"_uploader(",epoch,",",vmac_int,")")
             print(command)
             eval(parse(text = command))
-            letter_conv <- c("fb"="Feedback", "LP"="LP Previsit","ty"="Thank You","pv"="Previsit")
+            letter_conv <- c("fb"="Feedback", "LP"="LP Previsit","ty"="Thank You","pv"="Previsit","cond"="Condolence")
             lett <- letter_conv[letter]
         }
         rea <<- list(confirm = paste0(lett," Letter for Record ID: ",input$n," has been generated!"),error = "Error here")
