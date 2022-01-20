@@ -13,7 +13,7 @@ LP_uploader <- function(epoch,vmac) {
   if (local) {
     # Add Local Paths Here
     out_path <- "C:/Users/sweelyb/Documents/output/"
-    main_path <- "C:/Users/sweelyb/Documents/Letter_Automation/"
+    main_path <- "C:/Users/sweelyb/Documents/Letter_Auto/"
     
   } else if (online) {
     # Add Global Paths Here

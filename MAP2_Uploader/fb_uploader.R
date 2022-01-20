@@ -19,7 +19,7 @@ fb_uploader<<- function(epochh,vmac) {
   if (local) {
     # Add Local Paths Here
     out_path <- "C:/Users/sweelyb/Documents/output/"
-    main_path <- "C:/Users/sweelyb/Documents/Letter_Automation/"
+    main_path <- "C:/Users/sweelyb/Documents/Letter_Auto/"
     
   } else if (online) {
     # Add Global Paths Here
@@ -915,8 +915,199 @@ fb_uploader<<- function(epochh,vmac) {
       
       enroll_date <<- format(as.Date(map_data[1, "visit1_date"]), "%m/%d/%Y")
       
-      print("Enrollment Data")
-      # ft and ft2
+      print("Creating Data Tables")
+      
+      df <- data.frame(
+        Test = c("Heart rate", "Blood pressure", "Height", "Weight", "Body Mass Index"),
+        Test.1 = c("Heart rate", "Blood pressure", "Height", "Weight", "Body Mass Index"),
+        CR = c(echo_data$echo_hrate, echo_data$echo_read_sbp, paste0(round(echo_data$height*0.393701)," inches"), paste0(round(echo_data$weight*2.205)," lbs"), round((echo_data$weight/(echo_data$height/100)^2), digits = 1)),
+        CR = c(echo_data$echo_hrate, echo_data$echo_read_dbp, paste0(round(echo_data$height*0.393701)," inches"), paste0(round(echo_data$weight*2.205)," lbs"), round((echo_data$weight/(echo_data$height/100)^2), digits = 1)),
+        NR=c("60-100", "<120 / <80", "-", "-", "18.5-24.9")
+      )
+      
+      df[df == "-9999" | df == "-3937 inches" | df == "-22048 lbs" | df == "-1" | df == "Missing" | is.na(df)] <-"-"
+      
+      
+      if(any(which(df=="-")==31)) {df <- df[-c(7,8)]}
+      if(any(which(df=="-")==21)) {df <- df[-c(5,6)]}
+      
+      ft <- flextable(df)
+      
+      ft <- set_header_labels(ft, Test = "Test", Test.1="Test",
+                              CR = paste0("Current Results ", fu_date_c),CR.1 = paste0("Current Results ", fu_date_c),
+                              NR = "Normal Range*" )
+      ft <- bg(ft, bg="grey",part = "header")
+      ft <- font(ft,fontname = "Arial",part = "header")
+      ft <- font(ft,fontname = "Arial",part = "body")
+      ft <- align(ft, align = "center", part="header")
+      ft <- align(ft, align = "center", part="body")
+      ft <- theme_box(ft)
+      
+      
+      if (length(df)==11) {
+        ft <- fontsize(ft, j=1:11, size = 10, part="header")
+        ft <- fontsize(ft, j=1:11, size = 10, part="body")
+        ft <- width(ft,j = 11, width = 1)
+        
+        ft <- merge_h(ft,part = "header")
+        ft <- merge_h_range(ft,i = 1:3,j1=1, j2=2 ,part = "body")
+        ft <- merge_h_range(ft,i = 1,j1=3, j2=4 ,part = "body")
+        ft <- merge_h_range(ft,i = 1,j1=5, j2=6 ,part = "body")
+        ft <- merge_h_range(ft,i = 1,j1=7, j2=8 ,part = "body")
+        ft <- merge_h_range(ft,i = 1,j1=9, j2=10 ,part = "body")
+        ft <- merge_h_range(ft,i = 3,j1=3, j2=4 ,part = "body")
+        ft <- merge_h_range(ft,i = 3,j1=5, j2=6 ,part = "body")
+        ft <- merge_h_range(ft,i = 3,j1=7, j2=8 ,part = "body")
+        ft <- merge_h_range(ft,i = 3,j1=9, j2=10 ,part = "body")
+        ft <- width(ft,j = 3:10, width = .5)
+        ft <- width(ft, j=1:2, width = .75)
+        ft <- align(ft, i = 1:3, j = 1:2, align="left",part="body")
+        evens<-c(4,6,8,10)
+      } else {
+        ft <- fontsize(ft, j=1:9, size = 10, part="header")
+        ft <- fontsize(ft, j=1:9, size = 10, part="body")
+        ft <- width(ft,j = 9, width = 1)
+        
+        ft <- merge_h(ft,part = "header")
+        ft <- merge_h_range(ft,i = 1:5,j1=1, j2=2 ,part = "body")
+        ft <- merge_h_range(ft,i = 1,j1=3, j2=4 ,part = "body")
+        ft <- merge_h_range(ft,i = 1,j1=5, j2=6 ,part = "body")
+        ft <- merge_h_range(ft,i = 1,j1=7, j2=8 ,part = "body")
+        ft <- merge_h_range(ft,i = 3:5,j1=3, j2=4 ,part = "body")
+        ft <- merge_h_range(ft,i = 3:5,j1=5, j2=6 ,part = "body")
+        ft <- merge_h_range(ft,i = 3:5,j1=7, j2=8 ,part = "body")
+        ft <- width(ft,j = 3:8, width = .5)
+        ft <- width(ft, j=1:2, width = .75)
+        ft <- align(ft, i = 1:5, j = 1:2, align="left",part="body")
+        evens<-c(4,6,8)
+      }
+      
+      
+      
+      for (ii in 3:(ncol(df)-1)) {
+        #Heart rate
+        if (df[1,ii]=="-"){
+          #print(paste0(ii,":",df[1,ii]))
+          ft <- bold(ft, i = 1, j = ii, bold = FALSE, part = "body")}
+        else {
+          if ((as.integer(df[1,ii]) < 60) | (as.integer(df[1,ii]) >100)){
+            ft <- bold(ft, i = 1, j = ii, bold = TRUE, part = "body")}
+        }
+        #Blood pressure - systolic
+        if (df[2,ii]=="-"){
+          print(paste0(ii,":",df[2,ii]))
+          ft <- bold(ft, i = 2, j = ii, bold = FALSE, part = "body")}
+        else {
+          if (as.integer(df[2,ii]) > 120){
+            ft <- bold(ft, i = 2, j = ii, bold = TRUE, part = "body")}
+        }
+        
+        #BMI
+        if (df[5,ii]=="-"){
+          print(paste0(ii,":",df[5,ii]))
+          ft <- bold(ft, i = 5, j = ii, bold = FALSE, part = "body")}
+        else {
+          if ((as.double(df[5,ii]) < 18.5 | as.double(df[5,ii]) > 24.9)){
+            ft <- bold(ft, i = 5, j = ii, bold = TRUE, part = "body")}
+        }
+      }
+      #Blood pressure -- diastolic
+      for (ii in evens) {
+        #Blood pressure
+        if (df[2,ii]=="-"){
+          #print(paste0(ii,":",df[2,ii]))
+          ft <- bold(ft, i = 2, j = ii, bold = FALSE, part = "body")}
+        else {
+          if ((as.integer(df[2,ii]) > 80)){
+            ft <- bold(ft, i = 2, j = ii, bold = TRUE, part = "body")}
+        }
+      }
+      
+      
+      df2 <- data.frame(
+        Test1 = c("Cholesterol", "Cholesterol", "Cholesterol", "Cholesterol", "Blood Sugar", "Blood Sugar", "Blood Sugar", "Thyroid", "Inflammation"),
+        Test2 = c("Total","HDL", "LDL", "Triglycerides", "Hemoglobin A1C", "Fasting Insulin", "Fasting Glucose", "Thyroid Stimulating Hormone (TSH)", "High Sensitivity C-Reactive Protein"),
+        ER = c(tme_data[i, 5], tme_data[i, 6], tme_data[i,7], tme_data[i,8], tme_data[i,9], tme_data[i,10], tme_data[i,11], tme_data[i,12], tme_data[i,13]),
+        MR_36 = c(tm36_data[i, 5], tm36_data[i, 6], tm36_data[i,7], tm36_data[i,8], tm36_data[i,9], tm36_data[i,10], tm36_data[i,11], tm36_data[i,12], tm36_data[i,13]),
+        MR_60 = c(tm60_data[i, 5], tm60_data[i, 6], tm60_data[i,7], tm60_data[i,8], tm60_data[i,9], tm60_data[i,10], tm60_data[i,11], tm60_data[i,12], tm60_data[i,13]),
+        CR = as.character(c(echo_data$bld_c_chol, echo_data$bld_c_hdlc, echo_data$bld_c_ldlc, echo_data$bld_c_trig, echo_data$bld_c_hgba1c, echo_data$bld_c_insulin, echo_data$bld_c_glucose, echo_data$bld_c_tsh, echo_data$bld_c_crp)),  
+        NR = c("<200", "men >40, women >50", "<100", "<150", "<5.7", "<17", "70-99", "0.35-3.6", "0-2.9")
+      )
+      
+      
+      df2[df2 == "-9999" | is.na(df2)] <-"-"
+      
+      if(any(which(df2=="-")==37)) {df2 <- df2[-c(5)]}
+      if(any(which(df2=="-")==28)) {df2 <- df2[-c(4)]}
+      
+      ft2 <- flextable(df2)
+      ft2 <- set_header_labels(ft2, Test1 = "Test", Test2 = "Test", ER = paste0("Enrollment Results ",enroll_date), 
+                               MR_36 = paste0(Epoch2," Results ", fu_date_prev2),
+                               MR_60 = paste0(Epoch1," Results ", fu_date_prev), CR = paste0("Current Results ", fu_date_c), NR = "Normal Range/\nCut-off*" )
+      ft2 <- bg(ft2, bg="grey",part = "header")
+      ft2 <- font(ft2,fontname = "Arial",part = "header")
+      ft2 <- font(ft2,fontname = "Arial",part = "body")
+      ft2 <- theme_box(ft2)
+      
+      
+      if(length(df2)==7){
+        ft2 <- width(ft2, j = 1:7, width=.9)
+        ft2 <- merge_at(ft2, i = 1, j = 1:2, part = "header")
+        ft2 <- merge_at(ft2, i = 1:4, j = 1, part = "body")
+        ft2 <- merge_at(ft2, i = 5:7, j = 1, part = "body")
+        ft2 <- fontsize(ft2, j=1, size = 9, part="body")
+        ft2 <- fontsize(ft2, j=1:7, size = 10, part="header")
+        ft2 <- fontsize(ft2, j=2:7, size = 10, part="body")
+        ft2 <- align(ft2, align = "center", part="header")
+        ft2 <- align(ft2, align = "center", part="body")
+        ft2 <- align(ft2, i=1:9, j=2, align="left",part="body")
+        ft2 <- valign(ft2, i=1:9, j=3:7, valign="center", part="body")
+        ft2 <- height(ft2, height = .4, part = "header")
+        #ft2 <- width(ft2, j = 1, width = .85)
+        ft2 <- width(ft2, j = 2, width = 1.25)
+      } else {
+        ft2 <- width(ft2, j = 1:6, width=.9)
+        ft2 <- merge_at(ft2, i = 1, j = 1:2, part = "header")
+        ft2 <- merge_at(ft2, i = 1:4, j = 1, part = "body")
+        ft2 <- merge_at(ft2, i = 5:7, j = 1, part = "body")
+        ft2 <- fontsize(ft2, j=1, size = 9, part="body")
+        ft2 <- fontsize(ft2, j=1:6, size = 10, part="header")
+        ft2 <- fontsize(ft2, j=2:6, size = 10, part="body")
+        ft2 <- align(ft2, align = "center", part="header")
+        ft2 <- align(ft2, align = "center", part="body")
+        ft2 <- align(ft2, i=1:9, j=2, align="left",part="body")
+        ft2 <- valign(ft2, i=1:9, j=3:6, valign="center", part="body")
+        ft2 <- height(ft2, height = .4, part = "header")
+        #ft2 <- width(ft2, j = 1, width = .85)
+        ft2 <- width(ft2, j = 2, width = 1.25)
+      }
+      
+      for (ii in 3:(ncol(df2)-1)) {
+        if (df2[1,ii]=="-"){ft2<-bold(ft2, i = 1, j = ii, bold = FALSE, part = "body")}else{if(as.integer(df2[1,ii]) > 200){ft2<-bold(ft2, i = 1, j = ii, bold = TRUE, part = "body")}}
+        if (df2[2,ii]=="-"){
+          ft2<-bold(ft2, i = 2, j = ii, bold = FALSE, part = "body")}
+        else{
+          if (sex == "Female" & as.integer(df2[2,ii]) < 50){ft2 <- bold(ft2, i = 2, j = ii, bold = TRUE, part = "body")}
+          if (sex == "Male" & as.integer(df2[2,ii]) < 40){ft2 <- bold(ft2, i = 2, j = ii, bold = TRUE, part = "body")}
+        }
+        
+        if (df2[3,ii]=="-"){ft2<-bold(ft2, i = 3, j = ii, bold = FALSE, part = "body")}else{if(as.integer(df2[3,ii]) > 100){ft2<-bold(ft2, i = 3, j = ii, bold = TRUE, part = "body")}}
+        if (df2[4,ii]=="-"){ft2<-bold(ft2, i = 4, j = ii, bold = FALSE, part = "body")}else{if(as.integer(df2[4,ii]) > 150){ft2<-bold(ft2, i = 4, j = ii, bold = TRUE, part = "body")}}
+        if (df2[5,ii]=="-"){ft2<-bold(ft2, i = 5, j = ii, bold = FALSE, part = "body")}else{if(as.integer(df2[5,ii]) > 5.7){ft2<-bold(ft2, i = 5, j = ii, bold = TRUE, part = "body")}}
+        if(class(df2[6,ii])=="character") {df2[6,ii] <- NA} else {
+          if (is.na(as.double(df2[6,ii]))) {ft2 <- bold(ft2, i = 6, j = ii, bold = TRUE, part = "body")} else {
+            if (df2[6,ii]=="-"){ft2<-bold(ft2, i = 6, j = ii, bold = FALSE, part = "body")}else{if(as.integer(df2[6,ii]) > 17){ft2<-bold(ft2, i = 6, j = ii, bold = TRUE, part = "body")}}
+          }
+        }      
+        if (df2[7,ii]=="-"){ft2<-bold(ft2, i = 7, j = ii, bold = FALSE, part = "body")}else{if(as.integer(df2[7,ii]) > 99 | as.integer(df2[7,ii]) < 70){ft2<-bold(ft2, i = 7, j = ii, bold = TRUE, part = "body")}}
+        if (df2[8,ii]=="-"){ft2<-bold(ft2, i = 8, j = ii, bold = FALSE, part = "body")}else{if(as.integer(df2[8,ii]) > 3.6 | as.integer(df2[8,ii]) < 0.35){ft2<-bold(ft2, i = 8, j = ii, bold = TRUE, part = "body")}}
+        
+        if(class(df2[9,ii])=="character") {df2[9,ii] <- NA} else {
+          if (is.na(as.double(df2[9,ii]))) {ft2 <- bold(ft2, i = 9, j = ii, bold = TRUE, part = "body")} else {
+            if ((as.double(df2[9,ii]) > 2.9) | (as.double(df2[9,ii]) < 0)) {ft2 <- bold(ft2, i = 9, j = ii, bold = TRUE, part = "body")}}
+        }
+      }
+      
       print("Enrollment Memory Results")
       # barr
       print("Enrollment Heart Results")
