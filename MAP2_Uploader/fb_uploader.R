@@ -8,9 +8,9 @@ fb_uploader<<- function(epochh,vmac) {
   library(Hmisc)
   library(tidyverse)
   library(flextable)
-  library(ggpattern)
-  library(patternplot)
-  library(png)
+  #library(ggpattern)
+  #library(patternplot)
+  #library(png)
   library(readxl)
   
   # Global Pathing
@@ -67,6 +67,7 @@ fb_uploader<<- function(epochh,vmac) {
   edc_datas <- exportReports(EDC, 275637)
   echo_datas <- exportReports(EDC,281651)
   cond_datas <- exportReports(EDC,284613)
+  dep_datas <- exportReports(EDC,294830)
   
   events <- c("eligibility_arm_1","enrollmentbaseline_arm_1","18month_followup_arm_1","3year_followup_arm_1","5year_followup_arm_1","7year_followup_arm_1","9year_followup_arm_1","11year_followup_arm_1")
   
@@ -88,6 +89,10 @@ fb_uploader<<- function(epochh,vmac) {
   edc_data <- edc_datas[which(edc_datas$map_id==as.integer(map_id)),]
   if (length(edc_data$map_id)==0) {fail <- 1}
   edc_data <- edc_data[which(edc_data[,"redcap_event_name"]== events[epochh+1]),]
+  
+  dep_data <- dep_datas[which(dep_datas$map_id==as.integer(map_id)),]
+  if (length(dep_data$map_id)==0) {fail <- 1}
+  dep_data <- dep_data[which(dep_data[,"redcap_event_name"]== events[epochh]),]
   
   echo_datas <- echo_datas[which(echo_datas$map_id==as.integer(map_id)),]
   echo_data <- echo_datas[which(echo_datas[,"redcap_event_name"]== events[epochh+1]),]
@@ -127,99 +132,6 @@ fb_uploader<<- function(epochh,vmac) {
     
     
     map_id <- as.character(pdb_data[,"map_id"])
-    
-    if (e > 4) {
-      # 7 Year Data
-      tm7yr_datas <- exportReports(tm7yr, 248514)
-      fii7yrs <- exportReports(FII, 252309)
-      fii7yrs[which(is.na(fii7yrs["brain_incidental"])),"brain_incidental"]<- "No"
-      
-      ind <- as.integer(map_id)
-      inddd <- c()
-      if (exists("indd")==TRUE) remove("indd")
-      try(indd <- find.matches(tm7yr_datas[, "map_id"],ind),silent = TRUE)
-      if (exists("indd")==FALSE) stop("Not Enough Data")
-      for (i in (1:length(indd$matches))){if (indd$matches[i]>0){inddd<-c(inddd,i)}}
-      tm7yr_datas[inddd,which(is.na(tm7yr_datas[inddd,1:17]))]<- "Missing"
-      tm7yr_data <- tm7yr_datas[inddd,]
-      #if (nrow(tm7yr_data)==FALSE) {stop("Not Enough Data")}
-      if (nrow(tm7yr_data)==FALSE) {tm7yr_data <- c(rep(NA,38))}
-      
-      inddd <- c()
-      if (exists("indd")==TRUE) remove("indd")
-      try(indd <- find.matches(fii7yrs[, "map_id"],ind),silent = TRUE)
-      if (exists("indd")==FALSE) stop("Not Enough Data")
-      for (i in (1:length(indd$matches))){if (indd$matches[i]>0){inddd<-c(inddd,i)}}
-      #fii7yrs[inddd,which(is.na(fii7yrs[inddd,]))] <- "Missing"
-      fii7yr <- fii7yrs[inddd,]
-      fii7yr[which(is.na(fii7yr))] <- "Missing"
-      #if (nrow(fii7yr)==FALSE) {stop("Not Enough Data")}
-    }
-    
-    if (e > 3) {
-      # 5 Year Data 
-      
-      tm60_datas <- exportReports(tm60, 248512)
-      fii60s <- exportReports(FII, 252308)
-      fii60s[which(is.na(fii60s["extracardiac_incidental"])),"extracardiac_incidental"]<- "No"
-      fii60s[which(is.na(fii60s["brain_incidental"])),"brain_incidental"]<- "No"
-      
-      inddd <- c()
-      if (exists("indd")==TRUE) remove("indd")
-      try(indd <- find.matches(tm60_datas[, "map_id"],ind),silent = TRUE)
-      if (exists("indd")==FALSE) stop("Not Enough Data")
-      for (i in (1:length(indd$matches))){if (indd$matches[i]>0){inddd<-c(inddd,i)}}
-      tm60_datas[inddd,which(is.na(tm60_datas[inddd,]))]<- "Missing"
-      tm60_data <- tm60_datas[inddd,]
-      #if (nrow(tm60_data)==FALSE) {stop("Not Enough Data")}
-      
-      inddd <- c()
-      if (exists("indd")==TRUE) remove("indd")
-      try(indd <- find.matches(fii60s[, "map_id"],ind),silent = TRUE)
-      if (exists("indd")==FALSE) stop("Not Enough Data")
-      for (i in (1:length(indd$matches))){if (indd$matches[i]>0){inddd<-c(inddd,i)}}
-      fii60s[inddd,which(is.na(fii60s[inddd,]))]<- "Missing"
-      fii60 <- fii60s[inddd,]
-      #if (nrow(fii60)==FALSE) {stop("Not Enough Data")}
-    }
-    
-    if (e > 2) {
-      #3 Year Data
-      
-      tm36_datas <- exportReports(tm36, 248500)
-      fii36s <- exportReports(FII, 252306)
-      fii36s[which(is.na(fii36s["extracardiac_incidental"])),"extracardiac_incidental"]<- "No"
-      fii36s[which(is.na(fii36s["brain_incidental"])),"brain_incidental"]<- "No"
-      
-      inddd <- c()
-      if (exists("indd")==TRUE) remove("indd")
-      try(indd <- find.matches(tm36_datas[, "map_id"],ind),silent = TRUE)
-      if (exists("indd")==FALSE) stop("Not Enough Data")
-      for (i in (1:length(indd$matches))){if (indd$matches[i]>0){inddd<-c(inddd,i)}}
-      tm36_datas[inddd,which(is.na(tm36_datas[inddd,]))]<- "Missing"
-      tm36_data <- tm36_datas[inddd,]
-      #if (nrow(tm36_data)==FALSE) {stop("Not Enough Data")}
-      
-      inddd <- c()
-      if (exists("indd")==TRUE) remove("indd")
-      try(indd <- find.matches(fii36s[, "map_id"],ind),silent = TRUE)
-      if (exists("indd")==FALSE) stop("Not Enough Data")
-      for (i in (1:length(indd$matches))){if (indd$matches[i]>0){inddd<-c(inddd,i)}}
-      fii36s[inddd,which(is.na(fii36s[inddd,]))]<- "Missing"
-      fii36 <- fii36s[inddd,]
-      #if (nrow(fii36)==FALSE) {stop("Not Enough Data")}
-    }
-    
-    # Enrollment Data
-    tme_datas <- exportReports(tme, 248431)
-    inddd <- c()
-    if (exists("indd")==TRUE) remove("indd")
-    try(indd <- find.matches(tme_datas[, "map_id"],ind),silent = TRUE)
-    if (exists("indd")==FALSE) stop("Not Enough Data")
-    for (i in (1:length(indd$matches))){if (indd$matches[i]>0){inddd<-c(inddd,i)}}
-    tme_datas[inddd,which(is.na(tme_datas[inddd,]))]<- "Missing"
-    tme_data <- tme_datas[inddd,]
-    if (nrow(tme_data)==FALSE) {stop("Not Enough Data")}
     
     i<-1
     
@@ -310,24 +222,117 @@ fb_uploader<<- function(epochh,vmac) {
     if (is.na(state_physician3)) {state_physician3<<- ""}
     zip_physician3<<- pdb_data[i, "feedback_physician3_zip"]
     if (is.na(zip_physician3)) {zip_physician3<<- ""}
-    #if (is.na(first_name_physician4)) {first_name_physician4<<- ""} else {first_name_physician4<<- paste0("     3.  ",pdb_data[i, "feedback_physician4_first_name"])}
-    #if (is.na(last_name_physician4)) {last_name_physician4<<- ""} else {last_name_physician4<<- paste0(pdb_data[i, "feedback_physician4_last_name"])}
-    #if (is.na(street_address_physician4)) {street_address_physician4<<- ""} else {street_address_physician4<<- paste0("          ",pdb_data[i, "feedback_physician4_street_address"])}
-    #if (is.na(city_physician4)) {city_physician4<<- ""} else {city_physician4<<- paste0("          ",pdb_data[i, "feedback_physician4_city"],",")}
-    #state_physician4<<- pdb_data[i, "feedback_physician4_state"]
-    #if (is.na(state_physician4)) {state_physician4<<- ""}
-    #zip_physician4<<- pdb_data[i, "feedback_physician4_zip"]
-    #if (is.na(zip_physician4)) {zip_physician4<<- ""}
-    #if (is.na(first_name_physician5)) {first_name_physician5<<- ""} else {first_name_physician5<<- paste0("     3.  ",pdb_data[i, "feedback_physician5_first_name"])}
-    #if (is.na(last_name_physician5)) {last_name_physician5<<- ""} else {last_name_physician5<<- paste0(pdb_data[i, "feedback_physician5_last_name"])}
-    #if (is.na(street_address_physician5)) {street_address_physician5<<- ""} else {street_address_physician5<<- paste0("          ",pdb_data[i, "feedback_physician5_street_address"])}
-    #if (is.na(city_physician5)) {city_physician5<<- ""} else {city_physician5<<- paste0("          ",pdb_data[i, "feedback_physician5_city"],",")}
-    #state_physician5<<- pdb_data[i, "feedback_physician5_state"]
-    #if (is.na(state_physician5)) {state_physician5<<- ""}
-    #zip_physician5<<- pdb_data[i, "feedback_physician5_zip"]
-    #if (is.na(zip_physician5)) {zip_physician5<<- ""}
+    if (is.na(first_name_physician4)) {first_name_physician4<<- ""} else {first_name_physician4<<- paste0("     3.  ",pdb_data[i, "feedback_physician4_first_name"])}
+    if (is.na(last_name_physician4)) {last_name_physician4<<- ""} else {last_name_physician4<<- paste0(pdb_data[i, "feedback_physician4_last_name"])}
+    if (is.na(street_address_physician4)) {street_address_physician4<<- ""} else {street_address_physician4<<- paste0("          ",pdb_data[i, "feedback_physician4_street_address"])}
+    if (is.na(city_physician4)) {city_physician4<<- ""} else {city_physician4<<- paste0("          ",pdb_data[i, "feedback_physician4_city"],",")}
+    state_physician4<<- pdb_data[i, "feedback_physician4_state"]
+    if (is.na(state_physician4)) {state_physician4<<- ""}
+    zip_physician4<<- pdb_data[i, "feedback_physician4_zip"]
+    if (is.na(zip_physician4)) {zip_physician4<<- ""}
+    if (is.na(first_name_physician5)) {first_name_physician5<<- ""} else {first_name_physician5<<- paste0("     3.  ",pdb_data[i, "feedback_physician5_first_name"])}
+    if (is.na(last_name_physician5)) {last_name_physician5<<- ""} else {last_name_physician5<<- paste0(pdb_data[i, "feedback_physician5_last_name"])}
+    if (is.na(street_address_physician5)) {street_address_physician5<<- ""} else {street_address_physician5<<- paste0("          ",pdb_data[i, "feedback_physician5_street_address"])}
+    if (is.na(city_physician5)) {city_physician5<<- ""} else {city_physician5<<- paste0("          ",pdb_data[i, "feedback_physician5_city"],",")}
+    state_physician5<<- pdb_data[i, "feedback_physician5_state"]
+    if (is.na(state_physician5)) {state_physician5<<- ""}
+    zip_physician5<<- pdb_data[i, "feedback_physician5_zip"]
+    if (is.na(zip_physician5)) {zip_physician5<<- ""}
     
     if (e > 3) {
+      if (e > 4) {
+        # 7 Year Data
+        tm7yr_datas <- exportReports(tm7yr, 248514)
+        fii7yrs <- exportReports(FII, 252309)
+        fii7yrs[which(is.na(fii7yrs["brain_incidental"])),"brain_incidental"]<- "No"
+        
+        ind <- as.integer(map_id)
+        inddd <- c()
+        if (exists("indd")==TRUE) remove("indd")
+        try(indd <- find.matches(tm7yr_datas[, "map_id"],ind),silent = TRUE)
+        if (exists("indd")==FALSE) stop("Not Enough Data")
+        for (i in (1:length(indd$matches))){if (indd$matches[i]>0){inddd<-c(inddd,i)}}
+        tm7yr_datas[inddd,which(is.na(tm7yr_datas[inddd,1:17]))]<- "Missing"
+        tm7yr_data <- tm7yr_datas[inddd,]
+        #if (nrow(tm7yr_data)==FALSE) {stop("Not Enough Data")}
+        if (nrow(tm7yr_data)==FALSE) {tm7yr_data <- c(rep(NA,38))}
+        
+        inddd <- c()
+        if (exists("indd")==TRUE) remove("indd")
+        try(indd <- find.matches(fii7yrs[, "map_id"],ind),silent = TRUE)
+        if (exists("indd")==FALSE) stop("Not Enough Data")
+        for (i in (1:length(indd$matches))){if (indd$matches[i]>0){inddd<-c(inddd,i)}}
+        #fii7yrs[inddd,which(is.na(fii7yrs[inddd,]))] <- "Missing"
+        fii7yr <- fii7yrs[inddd,]
+        fii7yr[which(is.na(fii7yr))] <- "Missing"
+        #if (nrow(fii7yr)==FALSE) {stop("Not Enough Data")}
+      }
+      
+      if (e > 3) {
+        # 5 Year Data 
+        
+        tm60_datas <- exportReports(tm60, 248512)
+        fii60s <- exportReports(FII, 252308)
+        fii60s[which(is.na(fii60s["extracardiac_incidental"])),"extracardiac_incidental"]<- "No"
+        fii60s[which(is.na(fii60s["brain_incidental"])),"brain_incidental"]<- "No"
+        
+        inddd <- c()
+        if (exists("indd")==TRUE) remove("indd")
+        try(indd <- find.matches(tm60_datas[, "map_id"],ind),silent = TRUE)
+        if (exists("indd")==FALSE) stop("Not Enough Data")
+        for (i in (1:length(indd$matches))){if (indd$matches[i]>0){inddd<-c(inddd,i)}}
+        tm60_datas[inddd,which(is.na(tm60_datas[inddd,]))]<- "Missing"
+        tm60_data <- tm60_datas[inddd,]
+        #if (nrow(tm60_data)==FALSE) {stop("Not Enough Data")}
+        
+        inddd <- c()
+        if (exists("indd")==TRUE) remove("indd")
+        try(indd <- find.matches(fii60s[, "map_id"],ind),silent = TRUE)
+        if (exists("indd")==FALSE) stop("Not Enough Data")
+        for (i in (1:length(indd$matches))){if (indd$matches[i]>0){inddd<-c(inddd,i)}}
+        fii60s[inddd,which(is.na(fii60s[inddd,]))]<- "Missing"
+        fii60 <- fii60s[inddd,]
+        #if (nrow(fii60)==FALSE) {stop("Not Enough Data")}
+      }
+      
+      if (e > 2) {
+        #3 Year Data
+        
+        tm36_datas <- exportReports(tm36, 248500)
+        fii36s <- exportReports(FII, 252306)
+        fii36s[which(is.na(fii36s["extracardiac_incidental"])),"extracardiac_incidental"]<- "No"
+        fii36s[which(is.na(fii36s["brain_incidental"])),"brain_incidental"]<- "No"
+        
+        inddd <- c()
+        if (exists("indd")==TRUE) remove("indd")
+        try(indd <- find.matches(tm36_datas[, "map_id"],ind),silent = TRUE)
+        if (exists("indd")==FALSE) stop("Not Enough Data")
+        for (i in (1:length(indd$matches))){if (indd$matches[i]>0){inddd<-c(inddd,i)}}
+        tm36_datas[inddd,which(is.na(tm36_datas[inddd,]))]<- "Missing"
+        tm36_data <- tm36_datas[inddd,]
+        #if (nrow(tm36_data)==FALSE) {stop("Not Enough Data")}
+        
+        inddd <- c()
+        if (exists("indd")==TRUE) remove("indd")
+        try(indd <- find.matches(fii36s[, "map_id"],ind),silent = TRUE)
+        if (exists("indd")==FALSE) stop("Not Enough Data")
+        for (i in (1:length(indd$matches))){if (indd$matches[i]>0){inddd<-c(inddd,i)}}
+        fii36s[inddd,which(is.na(fii36s[inddd,]))]<- "Missing"
+        fii36 <- fii36s[inddd,]
+        #if (nrow(fii36)==FALSE) {stop("Not Enough Data")}
+      }
+      
+      # Enrollment Data
+      tme_datas <- exportReports(tme, 248431)
+      inddd <- c()
+      if (exists("indd")==TRUE) remove("indd")
+      try(indd <- find.matches(tme_datas[, "map_id"],ind),silent = TRUE)
+      if (exists("indd")==FALSE) stop("Not Enough Data")
+      for (i in (1:length(indd$matches))){if (indd$matches[i]>0){inddd<-c(inddd,i)}}
+      tme_datas[inddd,which(is.na(tme_datas[inddd,]))]<- "Missing"
+      tme_data <- tme_datas[inddd,]
+      if (nrow(tme_data)==FALSE) {stop("Not Enough Data")}
+      
       # Follow up dates
       enroll_date <<- format(as.Date(map_data[1, "visit1_date"]), "%m/%d/%Y")
       fu_date_prev2 <<- format(as.Date(map_data[5, "visit1_date"]), "%m/%d/%Y")
@@ -336,6 +341,8 @@ fb_uploader<<- function(epochh,vmac) {
       if (is.na(fu_date_c)) {fu_date_c <<- format(as.Date(map_data[3, "visit1_date"]), "%m/%d/%Y")}
       
       print("Creating Data Tables")
+      
+      i <- 1
       
       df <- data.frame(
         Test = c("Heart rate", "Blood pressure", "Height", "Weight", "Body Mass Index"),
@@ -625,7 +632,25 @@ fb_uploader<<- function(epochh,vmac) {
           dnf <- any(dde_data==-9999); if (is.na(dnf)) {dnf <- 0}
           miss <- any(is.na(dde_data[ij,])); if(is.na(miss)) {miss <- 0}
           if (incomplete | dnf | miss) {err <- "Some NP data is missing from the DDE; Leter generated without Memory Chart"; barr <- "Not enough data to create barchart"} else {
-          
+            
+            age <- pdb_data$age
+            edu <- pdb_data$education
+            race <- pdb_data$np_norm_race
+            
+            if (age < 55) {age_r <- "50-54"}; if (age < 60 & age >= 55) {age_r <- "55-59"}; if (age < 65 & age >= 60) {age_r <- "60-64"}
+            if (age < 70 & age >= 65) {age_r <- "65-69"}; if (age < 75 & age >= 70) {age_r <- "70-74"} 
+            if (age < 80 & age >= 75) {age_r <- "75-79"}; if (age >= 80) {age_r <- "80-85"}
+            
+            if (edu < 9) {edu_r <- "7-8"}; if (edu >= 9 & edu < 12 ) {edu_r <- "9-11"}; if (edu == 12 ) {edu_r <- "12"}
+            if (edu >= 13 & edu < 16 ) {edu_r <- "13-15"}; if (edu >= 16 & edu < 18 ) {edu_r <- "16-17"}
+            if (edu >= 18) {edu_r <- "18-20"}
+            
+            sex_conv <- c("Male" = "M","Female"="F")
+            sex_r <- sex_conv[sex]
+            
+            race_conv <- c("White/Caucasian"="C","African American/Black"="AA")
+            race_r <- race_conv[race]
+            
             # CVLT
             if (is.na(np_cvlt1to5_z[4])) {
               np_cvlt1to5_tscore <- edc_data["np_cvlt1to5_tscore"]
@@ -642,8 +667,6 @@ fb_uploader<<- function(epochh,vmac) {
             
             #Tower
             if (is.na(np_tower_z[4])) {
-              age <- dde_data[ij,"age"]
-              
               np_tower1 <- as.integer(dde_data[ij,"np_tower1"])-1
               np_tower2 <- as.integer(dde_data[ij,"np_tower2"])-1
               np_tower3 <- as.integer(dde_data[ij,"np_tower3"])-1
@@ -661,18 +684,6 @@ fb_uploader<<- function(epochh,vmac) {
             
             # Animal
             if (is.na(np_anim_z[4])) {
-              age <- dde_data[ij,"age"]
-              if (age < 55) {age_r <- "50-54"}; if (age < 60 & age >= 55) {age_r <- "55-59"}; if (age < 65 & age >= 60) {age_r <- "60-64"}
-              if (age < 70 & age >= 65) {age_r <- "65-69"}; if (age < 75 & age >= 70) {age_r <- "70-74"} 
-              if (age < 80 & age >= 75) {age_r <- "75-79"}; if (age >= 80) {age_r <- "80-85"}
-              edu <- dde_data[ij,"education"]
-              if (edu < 9) {edu_r <- "7-8"}; if (edu >= 9 & edu < 12 ) {edu_r <- "9-11"}; if (edu == 12 ) {edu_r <- "12"}
-              if (edu >= 13 & edu < 16 ) {edu_r <- "13-15"}; if (edu >= 16 & edu < 18 ) {edu_r <- "16-17"}
-              if (edu >= 18) {edu_r <- "18-20"}
-              sex_conv <- c("M","F","missing","N/A")
-              sex_r <- sex_conv[dde_data[ij,"sex"]]
-              race_conv <- c("White/Caucasian"="C","African American/Black"="AA")
-              race <- race_conv[pdb_data$np_norm_race]
               
               np_anim_q1 <- dde_data[ij,"np_anim_q1"]
               np_anim_q2 <- dde_data[ij,"np_anim_q2"]
@@ -682,7 +693,7 @@ fb_uploader<<- function(epochh,vmac) {
               anim_ex <- read_excel(ex_path, sheet = "heaton_scaled")
               np_anim_sscore <- anim_ex[as.integer(ceiling(np_anim))+1,4]
               anim_ex <- read_excel(ex_path, sheet = "heaton_animals")
-              var_anim <- paste0(sex_r,"/",edu_r,"/",age_r,"/",race)
+              var_anim <- paste0(sex_r,"/",edu_r,"/",age_r,"/",race_r)
               np_anim_tscore <- anim_ex[as.integer(ceiling(20-np_anim_sscore)),var_anim]
               np_anim_z[4] <- (as.integer(np_anim_tscore) - 50) / 10
             }
@@ -693,7 +704,6 @@ fb_uploader<<- function(epochh,vmac) {
             }
             
             if (is.na(np_inhibit_z[4])) {
-              age <- dde_data[ij,"age"]
               np_inhibit <- dde_data[ij,"np_inhibit"]
               inhibit_ex <- read_excel(ex_path, sheet = 12)
               np_inhibit_ss <- inhibit_ex[as.integer(ceiling(np_inhibit))+1,as.character(age)]
@@ -701,30 +711,16 @@ fb_uploader<<- function(epochh,vmac) {
             }
             
             if (is.na(np_fas_z[4])) {
-              age <- dde_data[ij,"age"]
-              if (age < 55) {age_r <- "50-54"}; if (age < 60 & age >= 55) {age_r <- "55-59"}; if (age < 65 & age >= 60) {age_r <- "60-64"}
-              if (age < 70 & age >= 65) {age_r <- "65-69"}; if (age < 75 & age >= 70) {age_r <- "70-74"} 
-              if (age < 80 & age >= 75) {age_r <- "75-79"}; if (age >= 80) {age_r <- "80-85"}
-              edu <- dde_data[ij,"education"]
-              if (edu < 9) {edu_r <- "7-8"}; if (edu >= 9 & edu < 12 ) {edu_r <- "9-11"}; if (edu == 12 ) {edu_r <- "12"}
-              if (edu >= 13 & edu < 16 ) {edu_r <- "13-15"}; if (edu >= 16 & edu < 18 ) {edu_r <- "16-17"}
-              if (edu >= 18) {edu_r <- "18-20"}
-              sex_conv <- c("M","F","missing","N/A")
-              sex_r <- sex_conv[dde_data[ij,"sex"]]
-              race_conv <- c("White/Caucasian"="C","African American/Black"="AA")
-              race <- race_conv[pdb_data$np_norm_race]
-              
               np_fas <- dde_data[ij,"np_fas"]
               fas_ex <- read_excel(ex_path, sheet = "heaton_scaled")
               np_fas_sscore <- fas_ex[as.integer(ceiling(np_fas))+1,5]
               fas_ex <- read_excel(ex_path, sheet = "heaton_fas")
-              var_fas <- paste0(sex_r,"/",edu_r,"/",age_r,"/",race)
+              var_fas <- paste0(sex_r,"/",edu_r,"/",age_r,"/",race_r)
               np_fas_tscore <- fas_ex[as.integer(ceiling(20-np_fas_sscore)),var_fas]
               np_fas_z[4] <- (as.integer(np_fas_tscore) - 50) / 10 
             }
             
             if (is.na(np_tmtb_z[4])) {
-              age <- dde_data[ij,"age"]
               np_tmtb <- dde_data[ij,"np_tmtb"]
               if (np_tmtb>599) {np_tmtb <- 599}
               tmtb_ex <- read_excel(ex_path, sheet = 6)
@@ -733,8 +729,6 @@ fb_uploader<<- function(epochh,vmac) {
             }
             
             if (is.na(np_tmta_z[4])) {
-              age <- dde_data[ij,"age"]
-              
               np_tmta <- dde_data[ij,"np_tmta"]
               if (np_tmta>599) {np_tmta <- 599}
               tmta_ex <- read_excel(ex_path, sheet = 3)
@@ -743,8 +737,6 @@ fb_uploader<<- function(epochh,vmac) {
             }
             
             if (is.na(np_hvot_z[4])) {
-              age <- dde_data[ij,"age"]
-              edu <- dde_data[ij,"education"]
               np_hvot <- dde_data[ij,"np_hvot"]
               if (age < 55) {hvot_ex <- read_excel(ex_path, sheet = 22)}
               if (55 <= age | age < 60) {hvot_ex <- read_excel(ex_path, sheet = 23)}
@@ -757,7 +749,6 @@ fb_uploader<<- function(epochh,vmac) {
             }
             
             if (is.na(np_digsymb_z[4])) {
-              age <- dde_data[ij,"age"]
               np_digsymb <- dde_data[ij,"np_digsymb"]
               digsymb_ex <- read_excel(ex_path, sheet = 21)
               np_digsymb_ss <- digsymb_ex[as.integer(ceiling(np_digsymb))+1,as.character(age)]
@@ -765,8 +756,6 @@ fb_uploader<<- function(epochh,vmac) {
             }
             
             if (is.na(np_color_z[4])) {
-              age <- dde_data[ij,"age"]
-              
               np_color <- dde_data[ij,"np_color"]
               color_ex <- read_excel(ex_path, sheet = 10)
               np_color_ss <- color_ex[as.integer(ceiling(np_color))+1,as.character(age)]
@@ -774,8 +763,6 @@ fb_uploader<<- function(epochh,vmac) {
             }
             
             if (is.na(np_word_z[4])) {
-              age <- dde_data[ij,"age"]
-              
               np_word <- dde_data[ij,"np_word"]
               word_ex <- read_excel(ex_path, sheet = 11)
               np_word_ss <- word_ex[as.integer(ceiling(np_word))+1,as.character(age)]
@@ -808,8 +795,9 @@ fb_uploader<<- function(epochh,vmac) {
             patternss<- factor(patterns,levels = pattern_factor)
             for (ii in 1:length(countss)) {if (countss[ii]<0.25) {countss[ii]<-0.25}; if (countss[ii] > 5.9) {countss[ii]<-5.9}}
             
-            barr <- ggplot(data,aes(fill=cond, y=countss, x=spec,pattern_key_scale_factor=patterns)) + theme_bw(14)+scale_fill_manual(values = c("black","white","white","black"))+
-              geom_bar_pattern(width = .75,color=rep(c("black"),24),aes(pattern=cond),pattern_density=rep(c(0.3,0.2,0.2,0.2),6),pattern_colour=rep(c("black","black","black","white"),6),pattern_fill = rep(c("white","black","black","white"),6),pattern_spacing=.01,position="dodge", stat="identity",pattern_key_scale_factor = 1) +
+            barr <- ggplot(data) + theme_bw(14) + 
+              scale_fill_manual(values = c("black","white","black","white"))+
+              ggpattern::geom_bar_pattern(width = .75,position="dodge", stat="identity",aes(fill=cond, y=countss, x=spec,pattern=patterns),pattern_density=rep(c(0.075,0.075,0.2,0.2),6),pattern_spacing=rep(c(0.015,0.02,0.02,0.02),6),pattern_colour=rep(c("white","black","black","black"),6),pattern_fill = rep(c("black","white","black","black"),6),color="black") +
               scale_y_continuous(name=NULL,breaks=c(1.5,3,4.5),labels = c("Below\nNormal","Normal","Above\nNormal"),limits = c(0,6),expand = c(0, 0))+
               scale_x_discrete(name=NULL) + theme(panel.spacing.x = unit(1,"lines"),plot.background = element_rect(fill = "white",colour = "black",size = 1),plot.margin = unit(c(.3, .8, .3, .3), "cm"),legend.key.size = unit(.21, 'cm'),panel.grid.major.y = element_line(c(1.5,3,4.5),color=c("black","black","black")),panel.grid.minor.y=element_blank(),panel.grid.major.x=element_blank(),axis.text = element_text(colour = "black"),plot.title = element_text(size = 14,face = "bold",hjust = 0.5),axis.ticks = element_blank(),legend.position = "bottom", legend.title = element_blank(),legend.box.margin=margin(-15,0,0,0))+
               coord_fixed(ratio = .4) + labs(title = "Memory Testing Results")
@@ -848,8 +836,9 @@ fb_uploader<<- function(epochh,vmac) {
           patternss<- factor(patterns,levels = pattern_factor)
           for (ii in 1:length(countss)) {if (countss[ii]<0.25) {countss[ii]<-0.25}; if (countss[ii] > 5.9) {countss[ii]<-5.9}}
           
-          barr <- ggplot(data,aes(fill=cond, y=countss, x=spec,pattern_key_scale_factor=patterns)) + theme_bw(14)+scale_fill_manual(values = c("black","white","white","black"))+
-            geom_bar_pattern(width = .75,color=rep(c("black"),24),aes(pattern=cond),pattern_density=rep(c(0.3,0.2,0.2,0.2),6),pattern_colour=rep(c("black","black","black","white"),6),pattern_fill = rep(c("white","black","black","white"),6),pattern_spacing=.01,position="dodge", stat="identity",pattern_key_scale_factor = 1) +
+          barr <- ggplot(data) + theme_bw(14) + 
+            scale_fill_manual(values = c("black","white","black","white"))+
+            ggpattern::geom_bar_pattern(width = .75,position="dodge", stat="identity",aes(fill=cond, y=countss, x=spec,pattern=patterns),pattern_density=rep(c(0.075,0.075,0.2,0.2),6),pattern_spacing=rep(c(0.015,0.02,0.02,0.02),6),pattern_colour=rep(c("white","black","black","black"),6),pattern_fill = rep(c("black","white","black","black"),6),color="black") +
             scale_y_continuous(name=NULL,breaks=c(1.5,3,4.5),labels = c("Below\nNormal","Normal","Above\nNormal"),limits = c(0,6),expand = c(0, 0))+
             scale_x_discrete(name=NULL) + theme(panel.spacing.x = unit(1,"lines"),plot.background = element_rect(fill = "white",colour = "black",size = 1),plot.margin = unit(c(.3, .8, .3, .3), "cm"),legend.key.size = unit(.21, 'cm'),panel.grid.major.y = element_line(c(1.5,3,4.5),color=c("black","black","black")),panel.grid.minor.y=element_blank(),panel.grid.major.x=element_blank(),axis.text = element_text(colour = "black"),plot.title = element_text(size = 14,face = "bold",hjust = 0.5),axis.ticks = element_blank(),legend.position = "bottom", legend.title = element_blank(),legend.box.margin=margin(-15,0,0,0))+
             coord_fixed(ratio = .4) + labs(title = "Memory Testing Results")
@@ -878,12 +867,16 @@ fb_uploader<<- function(epochh,vmac) {
       val_c<<- as.character(echo_c$echo_find2_valve_fx)
       if (val_c=="Normal"){val_c<<-"     2.  No significant"} else {val_c<<-"     2.  Significant"}
       
-      visit_depress<<- tm7yr_data["visit_depress"]
-      if (is.null(row.names(visit_depress))==FALSE) {visit_depress <<- 0}
-      if (is.na(visit_depress)) {visit_depress <<- 0}
-      if (visit_depress == 1) {
-        gds_phys<<- paste0("On a measure assessing depressive symptoms, ",first_name," scored in a range suggesting mild/moderate/severe symptoms of depression. Based upon this score, we recommended that ",first_name," make an appointment for a more detailed clinical assessment of these symptoms.")
-        gds<<- paste0("As discussed on ",feedback_date1,", your scores on a measure assessing depressive symptoms fell in a range suggesting mild/moderate/severe symptoms of depression.  We recommend you make an appointment for a more detailed clinical assessment of these symptoms.  You can request a referral from your primary care doctor.  We would recommend our colleagues who offer clinical services in the Department of Psychiatry at Vanderbilt University.  You can schedule an appointment by calling: 615-936-3555.")
+      qids <- edc_data$qids
+      gds <- edc_data$gds_total_score
+      #if (is.null(row.names(visit_depress))==FALSE) {visit_depress <<- 0}
+      #if (is.na(visit_depress)) {visit_depress <<- 0}
+      if (qids > 5 | gds > 4) {
+        int <- "mild"
+        if (gds > 8 | qids > 10) {int <- "moderate"}
+        if (gds > 11 | qids > 15) {int <- "severe"}
+        gds_phys <<- paste0("On a measure assessing depressive symptoms, ",first_name," scored in a range suggesting ",int," symptoms of depression. Based upon this score, we recommended that ",first_name," make an appointment for a more detailed clinical assessment of these symptoms.")
+        gds <<- paste0("As discussed on ",feedback_date1,", your scores on a measure assessing depressive symptoms fell in a range suggesting ",int," symptoms of depression.  We recommend you make an appointment for a more detailed clinical assessment of these symptoms.  You can request a referral from your primary care doctor.  We would recommend our colleagues who offer clinical services in the Department of Psychiatry at Vanderbilt University.  You can schedule an appointment by calling: 615-936-3555.")
       } else {gds<<- ""; gds_phys<<- ""}
       
       ei_p2 <- echo_p2$extracardiac_incidental; if (is.na(ei_p2)) {ei_p2 <- "No"}
@@ -915,6 +908,24 @@ fb_uploader<<- function(epochh,vmac) {
       
       enroll_date <<- format(as.Date(map_data[1, "visit1_date"]), "%m/%d/%Y")
       
+      age <- pdb_data$age
+      edu <- pdb_data$education
+      race <- pdb_data$np_norm_race
+      
+      if (age < 55) {age_r <- "50-54"}; if (age < 60 & age >= 55) {age_r <- "55-59"}; if (age < 65 & age >= 60) {age_r <- "60-64"}
+      if (age < 70 & age >= 65) {age_r <- "65-69"}; if (age < 75 & age >= 70) {age_r <- "70-74"} 
+      if (age < 80 & age >= 75) {age_r <- "75-79"}; if (age >= 80) {age_r <- "80-85"}
+      
+      if (edu < 9) {edu_r <- "7-8"}; if (edu >= 9 & edu < 12 ) {edu_r <- "9-11"}; if (edu == 12 ) {edu_r <- "12"}
+      if (edu >= 13 & edu < 16 ) {edu_r <- "13-15"}; if (edu >= 16 & edu < 18 ) {edu_r <- "16-17"}
+      if (edu >= 18) {edu_r <- "18-20"}
+      
+      sex_conv <- c("Male" = "M","Female"="F")
+      sex_r <- sex_conv[sex]
+      
+      race_conv <- c("White/Caucasian"="C","African American/Black"="AA")
+      race_r <- race_conv[race]
+      
       print("Creating Data Tables")
       
       df <- data.frame(
@@ -934,7 +945,7 @@ fb_uploader<<- function(epochh,vmac) {
       ft <- flextable(df)
       
       ft <- set_header_labels(ft, Test = "Test", Test.1="Test",
-                              CR = paste0("Current Results ", fu_date_c),CR.1 = paste0("Current Results ", fu_date_c),
+                              CR = paste0("Current Results ", enroll_date),CR.1 = paste0("Current Results ", enroll_date),
                               NR = "Normal Range*" )
       ft <- bg(ft, bg="grey",part = "header")
       ft <- font(ft,fontname = "Arial",part = "header")
@@ -944,43 +955,24 @@ fb_uploader<<- function(epochh,vmac) {
       ft <- theme_box(ft)
       
       
-      if (length(df)==11) {
-        ft <- fontsize(ft, j=1:11, size = 10, part="header")
-        ft <- fontsize(ft, j=1:11, size = 10, part="body")
-        ft <- width(ft,j = 11, width = 1)
-        
-        ft <- merge_h(ft,part = "header")
-        ft <- merge_h_range(ft,i = 1:3,j1=1, j2=2 ,part = "body")
-        ft <- merge_h_range(ft,i = 1,j1=3, j2=4 ,part = "body")
-        ft <- merge_h_range(ft,i = 1,j1=5, j2=6 ,part = "body")
-        ft <- merge_h_range(ft,i = 1,j1=7, j2=8 ,part = "body")
-        ft <- merge_h_range(ft,i = 1,j1=9, j2=10 ,part = "body")
-        ft <- merge_h_range(ft,i = 3,j1=3, j2=4 ,part = "body")
-        ft <- merge_h_range(ft,i = 3,j1=5, j2=6 ,part = "body")
-        ft <- merge_h_range(ft,i = 3,j1=7, j2=8 ,part = "body")
-        ft <- merge_h_range(ft,i = 3,j1=9, j2=10 ,part = "body")
-        ft <- width(ft,j = 3:10, width = .5)
-        ft <- width(ft, j=1:2, width = .75)
-        ft <- align(ft, i = 1:3, j = 1:2, align="left",part="body")
-        evens<-c(4,6,8,10)
-      } else {
-        ft <- fontsize(ft, j=1:9, size = 10, part="header")
-        ft <- fontsize(ft, j=1:9, size = 10, part="body")
-        ft <- width(ft,j = 9, width = 1)
-        
-        ft <- merge_h(ft,part = "header")
-        ft <- merge_h_range(ft,i = 1:5,j1=1, j2=2 ,part = "body")
-        ft <- merge_h_range(ft,i = 1,j1=3, j2=4 ,part = "body")
-        ft <- merge_h_range(ft,i = 1,j1=5, j2=6 ,part = "body")
-        ft <- merge_h_range(ft,i = 1,j1=7, j2=8 ,part = "body")
-        ft <- merge_h_range(ft,i = 3:5,j1=3, j2=4 ,part = "body")
-        ft <- merge_h_range(ft,i = 3:5,j1=5, j2=6 ,part = "body")
-        ft <- merge_h_range(ft,i = 3:5,j1=7, j2=8 ,part = "body")
-        ft <- width(ft,j = 3:8, width = .5)
-        ft <- width(ft, j=1:2, width = .75)
-        ft <- align(ft, i = 1:5, j = 1:2, align="left",part="body")
-        evens<-c(4,6,8)
-      }
+    
+      ft <- fontsize(ft, j=1:5, size = 10, part="header")
+      ft <- fontsize(ft, j=1:5, size = 10, part="body")
+      ft <- width(ft,j = 5, width = 1)
+      
+      ft <- merge_h(ft,part = "header")
+      ft <- merge_h_range(ft,i = 1:5,j1=1, j2=2 ,part = "body")
+      ft <- merge_h_range(ft,i = 1,j1=3, j2=4 ,part = "body")
+      #ft <- merge_h_range(ft,i = 1,j1=5, j2=6 ,part = "body")
+      #ft <- merge_h_range(ft,i = 1,j1=7, j2=8 ,part = "body")
+      ft <- merge_h_range(ft,i = 3:5,j1=3, j2=4 ,part = "body")
+      #ft <- merge_h_range(ft,i = 3:5,j1=5, j2=6 ,part = "body")
+      #ft <- merge_h_range(ft,i = 3:5,j1=7, j2=8 ,part = "body")
+      ft <- width(ft,j = 3:4, width = .5)
+      ft <- width(ft, j=1:2, width = .75)
+      ft <- align(ft, i = 1:3, j = 1:2, align="left",part="body")
+      evens<-c(4)
+    
       
       
       
@@ -1027,9 +1019,6 @@ fb_uploader<<- function(epochh,vmac) {
       df2 <- data.frame(
         Test1 = c("Cholesterol", "Cholesterol", "Cholesterol", "Cholesterol", "Blood Sugar", "Blood Sugar", "Blood Sugar", "Thyroid", "Inflammation"),
         Test2 = c("Total","HDL", "LDL", "Triglycerides", "Hemoglobin A1C", "Fasting Insulin", "Fasting Glucose", "Thyroid Stimulating Hormone (TSH)", "High Sensitivity C-Reactive Protein"),
-        ER = c(tme_data[i, 5], tme_data[i, 6], tme_data[i,7], tme_data[i,8], tme_data[i,9], tme_data[i,10], tme_data[i,11], tme_data[i,12], tme_data[i,13]),
-        MR_36 = c(tm36_data[i, 5], tm36_data[i, 6], tm36_data[i,7], tm36_data[i,8], tm36_data[i,9], tm36_data[i,10], tm36_data[i,11], tm36_data[i,12], tm36_data[i,13]),
-        MR_60 = c(tm60_data[i, 5], tm60_data[i, 6], tm60_data[i,7], tm60_data[i,8], tm60_data[i,9], tm60_data[i,10], tm60_data[i,11], tm60_data[i,12], tm60_data[i,13]),
         CR = as.character(c(echo_data$bld_c_chol, echo_data$bld_c_hdlc, echo_data$bld_c_ldlc, echo_data$bld_c_trig, echo_data$bld_c_hgba1c, echo_data$bld_c_insulin, echo_data$bld_c_glucose, echo_data$bld_c_tsh, echo_data$bld_c_crp)),  
         NR = c("<200", "men >40, women >50", "<100", "<150", "<5.7", "<17", "70-99", "0.35-3.6", "0-2.9")
       )
@@ -1041,46 +1030,28 @@ fb_uploader<<- function(epochh,vmac) {
       if(any(which(df2=="-")==28)) {df2 <- df2[-c(4)]}
       
       ft2 <- flextable(df2)
-      ft2 <- set_header_labels(ft2, Test1 = "Test", Test2 = "Test", ER = paste0("Enrollment Results ",enroll_date), 
-                               MR_36 = paste0(Epoch2," Results ", fu_date_prev2),
-                               MR_60 = paste0(Epoch1," Results ", fu_date_prev), CR = paste0("Current Results ", fu_date_c), NR = "Normal Range/\nCut-off*" )
+      ft2 <- set_header_labels(ft2, Test1 = "Test", Test2 = "Test", CR = paste0("Current Results ", enroll_date), NR = "Normal Range/\nCut-off*" )
       ft2 <- bg(ft2, bg="grey",part = "header")
       ft2 <- font(ft2,fontname = "Arial",part = "header")
       ft2 <- font(ft2,fontname = "Arial",part = "body")
       ft2 <- theme_box(ft2)
       
-      
-      if(length(df2)==7){
-        ft2 <- width(ft2, j = 1:7, width=.9)
-        ft2 <- merge_at(ft2, i = 1, j = 1:2, part = "header")
-        ft2 <- merge_at(ft2, i = 1:4, j = 1, part = "body")
-        ft2 <- merge_at(ft2, i = 5:7, j = 1, part = "body")
-        ft2 <- fontsize(ft2, j=1, size = 9, part="body")
-        ft2 <- fontsize(ft2, j=1:7, size = 10, part="header")
-        ft2 <- fontsize(ft2, j=2:7, size = 10, part="body")
-        ft2 <- align(ft2, align = "center", part="header")
-        ft2 <- align(ft2, align = "center", part="body")
-        ft2 <- align(ft2, i=1:9, j=2, align="left",part="body")
-        ft2 <- valign(ft2, i=1:9, j=3:7, valign="center", part="body")
-        ft2 <- height(ft2, height = .4, part = "header")
-        #ft2 <- width(ft2, j = 1, width = .85)
-        ft2 <- width(ft2, j = 2, width = 1.25)
-      } else {
-        ft2 <- width(ft2, j = 1:6, width=.9)
-        ft2 <- merge_at(ft2, i = 1, j = 1:2, part = "header")
-        ft2 <- merge_at(ft2, i = 1:4, j = 1, part = "body")
-        ft2 <- merge_at(ft2, i = 5:7, j = 1, part = "body")
-        ft2 <- fontsize(ft2, j=1, size = 9, part="body")
-        ft2 <- fontsize(ft2, j=1:6, size = 10, part="header")
-        ft2 <- fontsize(ft2, j=2:6, size = 10, part="body")
-        ft2 <- align(ft2, align = "center", part="header")
-        ft2 <- align(ft2, align = "center", part="body")
-        ft2 <- align(ft2, i=1:9, j=2, align="left",part="body")
-        ft2 <- valign(ft2, i=1:9, j=3:6, valign="center", part="body")
-        ft2 <- height(ft2, height = .4, part = "header")
-        #ft2 <- width(ft2, j = 1, width = .85)
-        ft2 <- width(ft2, j = 2, width = 1.25)
-      }
+    
+      ft2 <- width(ft2, j = 1:4, width=.9)
+      ft2 <- merge_at(ft2, i = 1, j = 1:2, part = "header")
+      ft2 <- merge_at(ft2, i = 1:4, j = 1, part = "body")
+      ft2 <- merge_at(ft2, i = 5:7, j = 1, part = "body")
+      ft2 <- fontsize(ft2, j=1, size = 9, part="body")
+      ft2 <- fontsize(ft2, j=1:4, size = 10, part="header")
+      ft2 <- fontsize(ft2, j=2:4, size = 10, part="body")
+      ft2 <- align(ft2, align = "center", part="header")
+      ft2 <- align(ft2, align = "center", part="body")
+      ft2 <- align(ft2, i=1:9, j=2, align="left",part="body")
+      ft2 <- valign(ft2, i=1:9, j=3:4, valign="center", part="body")
+      ft2 <- height(ft2, height = .4, part = "header")
+      #ft2 <- width(ft2, j = 1, width = .85)
+      ft2 <- width(ft2, j = 2, width = 1.25)
+    
       
       for (ii in 3:(ncol(df2)-1)) {
         if (df2[1,ii]=="-"){ft2<-bold(ft2, i = 1, j = ii, bold = FALSE, part = "body")}else{if(as.integer(df2[1,ii]) > 200){ft2<-bold(ft2, i = 1, j = ii, bold = TRUE, part = "body")}}
@@ -1109,9 +1080,176 @@ fb_uploader<<- function(epochh,vmac) {
       }
       
       print("Enrollment Memory Results")
-      # barr
-      print("Enrollment Heart Results")
-      # final impressions here
+      incomplete <- any(dde_data==-7777); if (is.na(incomplete)) {incomplete <- 0}
+      dnf <- any(dde_data==-9999); if (is.na(dnf)) {dnf <- 0}
+      miss <- any(is.na(dde_data[ij,3:28])); if(is.na(miss)) {miss <- 0}
+      if (incomplete | dnf | miss) {err <- "Some NP data is missing from the DDE; Leter generated without Memory Chart"; barr <- "Not enough data to create barchart"} else {
+        
+        # CVLT
+        np_cvlt1to5_tscore <- edc_data["np_cvlt1to5_tscore"]
+        np_cvlt1to5_z <- (np_cvlt1to5_tscore - 50)/10
+        
+        np_cvlt_sdfr_z <- edc_data["np_cvlt_sdfr_zscore"]
+        np_cvlt_ldfr_z <- edc_data["np_cvlt_ldfr_zscore"]
+        np_cvltrecog_discrim_z <- edc_data["np_cvltrecog_discrim_zscore"]
+        
+        # Biber
+        np_biber_t1to5 <- dde_data[ij,"np_biber_t1to5"];np_biber_t1to5_z <- (np_biber_t1to5 - 114.5) / 34.7
+        np_biber_sd <- dde_data[ij,"np_biber_sd"];np_biber_sd_z <- (np_biber_sd - 26.4) / 7
+        np_biber_ld <- dde_data[ij,"np_biber_ld"];np_biber_ld_z <- (np_biber_ld - 28) / 7
+        
+        #Tower
+        np_tower1 <- as.integer(dde_data[ij,"np_tower1"])-1
+        np_tower2 <- as.integer(dde_data[ij,"np_tower2"])-1
+        np_tower3 <- as.integer(dde_data[ij,"np_tower3"])-1
+        np_tower4 <- as.integer(dde_data[ij,"np_tower4"])-1
+        np_tower5 <- as.integer(dde_data[ij,"np_tower5"])-1
+        np_tower6 <- as.integer(dde_data[ij,"np_tower6"])-1
+        np_tower7 <- as.integer(dde_data[ij,"np_tower7"])-1
+        np_tower8 <- as.integer(dde_data[ij,"np_tower8"])-1
+        np_tower9 <- as.integer(dde_data[ij,"np_tower9"])-1
+        np_tower <- sum(np_tower1,np_tower2,np_tower3,np_tower4,np_tower5,np_tower6,np_tower7,np_tower8,np_tower9)
+        tower_ex <- read_excel(ex_path, sheet = 1)
+        np_tower_ss <- tower_ex[as.integer(ceiling(np_tower))+1,as.character(age)]
+        np_tower_z <- (as.integer(np_tower_ss)-10)/3
+        
+        # Animal
+        np_anim_q1 <- dde_data[ij,"np_anim_q1"]
+        np_anim_q2 <- dde_data[ij,"np_anim_q2"]
+        np_anim_q3 <- dde_data[ij,"np_anim_q3"]
+        np_anim_q4 <- dde_data[ij,"np_anim_q4"]
+        np_anim <- sum(c(np_anim_q1, np_anim_q2, np_anim_q3, np_anim_q4))
+        anim_ex <- read_excel(ex_path, sheet = "heaton_scaled")
+        np_anim_sscore <- anim_ex[as.integer(ceiling(np_anim))+1,4]
+        anim_ex <- read_excel(ex_path, sheet = "heaton_animals")
+        var_anim <- paste0(sex_r,"/",edu_r,"/",age_r,"/",race_r)
+        np_anim_tscore <- anim_ex[as.integer(ceiling(20-np_anim_sscore)),var_anim]
+        np_anim_z <- (as.integer(np_anim_tscore) - 50) / 10
+        
+        np_bnt <- dde_data[ij,"np_bnt"]
+        np_bnt_z <- (np_bnt - 26) / 3.4
+        
+        np_inhibit <- dde_data[ij,"np_inhibit"]
+        inhibit_ex <- read_excel(ex_path, sheet = 12)
+        np_inhibit_ss <- inhibit_ex[as.integer(ceiling(np_inhibit))+1,as.character(age)]
+        np_inhibit_z <- (as.integer(np_inhibit_ss)-10)/3
+        
+        np_fas <- dde_data[ij,"np_fas"]
+        fas_ex <- read_excel(ex_path, sheet = "heaton_scaled")
+        np_fas_sscore <- fas_ex[as.integer(ceiling(np_fas))+1,5]
+        fas_ex <- read_excel(ex_path, sheet = "heaton_fas")
+        var_fas <- paste0(sex_r,"/",edu_r,"/",age_r,"/",race_r)
+        np_fas_tscore <- fas_ex[as.integer(ceiling(20-np_fas_sscore)),var_fas]
+        np_fas_z <- (as.integer(np_fas_tscore) - 50) / 10 
+        
+        np_tmtb <- dde_data[ij,"np_tmtb"]
+        if (np_tmtb>599) {np_tmtb <- 599}
+        tmtb_ex <- read_excel(ex_path, sheet = 6)
+        np_tmtb_ss <- tmtb_ex[as.integer(ceiling(np_tmtb))+1,as.character(age)]
+        np_tmtb_z <- (as.integer(np_tmtb_ss) - 10)/3
+        
+        np_tmta <- dde_data[ij,"np_tmta"]
+        if (np_tmta>599) {np_tmta <- 599}
+        tmta_ex <- read_excel(ex_path, sheet = 3)
+        np_tmta_ss <- tmta_ex[as.integer(ceiling(np_tmta))+1,as.character(age)]
+        np_tmta_z <- (as.integer(np_tmta_ss) - 10)/3
+        
+        np_hvot <- dde_data[ij,"np_hvot"]
+        if (age < 55) {hvot_ex <- read_excel(ex_path, sheet = 22)}
+        if (55 <= age | age < 60) {hvot_ex <- read_excel(ex_path, sheet = 23)}
+        if (60 <= age | age < 65) {hvot_ex <- read_excel(ex_path, sheet = 24)}
+        if (65 <= age) {hvot_ex <- read_excel(ex_path, sheet = 25)}
+        np_hvot_corrected <- hvot_ex[as.integer(ceiling(np_hvot))+1,as.integer(edu)+2]
+        hvot_t_ex <- read_excel(ex_path, sheet = 26)
+        np_hvot_tscore <- hvot_t_ex[as.integer(np_hvot_corrected)+1,2]
+        np_hvot_z <- -(as.integer(np_hvot_tscore) - 50) / 10
+        
+        np_digsymb <- dde_data[ij,"np_digsymb"]
+        digsymb_ex <- read_excel(ex_path, sheet = 21)
+        np_digsymb_ss <- digsymb_ex[as.integer(ceiling(np_digsymb))+1,as.character(age)]
+        np_digsymb_z <- (as.integer(np_digsymb_ss)-10)/3
+        
+        np_color <- dde_data[ij,"np_color"]
+        color_ex <- read_excel(ex_path, sheet = 10)
+        np_color_ss <- color_ex[as.integer(ceiling(np_color))+1,as.character(age)]
+        np_color_z <- (as.integer(np_color_ss)-10)/3
+        
+        np_word <- dde_data[ij,"np_word"]
+        word_ex <- read_excel(ex_path, sheet = 11)
+        np_word_ss <- word_ex[as.integer(ceiling(np_word))+1,as.character(age)]
+        np_word_z <- (as.integer(np_word_ss)-10)/3
+        
+        
+        # composite scores
+        mem_w<<- cbind(as.numeric(np_cvlt1to5_z),as.numeric(np_cvlt_sdfr_z),as.numeric(np_cvlt_ldfr_z),as.numeric(np_cvltrecog_discrim_z))
+        memory_words<<- rowMeans(mem_w)
+        mem_s<<- cbind(np_biber_t1to5_z, np_biber_sd_z, np_biber_ld_z)
+        memory_shapes<<- rowMeans(mem_s)
+        lang<<- cbind(np_anim_z,np_bnt_z)
+        language<- rowMeans(lang)
+        multitasking<<- rowMeans(cbind(np_tower_z, np_inhibit_z, np_fas_z, np_tmtb_z))
+        visuospatial<<- np_hvot_z
+        attention<- rowMeans(cbind(np_digsymb_z, np_color_z, np_word_z, np_tmta_z))
+        
+        counts<- c(memory_words,memory_shapes,language,multitasking,visuospatial,attention) 
+        
+        specie<- c("Memory for\n Words","Memory for\n Shapes","Language","Multi-tasking\n and planning","Visuospatial\nskills","Attention")
+        condition<- rep(c(enroll_date),6)
+        level_order<- c("Memory for\n Words","Memory for\n Shapes","Language","Multi-tasking\n and planning","Visuospatial\nskills","Attention")
+        cond_order<- c(enroll_date)
+        spec<- factor(specie,levels = level_order)
+        cond<- factor(condition,levels = cond_order)
+        data<- data.frame(specie,condition,counts)
+        countss<- counts+3
+        patterns<- rep(c('crosshatch'),6)
+        pattern_factor<- c('crosshatch')
+        patternss<- factor(patterns,levels = pattern_factor)
+        for (ii in 1:length(countss)) {if (countss[ii]<0.25) {countss[ii]<-0.25}; if (countss[ii] > 5.9) {countss[ii]<-5.9}}
+        
+        barr <- ggplot(data) + theme_bw(14)+scale_fill_manual(values = c("black"))+
+          ggpattern::geom_bar_pattern(width = .75,position="dodge", stat="identity",aes(fill=cond, y=countss, x=spec,pattern=patterns),color=rep(c("black"),6),pattern_density=rep(c(0.5),6),pattern_colour=rep(c("black"),6),pattern_fill = rep(c("white"),6),pattern_spacing=.02) +
+          scale_y_continuous(name=NULL,breaks=c(1.5,3,4.5),labels = c("Below\nNormal","Normal","Above\nNormal"),limits = c(0,6),expand = c(0, 0))+
+          scale_x_discrete(name=NULL) + theme(panel.spacing.x = unit(1,"lines"),plot.background = element_rect(fill = "white",colour = "black",size = 1),plot.margin = unit(c(.3, .8, .3, .3), "cm"),legend.key.size = unit(.21, 'cm'),panel.grid.major.y = element_line(c(1.5,3,4.5),color=c("black","black","black")),panel.grid.minor.y=element_blank(),panel.grid.major.x=element_blank(),axis.text = element_text(colour = "black"),plot.title = element_text(size = 14,face = "bold",hjust = 0.5),axis.ticks = element_blank(),legend.position = "bottom", legend.title = element_blank(),legend.box.margin=margin(-15,0,0,0))+
+          coord_fixed(ratio = .4) + labs(title = "Memory Testing Results")
+        
+        if (any(countss < 1.5)) {
+          decline_phys<<- paste0("Based upon the cognitive scores, we suggested that ",first_name," follow-up with a clinical memory work-up for more detailed memory testing. This evaluation can be completed by our colleagues in the Cognitive & Behavioral Neurology Division at Vanderbilt University Medical Center, with a doctor\'s referral (615-936-0060). ")
+          decline<<- paste0("As we discussed on ",feedback_date1,", we recommend that you make an appointment for a clinical memory workup for more detailed cognitive testing. You can request a referral from your primary care doctor. We would recommend our colleagues in the Cognitive & Behavioral Neurology Division at Vanderbilt University Medical Center. With a doctor's referral, you can schedule an appointment by calling: 615-936-0060.")
+        } else {decline<<- ""; decline_phys<<- ""}
+        
+      }
+      
+      
+      print("Compiling Heart Results")
+      
+      echo_c <- echo_datas[which(echo_datas[,"redcap_event_name"]== events[epochh+1]),]
+      
+      lv_c <<- paste0("     1.  ",as.character(echo_c$echo_find1_lv_dys_fx))
+      val_c<<- as.character(echo_c$echo_find2_valve_fx)
+      if (val_c=="Normal"){val_c<<-"     2.  No significant"} else {val_c<<-"     2.  Significant"}
+      
+      qids <- dep_data$qids
+      gds <- dep_data$gds_total_score
+      #if (is.null(row.names(visit_depress))==FALSE) {visit_depress <<- 0}
+      #if (is.na(visit_depress)) {visit_depress <<- 0}
+      if (qids > 5 | gds > 4) {
+        int <- "mild"
+        if (gds > 8 | qids > 10) {int <- "moderate"}
+        if (gds > 11 | qids > 15) {int <- "severe"}
+        gds_phys <<- paste0("On a measure assessing depressive symptoms, ",first_name," scored in a range suggesting ",int," symptoms of depression. Based upon this score, we recommended that ",first_name," make an appointment for a more detailed clinical assessment of these symptoms.")
+        gds <<- paste0("As discussed on ",feedback_date1,", your scores on a measure assessing depressive symptoms fell in a range suggesting ",int," symptoms of depression.  We recommend you make an appointment for a more detailed clinical assessment of these symptoms.  You can request a referral from your primary care doctor.  We would recommend our colleagues who offer clinical services in the Department of Psychiatry at Vanderbilt University.  You can schedule an appointment by calling: 615-936-3555.")
+      } else {gds<<- ""; gds_phys<<- ""}
+      
+      ei_c <- echo_c$extracardiac_incidental; if (is.na(ei_c)) {ei_c <- "No"}
+      if (ei_c=="Yes") {lung_c<<-paste("     3.  ",echo_c$extracardiac_incidental_describe)} else {lung_c<<-""}
+      
+      bi_c <- echo_c$brain_incidental; if (is.na(bi_c)) {bi_c <- "No"}
+      if (bi_c=="Yes") {
+        brain_intro1<<-"Brain Test Results"
+        brain_intro2<<-"You underwent brain testing, which was read by board-certified neuroradiologists."
+      } else {brain_intro1<<-""; brain_intro2<<-""}
+      
+      if (bi_c=="Yes") {brain_ic <<-paste0("Your _ results on ",enroll_date," were as follows:"); brain_c <<-echo_c$brain_incidental_davis} else {brain_ic <<-""; brain_c <<-""}
       
       ptp_path<<- paste0(main_path,"resources/Templates/Feedback/MAP2_fb_temp_e.docx")
       phys_path<<- paste0(main_path,"resources/Templates/Feedback/MAP2_phys_temp_e.docx")
@@ -1132,8 +1270,8 @@ fb_uploader<<- function(epochh,vmac) {
     output<- paste0(out_path,"feedback_MAP",input,"_",epoch,".docx")
     renderInlineCode(ptp_temp, output)
     
-    #importFiles(rcon = pdb, file = output, record = record, field = "feedback_letter", event = events[e+1],
-    #            overwrite = TRUE, repeat_instance = 1)
+    importFiles(rcon = pdb, file = output, record = record, field = "feedback_letter", event = events[e+1],
+                overwrite = TRUE, repeat_instance = 1)
     
     print("Imported File")
     
@@ -1149,8 +1287,8 @@ fb_uploader<<- function(epochh,vmac) {
       output<- paste0(out_path,"physician_letter_MAP_",input,"_",epoch,".docx")
       renderInlineCode(phys_temp, output)
       
-      #importFiles(rcon = pdb, file = output, record = record, field = "feedback_physician1_letter", event = events[e+1],
-      #            overwrite = TRUE, repeat_instance = 1)
+      importFiles(rcon = pdb, file = output, record = record, field = "feedback_physician1_letter", event = events[e+1],
+                  overwrite = TRUE, repeat_instance = 1)
     }
     if (is.na(first_name_physician2)==FALSE) {
       first_name_physician<<-first_name_physician2
@@ -1164,8 +1302,8 @@ fb_uploader<<- function(epochh,vmac) {
       output<- paste0(out_path,"physician2_letter_MAP_",input,"_",epoch,".docx")
       renderInlineCode(phys_temp, output)
       
-      #importFiles(rcon = pdb, file = output, record = record, field = "feedback_physician2_letter", event = events[e+1],
-      #            overwrite = TRUE, repeat_instance = 1)
+      importFiles(rcon = pdb, file = output, record = record, field = "feedback_physician2_letter", event = events[e+1],
+                  overwrite = TRUE, repeat_instance = 1)
     }
     if (is.na(first_name_physician3)==FALSE) {
       first_name_physician<<-first_name_physician3
@@ -1179,8 +1317,8 @@ fb_uploader<<- function(epochh,vmac) {
       output<- paste0(out_path,"physician3_letter_MAP_",input,"_",epoch,".docx")
       renderInlineCode(phys_temp, output)
       
-      #importFiles(rcon = pdb, file = output, record = record, field = "feedback_physician3_letter",event = events[e+1],
-      #            overwrite = TRUE, repeat_instance = 1)
+      importFiles(rcon = pdb, file = output, record = record, field = "feedback_physician3_letter",event = events[e+1],
+                  overwrite = TRUE, repeat_instance = 1)
     }
     if (is.na(first_name_physician4)==FALSE) {
       first_name_physician<<-first_name_physician4
@@ -1194,8 +1332,8 @@ fb_uploader<<- function(epochh,vmac) {
       output<- paste0(out_path,"physician4_letter_MAP_",input,"_",epoch,".docx")
       renderInlineCode(phys_temp, output)
       
-      #importFiles(rcon = pdb, file = output, record = record, field = "feedback_physician4_letter",event = events[e+1],
-      #            overwrite = TRUE, repeat_instance = 1)
+      importFiles(rcon = pdb, file = output, record = record, field = "feedback_physician4_letter",event = events[e+1],
+                  overwrite = TRUE, repeat_instance = 1)
     }
     if (is.na(first_name_physician5)==FALSE) {
       first_name_physician<<-first_name_physician5
@@ -1209,8 +1347,8 @@ fb_uploader<<- function(epochh,vmac) {
       output<- paste0(out_path,"physician5_letter_MAP_",input,"_",epoch,".docx")
       renderInlineCode(phys_temp, output)
       
-      #importFiles(rcon = pdb, file = output, record = record, field = "feedback_physician5_letter",event = events[e+1],
-      #            overwrite = TRUE, repeat_instance = 1)
+      importFiles(rcon = pdb, file = output, record = record, field = "feedback_physician5_letter",event = events[e+1],
+                  overwrite = TRUE, repeat_instance = 1)
     }
         
   }

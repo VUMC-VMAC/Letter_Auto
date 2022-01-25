@@ -371,11 +371,14 @@ fb_uploader<<- function(epochh,vmac) {
   if (val=="Normal"){val <<-"     3.  No significant"} else {val <<-"     3.  Significant"}
   lv <<- paste0("     1.  ", lv)
   
-  visit_depress <- edc_data["dep"]
-  if (is.na(visit_depress)) {visit_depress <- 0}
-  if (visit_depress == 1) {
-    gds_phys<<- paste0("On a measure assessing depressive symptoms, ",first_name," scored in a range suggesting mild/moderate/severe symptoms of depression. Based upon this score, we recommended that ",first_name," make an appointment for a more detailed clinical assessment of these symptoms.")
-    gds<<- paste0("As discussed on ",feedback_date1_7yr,", your scores on a measure assessing depressive symptoms fell in a range suggesting mild/moderate/severe symptoms of depression.  We recommend you make an appointment for a more detailed clinical assessment of these symptoms.  You can request a referral from your primary care doctor.  We would recommend our colleagues who offer clinical services in the Department of Psychiatry at Vanderbilt University.  You can schedule an appointment by calling: 615-936-3555.")
+  
+  gds <- edc_data$qds_total
+  if (gds > 4) {
+    int <- "mild"
+    if (gds > 8) {int <- "moderate"}
+    if (gds > 11) {int <- "severe"}
+    gds_phys <<- paste0("On a measure assessing depressive symptoms, ",first_name," scored in a range suggesting ",int," symptoms of depression. Based upon this score, we recommended that ",first_name," make an appointment for a more detailed clinical assessment of these symptoms.")
+    gds <<- paste0("As discussed on ",feedback_date1,", your scores on a measure assessing depressive symptoms fell in a range suggesting ",int," symptoms of depression.  We recommend you make an appointment for a more detailed clinical assessment of these symptoms.  You can request a referral from your primary care doctor.  We would recommend our colleagues who offer clinical services in the Department of Psychiatry at Vanderbilt University.  You can schedule an appointment by calling: 615-936-3555.")
   } else {gds<<- ""; gds_phys<<- ""}
   
   if (any(countss < 1.5)) {
