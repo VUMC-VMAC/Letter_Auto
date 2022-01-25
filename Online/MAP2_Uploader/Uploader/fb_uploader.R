@@ -10,7 +10,7 @@ fb_uploader<<- function(epochh,vmac) {
   library(flextable)
   #library(ggpattern)
   #library(patternplot)
-  #library(png)
+  library(png)
   library(readxl)
   
   # Global Pathing
