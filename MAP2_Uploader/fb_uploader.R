@@ -555,7 +555,7 @@ fb_uploader<<- function(epochh,vmac) {
       remove <- missing[,1]
       chart <- missing[,2]
       
-      if (nc == "No") {err <<- "Some NP item is missing; Leter generated with Memory Chart"; barr <- ggplot(missing) + geom_bar(stat="identity",position="dodge",aes(x=chart,y=remove))} else {
+      if (nc == "No") {err <<- "Some NP item is missing; Letter generated with Memory Chart; Remove temporary chart that was added."; barr <- ggplot(missing) + geom_bar(stat="identity",position="dodge",aes(x=chart,y=remove))} else {
         
         
         
@@ -635,7 +635,7 @@ fb_uploader<<- function(epochh,vmac) {
           incomplete <- any(dde_data[ij,]==-7777); if (is.na(incomplete)) {incomplete <- 0}
           dnf <- any(dde_data[ij,]==-9999); if (is.na(dnf)) {dnf <- 0}
           miss <- any(is.na(dde_data[ij,])); if(is.na(miss)) {miss <- 0}
-          if (incomplete | dnf | miss) {err <- "Some NP data is missing from the DDE; Leter generated without Memory Chart"; barr <- ggplot(missing) + geom_bar(stat="identity",position="dodge",aes(x=chart,y=remove))} else {
+          if (incomplete | dnf | miss) {err <- "Some NP data is missing from the DDE; Letter generated without Memory Chart; Remove temporary chart that was added."; barr <- ggplot(missing) + geom_bar(stat="identity",position="dodge",aes(x=chart,y=remove))} else {
             
             age <- pdb_data$age
             edu <- pdb_data$education
