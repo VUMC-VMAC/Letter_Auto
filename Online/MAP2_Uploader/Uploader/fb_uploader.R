@@ -632,10 +632,10 @@ fb_uploader<<- function(epochh,vmac) {
         if (any(is.na(ggfp))) {
           
           #### If Norm Scores are not available ####
-          incomplete <- any(dde_data==-7777); if (is.na(incomplete)) {incomplete <- 0}
-          dnf <- any(dde_data==-9999); if (is.na(dnf)) {dnf <- 0}
+          incomplete <- any(dde_data[ij,]==-7777); if (is.na(incomplete)) {incomplete <- 0}
+          dnf <- any(dde_data[ij,]==-9999); if (is.na(dnf)) {dnf <- 0}
           miss <- any(is.na(dde_data[ij,])); if(is.na(miss)) {miss <- 0}
-          if (incomplete | dnf | miss) {err <- "Some NP data is missing from the DDE; Leter generated without Memory Chart"; barr <- "Not enough data to create barchart"} else {
+          if (incomplete | dnf | miss) {err <- "Some NP data is missing from the DDE; Leter generated without Memory Chart"; barr <- ggplot(missing) + geom_bar(stat="identity",position="dodge",aes(x=chart,y=remove))} else {
             
             age <- pdb_data$age
             edu <- pdb_data$education
