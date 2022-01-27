@@ -551,7 +551,11 @@ fb_uploader<<- function(epochh,vmac) {
       decline <<- ""
       decline_phys <<- ""
       
-      if (nc == "No") {err <<- "Some NP item is missing; Leter generated with Memory Chart"; barr <- "Not enough data to create barchart"} else {
+      missing <- data.frame(Missing=c("Missing","Data"),Data=c(1,2))
+      remove <- missing[,1]
+      chart <- missing[,2]
+      
+      if (nc == "No") {err <<- "Some NP item is missing; Leter generated with Memory Chart"; barr <- ggplot(missing) + geom_bar(stat="identity",position="dodge",aes(x=chart,y=remove))} else {
         
         
         
