@@ -7,6 +7,21 @@ pv_uploader <- function(epoch,vmac) {
   library(tidyverse)
   library(flextable)
   
+  # Global Pathing
+  local <- 0
+  online <- 1
+  if (local) {
+    # Add Local Paths Here
+    out_path <- "C:/Users/sweelyb/Documents/output/"
+    main_path <- "C:/Users/sweelyb/Documents/Letter_Auto/"
+    
+  } else if (online) {
+    # Add Global Paths Here
+    out_path <- "/app/"
+    main_path <- "/srv/shiny-server/"
+    
+  }
+  
   loc_func <- function(X,loc_day) {
     loc <- c(paste0("Day ",X," of your visit will be held at the Vanderbilt Memory and Alzheimer\'s Center, located on 1207 17th Avenue S., Suite 302. Upon arriving at the Vanderbilt Memory & Alzheimer\'s Center, please park in lot 128, to the right of the building, in a spot labeled \"VMAC Participant Parking\". Call 615-347-6937 and a team member will come down to check temperature."),
              paste0("Day ",X," of your visit will be held at the Vanderbilt University Medical Center, located on 1210 Medical Center Drive (noted with stars on the enclosed maps). Please valet park at the hospital entrance on 1210 Medical Center Drive - valet parking is free. A VMAP team member will meet you inside the hospital lobby."),
@@ -68,7 +83,6 @@ pv_uploader <- function(epoch,vmac) {
     gender <- ""
     if (sex=="Female") {gender<<- "women"} else {gender <<- "men"}
     if (sex=="Female") {gender_cap<<- "Women"} else {gender_cap <<- "Men"}
-    proxy_sex <<- as.character(pdb_data[i,"proxy_sex"])
     pronoun_conv <- c("Female" = "she", "Male" = "he")
     pronoun_conv_obj <- c("Female" = "her", "Male" = "him")
     pronoun_conv_poss <- c("Female" = "her", "Male" = "his")
@@ -80,6 +94,7 @@ pv_uploader <- function(epoch,vmac) {
     pronoun_poss <<- pronoun_conv_poss[sex]
     pronoun_poss_cap <<- pronoun_conv_poss_cap[sex]
     
+    proxy_sex <<- as.character(pdb_data[i,"proxy_sex"])
     proxy_pronoun <<- pronoun_conv[proxy_sex]
     proxy_first_name <<- pdb_data[i,"proxy_first_name"]
     proxy_last_name <<- pdb_data[i,"proxy_last_name"]
@@ -217,10 +232,10 @@ pv_uploader <- function(epoch,vmac) {
       field <- "visit_letter"
       field_proxy <- "visit_letter_proxy"
       
-      path_in <- paste0("/srv/shiny-server/resources/Templates/Previsit/MAP_pv2.docx")
-      temp <- "/app/Output/previsit_temp.docx"
-      path_in_proxy <- paste0("/srv/shiny-server/resources/Templates/Previsit/MAP_pv2_proxy.docx")
-      temp_proxy <- "/app/Output/previsit_temp_prox.docx"
+      path_in <- paste0(main_path,"resources/Templates/Previsit/MAP_pv2.docx")
+      temp <- paste0(out_path,"previsit_temp.docx")
+      path_in_proxy <- paste0(main_path,"resources/Templates/Previsit/MAP_pv2_proxy.docx")
+      temp_proxy <- paste0(out_path,"previsit_temp_prox.docx")
       
       #################### EPOCH 5 Ends HERE
       
@@ -254,10 +269,10 @@ pv_uploader <- function(epoch,vmac) {
       field <- paste0("elig_letter")
       field_proxy <- paste0("elig_letter_proxy")
       
-      path_in <- paste0("/srv/shiny-server/resources/Templates/Previsit/MAP_elig_template.docx")
-      temp <- "/app/Output/previsit_temp.docx"
-      path_in_proxy <- paste0("/srv/shiny-server/resources/Templates/Previsit/MAP_elig_proxy_template.docx")
-      temp_proxy <- "/app/Output/previsit_temp_prox.docx"
+      path_in <- paste0(main_path,"resources/Templates/Previsit/MAP_elig_template.docx")
+      temp <- paste0(out_path,"previsit_temp.docx")
+      path_in_proxy <- paste0(main_path,"resources/Templates/Previsit/MAP_elig_proxy_template.docx")
+      temp_proxy <- pasdte0(out_path,"previsit_temp_prox.docx")
     }
     
     is.even <- function(x) x %% 2 == 0
@@ -324,7 +339,7 @@ pv_uploader <- function(epoch,vmac) {
                    if (as.numeric(components[5])) {as.character(comp[5])},
                    if (as.numeric(components[6])) {as.character(comp[6])},
                    if (as.numeric(components[7])) {as.character(comp[7])},
-                   "Break",
+                   "Lunch",
                    if (as.numeric(components[8])) {as.character(comp[8])},
                    if (as.numeric(components[9])) {LP_prep},
                    if (as.numeric(components[9])) {as.character(comp[9])},
@@ -439,8 +454,8 @@ pv_uploader <- function(epoch,vmac) {
       }
       
       if (X == 3) {
-        path_in <- paste0("C:/Users/sweelyb/Documents/resources/Templates/Previsit/MAP_pv3.docx")
-        path_in_proxy <- paste0("C:/Users/sweelyb/Documents/resources/Templates/Previsit/MAP_pv3_proxy.docx")
+        path_in <- paste0(main_path,"resources/Templates/Previsit/MAP_pv3.docx")
+        path_in_proxy <- paste0(main_path,"resources/Templates/Previsit/MAP_pv3_proxy.docx")
         
         location2 <- locat[loc_day2]
         df <- data.frame(c("Remove this table"))
@@ -454,8 +469,8 @@ pv_uploader <- function(epoch,vmac) {
                      if (as.numeric(components[3])) {as.character(comp[3])},
                      if (as.numeric(components[4])) {as.character(comp[4])},
                      if (as.numeric(components[5])) {as.character(comp[5])},
-                     "Break",
                      if (as.numeric(components[6])) {as.character(comp[6])},
+                     "Break",
                      if (as.numeric(components[7])) {as.character(comp[7])},
                      if (as.numeric(components[8])) {as.character(comp[8])},
                      if (as.numeric(components[9])) {LP_prep},
@@ -468,12 +483,11 @@ pv_uploader <- function(epoch,vmac) {
             Day1 = c(paste0("Arrival at ",location1," at ",visit1_time),
                      if (as.numeric(components[1])) {as.character(comp[1])},
                      if (as.numeric(components[2])) {as.character(comp[2])},
-                     "Breakfast",
+                     "Break",
                      if (as.numeric(components[3])) {as.character(comp[3])},
                      if (as.numeric(components[4])) {as.character(comp[4])},
                      if (as.numeric(components[5])) {as.character(comp[5])},
                      if (as.numeric(components[6])) {as.character(comp[6])},
-                     "Break",
                      if (as.numeric(components[7])) {as.character(comp[7])},
                      if (as.numeric(components[8])) {as.character(comp[8])},
                      if (as.numeric(components[9])) {LP_prep},
@@ -561,18 +575,18 @@ pv_uploader <- function(epoch,vmac) {
       # End of Itinerary Tables
     } else {temp <- path_in;temp_proxy <- path_in_proxy}
     
-    output <- paste0("/app/Output/VMAC_",input,"_",ep,"_ptp_letter.docx")
+    output <- paste0(out_path,"VMAC_",input,"_",ep,"_ptp_letter.docx")
     renderInlineCode(temp, output)
     
-    importFiles(rcon = pdb, file = output, record = record, field = field, event = pdb_data[,"redcap_event_name"],
-                overwrite = TRUE, repeat_instance = 1)
+    #importFiles(rcon = pdb, file = output, record = record, field = field, event = pdb_data[,"redcap_event_name"],
+    #            overwrite = TRUE, repeat_instance = 1)
     
     if (is.na(proxy_first_name)==FALSE) {
-      output_proxy <- paste0("/app/Output/VMAC_",input,"_",ep,"_proxy_letter.docx")
+      output_proxy <- paste0(out_path,"VMAC_",input,"_",ep,"_proxy_letter.docx")
       renderInlineCode(temp_proxy, output_proxy)
       
-      importFiles(rcon = pdb, file = output_proxy, record = record, field = field_proxy, event = pdb_data[,"redcap_event_name"],
-                  overwrite = TRUE, repeat_instance = 1)
+      #importFiles(rcon = pdb, file = output_proxy, record = record, field = field_proxy, event = pdb_data[,"redcap_event_name"],
+      #            overwrite = TRUE, repeat_instance = 1)
     }
     
     #}

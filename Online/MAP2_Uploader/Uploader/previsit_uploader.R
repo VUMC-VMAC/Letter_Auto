@@ -7,15 +7,30 @@ previsit_uploader <- function(epoch,vmac) {
   library(tidyverse)
   library(flextable)
   
+  # Global Pathing
+  local <- 0
+  online <- 1
+  if (local) {
+    # Add Local Paths Here
+    out_path <- "C:/Users/sweelyb/Documents/output/"
+    main_path <- "C:/Users/sweelyb/Documents/Letter_Auto/"
+    
+  } else if (online) {
+    # Add Global Paths Here
+    out_path <- "/app/"
+    main_path <- "/srv/shiny-server/"
+    
+  }
+  
   loc_func <- function(X,loc_day) {
-      loc <- c(paste0("Day ",X," of your visit will be held at the Vanderbilt Memory and Alzheimer\'s Center, located on 1207 17th Avenue S., Suite 302. Upon arriving at the Vanderbilt Memory & Alzheimer\'s Center, please park in lot 128, to the right of the building, in a spot labeled \"VMAC Participant Parking\". Call 615-347-6937 and a team member will come down to check temperature."),
-               paste0("Day ",X," of your visit will be held at the Vanderbilt University Medical Center, located on 1210 Medical Center Drive (noted with stars on the enclosed maps). Please valet park at the hospital entrance on 1210 Medical Center Drive - valet parking is free. A VMAP team member will meet you inside the hospital lobby."),
-               paste0("Day ",X," of your visit will occur at your house."),
-               paste0("Day ",X," of your visit will start at the Vanderbilt Memory and Alzheimer\'s Center and end at the Vanderbilt University Medical Center. Arrive at Vanderbilt Memory & Alzheimer\'s Center, 1207 17th Avenue S., Suite 302, park in lot 128, to the right of the building, in a spot labeled \"VMAC Participant Parking\". Call 615-347-6937 and a team member will come down to check temperature."))
-      loc_proxy <- c(paste0("Day ",X," of ",pronoun_poss," visit will be held at the Vanderbilt Memory and Alzheimer\'s Center, located on 1207 17th Avenue S., Suite 302. Upon arriving at the Vanderbilt Memory & Alzheimer\'s Center, please park in lot 128, to the right of the building, in a spot labeled \"VMAC Participant Parking\". Call 615-347-6937 and a team member will come down to check temperature."),
-                     paste0("Day ",X," of ",pronoun_poss," visit will be held at the Vanderbilt University Medical Center, located on 1210 Medical Center Drive (noted with stars on the enclosed maps). Please valet park at the hospital entrance on 1210 Medical Center Drive - valet parking is free. A VMAP team member will meet you inside the hospital lobby."),
-                     paste0("Day ",X," of ",pronoun_poss," visit will occur at ",pronoun_poss," house."),
-                     paste0("Day ",X," of ",pronoun_poss," visit will start at the Vanderbilt Memory and Alzheimer\'s Center and end at the Vanderbilt University Medical Center. Arrive at Vanderbilt Memory & Alzheimer\'s Center, 1207 17th Avenue S., Suite 302, park in lot 128, to the right of the building, in a spot labeled \"VMAC Participant Parking\". Call 615-347-6937 and a team member will come down to check temperature."))
+    loc <- c(paste0("Day ",X," of your visit will be held at the Vanderbilt Memory and Alzheimer\'s Center, located on 1207 17th Avenue S., Suite 302. Upon arriving at the Vanderbilt Memory & Alzheimer\'s Center, please park in lot 128, to the right of the building, in a spot labeled \"VMAC Participant Parking\". Call 615-347-6937 and a team member will come down to check temperature."),
+             paste0("Day ",X," of your visit will be held at the Vanderbilt University Medical Center, located on 1210 Medical Center Drive (noted with stars on the enclosed maps). Please valet park at the hospital entrance on 1210 Medical Center Drive - valet parking is free. A VMAP team member will meet you inside the hospital lobby."),
+             paste0("Day ",X," of your visit will occur at your house."),
+             paste0("Day ",X," of your visit will start at the Vanderbilt Memory and Alzheimer\'s Center and end at the Vanderbilt University Medical Center. Arrive at Vanderbilt Memory & Alzheimer\'s Center, 1207 17th Avenue S., Suite 302, park in lot 128, to the right of the building, in a spot labeled \"VMAC Participant Parking\". Call 615-347-6937 and a team member will come down to check temperature."))
+    loc_proxy <- c(paste0("Day ",X," of ",pronoun_poss," visit will be held at the Vanderbilt Memory and Alzheimer\'s Center, located on 1207 17th Avenue S., Suite 302. Upon arriving at the Vanderbilt Memory & Alzheimer\'s Center, please park in lot 128, to the right of the building, in a spot labeled \"VMAC Participant Parking\". Call 615-347-6937 and a team member will come down to check temperature."),
+                   paste0("Day ",X," of ",pronoun_poss," visit will be held at the Vanderbilt University Medical Center, located on 1210 Medical Center Drive (noted with stars on the enclosed maps). Please valet park at the hospital entrance on 1210 Medical Center Drive - valet parking is free. A VMAP team member will meet you inside the hospital lobby."),
+                   paste0("Day ",X," of ",pronoun_poss," visit will occur at ",pronoun_poss," house."),
+                   paste0("Day ",X," of ",pronoun_poss," visit will start at the Vanderbilt Memory and Alzheimer\'s Center and end at the Vanderbilt University Medical Center. Arrive at Vanderbilt Memory & Alzheimer\'s Center, 1207 17th Avenue S., Suite 302, park in lot 128, to the right of the building, in a spot labeled \"VMAC Participant Parking\". Call 615-347-6937 and a team member will come down to check temperature."))
     location <- list("ptp" = loc[loc_day], "proxy" = loc_proxy[loc_day])
     return(location)
   }
@@ -201,8 +216,8 @@ previsit_uploader <- function(epoch,vmac) {
       if (fu_transport=="Yes") {t_need <<- "Your appointment will be held at the Vanderbilt University Medical Center. We will be providing you with transportation to and from your visit with Jeff Cornelius. Jeff\'s number is 615-604-1502 in case you need to contact him."
       t_need_proxy <<- paste0(pronoun_poss_cap," appointment will be held at the Vanderbilt University Medical Center.  We will be providing transportation to and from ",pronoun_poss," visit with Jeff Cornelius. Jeff\'s number is 615-604-1502 in case ",pronoun," needs to contact him.")
       } else {t_need <<- ""; t_need_proxy <<- ""}
-      consent <<- paste0("Consent Statement. This document describes the VMAP Study. You completed this form when you originally came in for your eligibility visit, but we ask that you complete and sign this document again at each follow-up visit. Please read the form thoroughly before the appointment. We will ask you and your study partner, ",proxy_first_name,", to sign the consent form after we review it with you at the appointment. If your study partner does not plan to attend, we will mail them a copy to sign and return prior to ",pronoun_poss," visit.")
-      consent_prox <<- paste0("Consent Statement. This document describes the VMAP Study. You and ",first_name," already completed this form at the eligibility visit, but we ask that both of you sign this document again at each follow-up visit. Please read the form thoroughly. If you have questions, please let us know. If you will not be attending the visit, please return the signed copy prior to ",pronoun_poss," visit.")
+      consent <<- paste0("Consent Statement. This document describes the VMAP Study. You completed this form when you originally came in for your eligibility visit, but we ask that you complete and sign this document again at each follow-up visit. Please read the form thoroughly before the appointment. We will ask you and your study partner, ",proxy_first_name,", to sign the consent form after we review it with you at the appointment. If your study partner does not plan to attend, we will mail them a copy to sign and return prior to your visit.")
+      consent_prox <<- paste0("Consent Statement. This document describes the VMAP Study. You and ",first_name," already completed this form at the eligibility visit, but we ask that both of you sign this document again at each follow-up visit. Please read the form thoroughly. If you have questions, please let us know. If you will not be attending the visit, please return the signed copy prior to your visit.")
       
       if (pdb_data[i,"proxy_diff_address"] == "Yes") {
         partner <<- paste0("Study Partner Packet. We have mailed a packet of material to your study partner, ",proxy_first_name,", which we ask that ",proxy_pronoun," complete prior to your visit.")
@@ -215,10 +230,10 @@ previsit_uploader <- function(epoch,vmac) {
       field <- "visit_letter"
       field_proxy <- "visit_letter_proxy"
       
-      path_in <- paste0("/srv/shiny-server/resources/Templates/Previsit/MAP_template.docx")
-      temp <- "/app/Output/previsit_temp.docx"
-      path_in_proxy <- paste0("/srv/shiny-server/resources/Templates/Previsit/MAP_proxy_template.docx")
-      temp_proxy <- "/app/Output/previsit_temp_prox.docx"
+      path_in <- paste0(main_path,"resources/Templates/Previsit/MAP_template.docx")
+      temp <- paste0(out_path,"previsit_temp.docx")
+      path_in_proxy <- paste0(main_path,"resources/Templates/Previsit/MAP_proxy_template.docx")
+      temp_proxy <- paste0(out_path,"previsit_temp_prox.docx")
       
       #################### EPOCH 5 Ends HERE
       
@@ -237,8 +252,8 @@ previsit_uploader <- function(epoch,vmac) {
         location_ptp <<- "Your eligibility visit will be held at the Vanderbilt Memory and Alzheimer's Center office.  We will be providing you with transportation to and from your visit with Jeff Cornelius. Jeff\'s number is 615-604-1502 in case you need to contact him."
         location_prox <<- paste0("The eligibility will be held at the Vanderbilt Memory and Alzheimer's Center office.  We will be providing transportation to and from ",pronoun_poss," visit with Jeff Cornelius. Jeff\'s number is 615-604-1502 in case you need to contact him.")
       }
-      consent <<- paste0("Consent Statement. This document describes the VMAP Study. Please read the form thoroughly before the appointment. If you have questions, please call 615-347-6937 or we can discuss your questions at your appointment. We will ask you and your study partner, ",proxy_first_name,", to sign the consent form after we review it with you at your eligibility visit appointment. ")
-      consent_prox <<- paste0("Consent Statement. This document describes the VMAP Study. Please read the form thoroughly before the appointment. If you have questions, please call 615-347-6937 or we can discuss your questions at the appointment. We will ask you and ",first_name," to sign the consent form after we review it with you at your eligibility visit appointment. ")
+      consent <<- paste0("Consent Statement. This document describes the VMAP Study. Please read the form thoroughly before the appointment. If you have questions, please call 615-347-6937 or we can discuss your questions at your appointment. We will ask you and your study partner, ",proxy_first_name,", to sign the consent form after we review it with you at ",pronoun_poss," eligibility visit appointment. ")
+      consent_prox <<- paste0("Consent Statement. This document describes the VMAP Study. Please read the form thoroughly before the appointment. If you have questions, please call 615-347-6937 or we can discuss your questions at the appointment. We will ask you and ",first_name," to sign the consent form after we review it with you at ",pronoun_poss," eligibility visit appointment. ")
       histor <<- paste0("Medical History Forms. Please be sure to bring all of your medications to the eligibility visit so our team can review them with you. ")
       
       if (pdb_data[i,"proxy_diff_address"] == "Yes") {
@@ -252,10 +267,10 @@ previsit_uploader <- function(epoch,vmac) {
       field <- paste0("elig_letter")
       field_proxy <- paste0("elig_letter_proxy")
       
-      path_in <- paste0("/srv/shiny-server/resources/Templates/Previsit/MAP_elig_template.docx")
-      temp <- "/app/Output/previsit_temp.docx"
-      path_in_proxy <- paste0("/srv/shiny-server/resources/Templates/Previsit/MAP_elig_proxy_template.docx")
-      temp_proxy <- "/app/Output/previsit_temp_prox.docx"
+      path_in <- paste0(main_path,"resources/Templates/Previsit/MAP_elig_template.docx")
+      temp <- paste0(out_,"previsit_temp.docx")
+      path_in_proxy <- paste0(main_path,"resources/Templates/Previsit/MAP_elig_proxy_template.docx")
+      temp_proxy <- paste0(out_path,"previsit_temp_prox.docx")
     }
     
     is.even <- function(x) x %% 2 == 0
@@ -267,6 +282,7 @@ previsit_uploader <- function(epoch,vmac) {
       
       even <- c(2,4,6,8,10)
       odd <- c(1,3,5,7,9)
+      
       
       # Components
       
@@ -430,21 +446,22 @@ previsit_uploader <- function(epoch,vmac) {
       # End of Itinerary Tables
     } else {temp <- path_in;temp_proxy <- path_in_proxy}
     
-    output <- paste0("/app/Output/VMAC_",input,"_",ep,"_ptp_letter.docx")
+    output <- paste0(out_path,"VMAC_",input,"_",ep,"_ptp_letter.docx")
     renderInlineCode(temp, output)
     
-    importFiles(rcon = pdb, file = output, record = record, field = field, event = pdb_data[,"redcap_event_name"],
-                overwrite = TRUE, repeat_instance = 1)
+    #importFiles(rcon = pdb, file = output, record = record, field = field, event = pdb_data[,"redcap_event_name"],
+    #            overwrite = TRUE, repeat_instance = 1)
     
     if (is.na(proxy_first_name)==FALSE) {
-      output_proxy <- paste0("/app/Output/VMAC_",input,"_",ep,"_proxy_letter.docx")
+      output_proxy <- paste0(out_path,"VMAC_",input,"_",ep,"_proxy_letter.docx")
       renderInlineCode(temp_proxy, output_proxy)
       
-      importFiles(rcon = pdb, file = output_proxy, record = record, field = field_proxy, event = pdb_data[,"redcap_event_name"],
-                  overwrite = TRUE, repeat_instance = 1)
+      #importFiles(rcon = pdb, file = output_proxy, record = record, field = field_proxy, event = pdb_data[,"redcap_event_name"],
+      #            overwrite = TRUE, repeat_instance = 1)
     }
-      
+    
+    #}
+    #}
   }
   return(err)
-  
 }
