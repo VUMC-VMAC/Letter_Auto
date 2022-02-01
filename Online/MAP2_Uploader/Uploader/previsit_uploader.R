@@ -449,15 +449,15 @@ previsit_uploader <- function(epoch,vmac) {
     output <- paste0(out_path,"VMAC_",input,"_",ep,"_ptp_letter.docx")
     renderInlineCode(temp, output)
     
-    #importFiles(rcon = pdb, file = output, record = record, field = field, event = pdb_data[,"redcap_event_name"],
-    #            overwrite = TRUE, repeat_instance = 1)
+    importFiles(rcon = pdb, file = output, record = record, field = field, event = pdb_data[,"redcap_event_name"],
+                overwrite = TRUE, repeat_instance = 1)
     
     if (is.na(proxy_first_name)==FALSE) {
       output_proxy <- paste0(out_path,"VMAC_",input,"_",ep,"_proxy_letter.docx")
       renderInlineCode(temp_proxy, output_proxy)
       
-      #importFiles(rcon = pdb, file = output_proxy, record = record, field = field_proxy, event = pdb_data[,"redcap_event_name"],
-      #            overwrite = TRUE, repeat_instance = 1)
+      importFiles(rcon = pdb, file = output_proxy, record = record, field = field_proxy, event = pdb_data[,"redcap_event_name"],
+                  overwrite = TRUE, repeat_instance = 1)
     }
     
     #}
