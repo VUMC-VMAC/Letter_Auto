@@ -272,7 +272,7 @@ pv_uploader <- function(epoch,vmac) {
       path_in <- paste0(main_path,"resources/Templates/Previsit/MAP_elig_template.docx")
       temp <- paste0(out_path,"previsit_temp.docx")
       path_in_proxy <- paste0(main_path,"resources/Templates/Previsit/MAP_elig_proxy_template.docx")
-      temp_proxy <- pasdte0(out_path,"previsit_temp_prox.docx")
+      temp_proxy <- paste0(out_path,"previsit_temp_prox.docx")
     }
     
     is.even <- function(x) x %% 2 == 0
