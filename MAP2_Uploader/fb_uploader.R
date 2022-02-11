@@ -1279,7 +1279,9 @@ fb_uploader<<- function(epochh,vmac) {
     
     print("Imported File")
     
-    if (is.na(first_name_physician1)==FALSE) {
+    num_phys <- pdb_data$feedback_number_letter
+    
+    if (num_phys > 0) {
       first_name_physician<<-first_name_physician1
       last_name_physician<<- last_name_physician1
       credentials<<- credentials1
@@ -1293,67 +1295,67 @@ fb_uploader<<- function(epochh,vmac) {
       
       importFiles(rcon = pdb, file = output, record = record, field = "feedback_physician1_letter", event = events[e+1],
                   overwrite = TRUE, repeat_instance = 1)
-    }
-    if (is.na(first_name_physician2)==FALSE) {
-      first_name_physician<<-first_name_physician2
-      last_name_physician<<- last_name_physician2
-      credentials<<- credentials2
-      street_address_physician<<- street_address_physician2
-      city_physician<<- city_physician2
-      state_physician<<- state_physician2
-      zip_physician<<- zip_physician2
-      
-      output<- paste0(out_path,"physician2_letter_MAP_",input,"_",epoch,".docx")
-      renderInlineCode(phys_temp, output)
-      
-      importFiles(rcon = pdb, file = output, record = record, field = "feedback_physician2_letter", event = events[e+1],
-                  overwrite = TRUE, repeat_instance = 1)
-    }
-    if (is.na(first_name_physician3)==FALSE) {
-      first_name_physician<<-first_name_physician3
-      last_name_physician<<- last_name_physician3
-      credentials<<- credentials3
-      street_address_physician<<- street_address_physician3
-      city_physician<<- city_physician3
-      state_physician<<- state_physician3
-      zip_physician<<- zip_physician3
-      
-      output<- paste0(out_path,"physician3_letter_MAP_",input,"_",epoch,".docx")
-      renderInlineCode(phys_temp, output)
-      
-      importFiles(rcon = pdb, file = output, record = record, field = "feedback_physician3_letter",event = events[e+1],
-                  overwrite = TRUE, repeat_instance = 1)
-    }
-    if (is.na(first_name_physician4)==FALSE) {
-      first_name_physician<<-first_name_physician4
-      last_name_physician<<- last_name_physician4
-      credentials<<- credentials4
-      street_address_physician<<- street_address_physician4
-      city_physician<<- city_physician4
-      state_physician<<- state_physician4
-      zip_physician<<- zip_physician4
-      
-      output<- paste0(out_path,"physician4_letter_MAP_",input,"_",epoch,".docx")
-      renderInlineCode(phys_temp, output)
-      
-      importFiles(rcon = pdb, file = output, record = record, field = "feedback_physician4_letter",event = events[e+1],
-                  overwrite = TRUE, repeat_instance = 1)
-    }
-    if (is.na(first_name_physician5)==FALSE) {
-      first_name_physician<<-first_name_physician5
-      last_name_physician<<- last_name_physician5
-      credentials<<- credentials5
-      street_address_physician<<- street_address_physician5
-      city_physician<<- city_physician5
-      state_physician<<- state_physician5
-      zip_physician<<- zip_physician5
-      
-      output<- paste0(out_path,"physician5_letter_MAP_",input,"_",epoch,".docx")
-      renderInlineCode(phys_temp, output)
-      
-      importFiles(rcon = pdb, file = output, record = record, field = "feedback_physician5_letter",event = events[e+1],
-                  overwrite = TRUE, repeat_instance = 1)
-    }
+    
+      if (num_phys > 1) {
+        first_name_physician<<-first_name_physician2
+        last_name_physician<<- last_name_physician2
+        credentials<<- credentials2
+        street_address_physician<<- street_address_physician2
+        city_physician<<- city_physician2
+        state_physician<<- state_physician2
+        zip_physician<<- zip_physician2
+        
+        output<- paste0(out_path,"physician2_letter_MAP_",input,"_",epoch,".docx")
+        renderInlineCode(phys_temp, output)
+        
+        importFiles(rcon = pdb, file = output, record = record, field = "feedback_physician2_letter", event = events[e+1],
+                    overwrite = TRUE, repeat_instance = 1)
+    
+        if (num_phys > 2) {
+          first_name_physician<<-first_name_physician3
+          last_name_physician<<- last_name_physician3
+          credentials<<- credentials3
+          street_address_physician<<- street_address_physician3
+          city_physician<<- city_physician3
+          state_physician<<- state_physician3
+          zip_physician<<- zip_physician3
+          
+          output<- paste0(out_path,"physician3_letter_MAP_",input,"_",epoch,".docx")
+          renderInlineCode(phys_temp, output)
+          
+          importFiles(rcon = pdb, file = output, record = record, field = "feedback_physician3_letter",event = events[e+1],
+                      overwrite = TRUE, repeat_instance = 1)
+    
+          if (num_phys > 3) {
+            first_name_physician<<-first_name_physician4
+            last_name_physician<<- last_name_physician4
+            credentials<<- credentials4
+            street_address_physician<<- street_address_physician4
+            city_physician<<- city_physician4
+            state_physician<<- state_physician4
+            zip_physician<<- zip_physician4
+            
+            output<- paste0(out_path,"physician4_letter_MAP_",input,"_",epoch,".docx")
+            renderInlineCode(phys_temp, output)
+            
+            importFiles(rcon = pdb, file = output, record = record, field = "feedback_physician4_letter",event = events[e+1],
+                        overwrite = TRUE, repeat_instance = 1)
+            
+            if (is.na(first_name_physician5)==FALSE) {
+              first_name_physician<<-first_name_physician5
+              last_name_physician<<- last_name_physician5
+              credentials<<- credentials5
+              street_address_physician<<- street_address_physician5
+              city_physician<<- city_physician5
+              state_physician<<- state_physician5
+              zip_physician<<- zip_physician5
+              
+              output<- paste0(out_path,"physician5_letter_MAP_",input,"_",epoch,".docx")
+              renderInlineCode(phys_temp, output)
+              
+              importFiles(rcon = pdb, file = output, record = record, field = "feedback_physician5_letter",event = events[e+1],
+                          overwrite = TRUE, repeat_instance = 1)
+    }}}}}
         
   }
   return(err)
