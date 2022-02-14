@@ -794,14 +794,14 @@ fb_uploader<<- function(epochh,vmac) {
             cond<- factor(condition,levels = cond_order)
             data<- data.frame(specie,condition,counts)
             countss<- counts+3
-            patterns<- rep(c('crosshatch','circle','none','crosshatch'),6)
-            pattern_factor<- c('crosshatch','stripe','circle','none')
+            patterns<- rep(c('crosshatch','none','crosshatch','none'),6)
+            pattern_factor<- c('crosshatch','none')
             patternss<- factor(patterns,levels = pattern_factor)
             for (ii in 1:length(countss)) {if (countss[ii]<0.25) {countss[ii]<-0.25}; if (countss[ii] > 5.9) {countss[ii]<-5.9}}
             
             barr <- ggplot(data) + theme_bw(14) + 
-              scale_fill_manual(values = c("black","white","black","white"))+
-              ggpattern::geom_bar_pattern(width = .75,position="dodge", stat="identity",aes(fill=cond, y=countss, x=spec,pattern=patterns),pattern_density=rep(c(0.075,0.075,0.2,0.2),6),pattern_spacing=rep(c(0.015,0.02,0.02,0.02),6),pattern_colour=rep(c("white","black","black","black"),6),pattern_fill = rep(c("black","white","black","black"),6),color="black") +
+              scale_fill_manual(values = c("black","white","white","black"))+
+              ggpattern::geom_bar_pattern(width = .75,position="dodge", stat="identity",aes(fill=cond, y=countss, x=spec,pattern=patterns),pattern_density=rep(c(0.2,0.2,0.2,0.2),6),pattern_spacing=rep(c(0.02,0.02,0.02,0.02),6),pattern_colour=rep(c("white","black","black","white"),6),pattern_fill = rep(c("black","white","black","black"),6),color="black") +
               scale_y_continuous(name=NULL,breaks=c(1.5,3,4.5),labels = c("Below\nNormal","Normal","Above\nNormal"),limits = c(0,6),expand = c(0, 0))+
               scale_x_discrete(name=NULL) + theme(panel.spacing.x = unit(1,"lines"),plot.background = element_rect(fill = "white",colour = "black",size = 1),plot.margin = unit(c(.3, .8, .3, .3), "cm"),legend.key.size = unit(.21, 'cm'),panel.grid.major.y = element_line(c(1.5,3,4.5),color=c("black","black","black")),panel.grid.minor.y=element_blank(),panel.grid.major.x=element_blank(),axis.text = element_text(colour = "black"),plot.title = element_text(size = 14,face = "bold",hjust = 0.5),axis.ticks = element_blank(),legend.position = "bottom", legend.title = element_blank(),legend.box.margin=margin(-15,0,0,0))+
               coord_fixed(ratio = .4) + labs(title = "Memory Testing Results")
@@ -835,14 +835,14 @@ fb_uploader<<- function(epochh,vmac) {
           cond<- factor(condition,levels = cond_order)
           data<- data.frame(specie,condition,counts)
           countss<- counts+3
-          patterns<- rep(c('crosshatch','circle','none','crosshatch'),6)
-          pattern_factor<- c('crosshatch','stripe','circle','none')
+          patterns<- rep(c('crosshatch','none','crosshatch','none'),6)
+          pattern_factor<- c('crosshatch','none')
           patternss<- factor(patterns,levels = pattern_factor)
           for (ii in 1:length(countss)) {if (countss[ii]<0.25) {countss[ii]<-0.25}; if (countss[ii] > 5.9) {countss[ii]<-5.9}}
           
           barr <- ggplot(data) + theme_bw(14) + 
-            scale_fill_manual(values = c("black","white","black","white"))+
-            ggpattern::geom_bar_pattern(width = .75,position="dodge", stat="identity",aes(fill=cond, y=countss, x=spec,pattern=patterns),pattern_density=rep(c(0.075,0.075,0.2,0.2),6),pattern_spacing=rep(c(0.015,0.02,0.02,0.02),6),pattern_colour=rep(c("white","black","black","black"),6),pattern_fill = rep(c("black","white","black","black"),6),color="black") +
+            scale_fill_manual(values = c("black","white","white","black"))+
+            ggpattern::geom_bar_pattern(width = .75,position="dodge", stat="identity",aes(fill=cond, y=countss, x=spec,pattern=patterns),pattern_density=rep(c(0.2,0.2,0.2,0.2),6),pattern_spacing=rep(c(0.02,0.02,0.02,0.02),6),pattern_colour=rep(c("white","black","black","white"),6),pattern_fill = rep(c("black","white","black","black"),6),color="black") +
             scale_y_continuous(name=NULL,breaks=c(1.5,3,4.5),labels = c("Below\nNormal","Normal","Above\nNormal"),limits = c(0,6),expand = c(0, 0))+
             scale_x_discrete(name=NULL) + theme(panel.spacing.x = unit(1,"lines"),plot.background = element_rect(fill = "white",colour = "black",size = 1),plot.margin = unit(c(.3, .8, .3, .3), "cm"),legend.key.size = unit(.21, 'cm'),panel.grid.major.y = element_line(c(1.5,3,4.5),color=c("black","black","black")),panel.grid.minor.y=element_blank(),panel.grid.major.x=element_blank(),axis.text = element_text(colour = "black"),plot.title = element_text(size = 14,face = "bold",hjust = 0.5),axis.ticks = element_blank(),legend.position = "bottom", legend.title = element_blank(),legend.box.margin=margin(-15,0,0,0))+
             coord_fixed(ratio = .4) + labs(title = "Memory Testing Results")
