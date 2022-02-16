@@ -334,9 +334,12 @@ fb_uploader<<- function(epochh,vmac) {
       if (nrow(tme_data)==FALSE) {stop("Not Enough Data")}
       
       # Follow up dates
-      enroll_date <<- format(as.Date(map_data[1, "visit1_date"]), "%m/%d/%Y")
-      fu_date_prev2 <<- format(as.Date(map_data[5, "visit1_date"]), "%m/%d/%Y")
-      fu_date_prev <<- format(as.Date(map_data[4, "visit1_date"]), "%m/%d/%Y")
+      enroll_date <<- format(as.Date(echo_datas[1, "consent_date"]), "%m/%d/%Y")
+      if (is.na(enroll_date)) {enroll_date <<- format(as.Date(map_data[1, "visit1_date"]), "%m/%d/%Y")}
+      fu_date_prev2 <<- format(as.Date(echo_datas[2, "consent_date"]), "%m/%d/%Y")
+      if (is.na(fu_date_prev2)) {fu_date_prev2 <<- format(as.Date(map_data[5, "visit1_date"]), "%m/%d/%Y")}
+      fu_date_prev <<- format(as.Date(echo_datas[3, "consent_date"]), "%m/%d/%Y")
+      if (is.na(fu_date_prev)) {fu_date_prev <<- format(as.Date(map_data[4, "visit1_date"]), "%m/%d/%Y")}
       fu_date_c <<- format(as.Date(echo_data$consent_date), "%m/%d/%Y")
       if (is.na(fu_date_c)) {fu_date_c <<- format(as.Date(map_data[3, "visit1_date"]), "%m/%d/%Y")}
       
