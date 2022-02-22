@@ -16,6 +16,7 @@ source("/srv/shiny-server/ty_uploader.R")
 source("/srv/shiny-server/fb_uploader.R")
 source("/srv/shiny-server/LP_uploader.R")
 source("/srv/shiny-server/np_uploader.R")
+source("/srv/shiny-server/blood_uploader.R")
 
 library(shiny)
 library(flextable)
