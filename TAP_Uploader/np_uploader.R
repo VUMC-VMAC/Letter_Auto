@@ -47,7 +47,7 @@ np_uploader<<- function(epochh,vmac) {
   print("Compiling Memory results")
   
   age <- pdb_data$age
-  if (age<60) {age_r <- 1}; if (age < 70 & age >= 60) {age_r <- 2}; if (age < 80 & age >= 70) {age_r <- 3}; if (age < 90 & age >= 80) {age_r <- 4}; if (age >= 90) {age_r <- 5}
+  if (age<60) {age_r <- 0}; if (age < 70 & age >= 60) {age_r <- 4}; if (age < 80 & age >= 70) {age_r <- 8}; if (age < 90 & age >= 80) {age_r <- 12}; if (age >= 90) {age_r <- 16}
   edu <- pdb_data$education
   if (edu<=12) {edu_r <- 1}; if (edu < 16 & edu >= 13) {edu_r <- 2}; if (edu == 16) {edu_r <- 3}; if (edu >= 17) {edu_r <- 4}
   ind <- age_r + edu_r
@@ -69,10 +69,10 @@ np_uploader<<- function(epochh,vmac) {
   udsverfc <<- np_data$udsverfc
   udsverlc <<- np_data$udsverlc
   udsvertn <<- np_data$udsvertn
-  animals_c2 <<- np_data$animals_c2
-  veg_c2 <<- np_data$veg_c2
-  traila_c2 <<- np_data$traila_c2
-  trailb_c2 <<- np_data$trailb_c2
+  animals <<- np_data$animals
+  veg <<- np_data$veg
+  traila <<- np_data$traila
+  trailb <<- np_data$trailb
   
   # GET MEAN and SD
   moca_ex <- read_excel(tap_ex_path, sheet = "moca")
@@ -135,21 +135,21 @@ np_uploader<<- function(epochh,vmac) {
   udsvertn_mean <- udsvertn_ex[ind,1+sex_r]
   udsvertn_sd <- udsvertn_ex[ind,2+sex_r]
   
-  animals_c2_ex <- read_excel(tap_ex_path, sheet = "animals_c2")
-  animals_c2_mean <- animals_c2_ex[ind,1+sex_r]
-  animals_c2_sd <- animals_c2_ex[ind,2+sex_r]
+  animals_ex <- read_excel(tap_ex_path, sheet = "animals")
+  animals_mean <- animals_ex[ind,1+sex_r]
+  animals_sd <- animals_ex[ind,2+sex_r]
   
-  veg_c2_ex <- read_excel(tap_ex_path, sheet = "veg_c2")
-  veg_c2_mean <- veg_c2_ex[ind,1+sex_r]
-  veg_c2_sd <- veg_c2_ex[ind,2+sex_r]
+  veg_ex <- read_excel(tap_ex_path, sheet = "veg")
+  veg_mean <- veg_ex[ind,1+sex_r]
+  veg_sd <- veg_ex[ind,2+sex_r]
   
-  traila_c2_ex <- read_excel(tap_ex_path, sheet = "traila_c2")
-  traila_c2_mean <- traila_c2_ex[ind,1+sex_r]
-  traila_c2_sd <- traila_c2_ex[ind,2+sex_r]
+  traila_ex <- read_excel(tap_ex_path, sheet = "traila")
+  traila_mean <- traila_ex[ind,1+sex_r]
+  traila_sd <- traila_ex[ind,2+sex_r]
   
-  trailb_c2_ex <- read_excel(tap_ex_path, sheet = "trailb_c2")
-  trailb_c2_mean <- trailb_c2_ex[ind,1+sex_r]
-  trailb_c2_sd <- trailb_c2_ex[ind,2+sex_r]
+  trailb_ex <- read_excel(tap_ex_path, sheet = "trailb")
+  trailb_mean <- trailb_ex[ind,1+sex_r]
+  trailb_sd <- trailb_ex[ind,2+sex_r]
   
   # transform variables
   moca_z <- (as.integer(np_moca_total)-as.integer(moca_mean))/as.integer(moca_sd)
@@ -167,16 +167,16 @@ np_uploader<<- function(epochh,vmac) {
   udsverfc_z <- (as.integer(udsverfc)-as.integer(udsverfc_mean)-1)/as.integer(udsverfc_sd)
   udsverlc_z <- (as.integer(udsverlc)-as.integer(udsverlc_mean)-1)/as.integer(udsverlc_sd)
   udsvertn_z <- (as.integer(udsvertn)-as.integer(udsvertn_mean)-1)/as.integer(udsvertn_sd)
-  animals_c2_z <- (as.integer(animals_c2)-as.integer(animals_c2_mean)-1)/as.integer(animals_c2_sd)
-  veg_c2_z <- (as.integer(veg_c2)-as.integer(veg_c2_mean)-1)/as.integer(veg_c2_sd)
-  traila_c2_z <- (as.integer(traila_c2)-as.integer(traila_c2_mean)-1)/as.integer(traila_c2_sd)
-  trailb_c2_z <- (as.integer(trailb_c2)-as.integer(trailb_c2_mean)-1)/as.integer(trailb_c2_sd)
+  animals_z <- (as.integer(animals)-as.integer(animals_mean)-1)/as.integer(animals_sd)
+  veg_z <- (as.integer(veg)-as.integer(veg_mean)-1)/as.integer(veg_sd)
+  traila_z <- (as.integer(traila)-as.integer(traila_mean)-1)/as.integer(traila_sd)
+  trailb_z <- (as.integer(trailb)-as.integer(trailb_mean)-1)/as.integer(trailb_sd)
   
   mem_ver<- cbind(craftvrs_z,crafturs_z,craftdvr_z,craftdre_z)
   mem_vis<- cbind(udsbentc_z, udsbentd_z)
-  lang<- cbind(minttots_z,animals_c2_z,veg_c2_z)
-  ex_func<- cbind(digbacct_z, digbacls_z, udsverfc_z, udsverlc_z, udsvertn_z, trailb_c2_z)
-  attention<- cbind(digforct_z, digforsl_z, traila_c2_z)
+  lang<- cbind(minttots_z,animals_z,veg_z)
+  ex_func<- cbind(digbacct_z, digbacls_z, udsverfc_z, udsverlc_z, udsvertn_z, trailb_z)
+  attention<- cbind(digforct_z, digforsl_z, traila_z)
   
   #Tower
   np_tower1 <- as.integer(np_data$np_tower1)-1
@@ -225,6 +225,10 @@ np_uploader<<- function(epochh,vmac) {
   lang<- cbind(minttots_z,animals_z,veg_z)
   ex_func<- cbind(digbacct_z, digbacls_z, udsverfc_z, udsverlc_z, udsvertn_z, trailb_z)
   attention<- cbind(digforct_z, digforsl_z, traila_z)
+  
+  ### ADD RAW SCORES
+  
+  ### Fix indexing issues
   
   dat <<- cbind(mem_ver,mem_vis,lang,ex_func,attention,np_cvlt1to5_z,np_cvlt_ldfr_z,np_cvlt_sdfr_z,np_word_z,np_color_z,np_digsymb_z,np_inhibit_z,np_tower_z)
 

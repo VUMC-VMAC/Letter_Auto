@@ -1240,19 +1240,22 @@ fb_uploader<<- function(epochh,vmac) {
       gds <- dep_data$gds_total_score
       #if (is.null(row.names(visit_depress))==FALSE) {visit_depress <<- 0}
       #if (is.na(visit_depress)) {visit_depress <<- 0}
-      if (qids > 5 | gds > 4) {
-        int <- "mild"
-        if (gds > 8 | qids > 10) {int <- "moderate"}
+      if (gds > 8 | qids > 10) {
+        int <- "moderate"
         if (gds > 11 | qids > 15) {int <- "severe"}
         gds_phys <<- paste0("On a measure assessing depressive symptoms, ",first_name," scored in a range suggesting ",int," symptoms of depression. Based upon this score, we recommended that ",first_name," make an appointment for a more detailed clinical assessment of these symptoms.")
         gds <<- paste0("As discussed on ",feedback_date1,", your scores on a measure assessing depressive symptoms fell in a range suggesting ",int," symptoms of depression.  We recommend you make an appointment for a more detailed clinical assessment of these symptoms.  You can request a referral from your primary care doctor.  We would recommend our colleagues who offer clinical services in the Department of Psychiatry at Vanderbilt University.  You can schedule an appointment by calling: 615-936-3555.")
       } else {gds<<- ""; gds_phys<<- ""}
       
       ei_c <- echo_c$extracardiac_incidental; if (is.na(ei_c)) {ei_c <- "No"}
-      if (ei_c=="Yes") {lung_c<<-paste("     3.  ",echo_c$extracardiac_incidental_describe)} else {lung_c<<-""}
+      if (ei_c=="Yes") {
+        lung_c<<-paste("     3.  ",echo_c$extracardiac_incidental_describe)} else {lung_c<<-""
+        ## Create echo incidental letter here
+      }
       
       bi_c <- echo_c$brain_incidental; if (is.na(bi_c)) {bi_c <- "No"}
       if (bi_c=="Yes") {
+        ## Create brain incidental letter here
         brain_intro1<<-"Brain Test Results"
         brain_intro2<<-"You underwent brain testing, which was read by board-certified neuroradiologists."
       } else {brain_intro1<<-""; brain_intro2<<-""}

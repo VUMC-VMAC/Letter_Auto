@@ -44,7 +44,7 @@ pv_uploader <- function(epoch,vmac) {
   #if (exists("pdb_data")==FALSE) {print("No Updates")} else {
   pdb_data[which(is.na(pdb_data[,"proxy_diff_address"])),"proxy_diff_address"]<- "No"
   
-  events <- c("eligibility_arm_1","enrollmentbaseline_arm_1","18month_followup_arm_1","3year_followup_arm_1","5year_followup_arm_1","7year_followup_arm_1")
+  events <- c("eligibility_arm_1","enrollmentbaseline_arm_1","18month_followup_arm_1","3year_followup_arm_1","5year_followup_arm_1","7year_followup_arm_1","9year_followup_arm_1")
   pdb_datas <- pdb_data[which(pdb_data[,"redcap_event_name"]== events[epoch+1]),]
   
   ii <- which(pdb_datas["vmac_id"]==as.integer(vmac))

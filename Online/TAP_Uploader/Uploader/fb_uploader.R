@@ -218,7 +218,7 @@ fb_uploader<<- function(epochh,vmac) {
   
   # Initialize memory variables
   age <- pdb_data$age
-  if (age<60) {age_r <- 1}; if (age < 70 & age >= 60) {age_r <- 2}; if (age < 80 & age >= 70) {age_r <- 3}; if (age < 90 & age >= 80) {age_r <- 4}; if (age >= 90) {age_r <- 5}
+  if (age<60) {age_r <- 0}; if (age < 70 & age >= 60) {age_r <- 4}; if (age < 80 & age >= 70) {age_r <- 8}; if (age < 90 & age >= 80) {age_r <- 12}; if (age >= 90) {age_r <- 16}
   edu <- pdb_data$education
   if (edu<=12) {edu_r <- 1}; if (edu < 16 & edu >= 13) {edu_r <- 2}; if (edu == 16) {edu_r <- 3}; if (edu >= 17) {edu_r <- 4}
   ind <- age_r + edu_r
