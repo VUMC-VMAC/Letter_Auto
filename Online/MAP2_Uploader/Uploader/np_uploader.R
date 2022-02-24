@@ -59,10 +59,13 @@ np_uploader<<- function(epochh,vmac) {
   events <- c("eligibility_arm_1","enrollmentbaseline_arm_1","18month_followup_arm_1","3year_followup_arm_1","5year_followup_arm_1","7year_followup_arm_1")
   
   map_data <- pdb_datas[which(pdb_datas["vmac_id"]==as.integer(vmac)),]
-  rev_data_frame <- apply(map_data, 2, rev)
-  map_data <- as.data.frame(rev_data_frame)
-  
-  pdb_data <- map_data[which(map_data[,"redcap_event_name"]== events[epochh+1]),]
+  if (nrow(map_data) > 1) {
+    rev_data_frame <- apply(map_data, 2, rev)
+    map_data <- as.data.frame(rev_data_frame)
+    pdb_data <- map_data[which(map_data[,"redcap_event_name"]== events[epochh+1]),]
+  } else {
+    pdb_data <- map_data
+  }
   
   map_id <- pdb_data$map_id
   if (nchar(map_id)==1) {input<<- paste0("00",map_id)} else if (nchar(map_id)==2) {input<<- paste0("0",map_id)} else {input<<- map_id}
