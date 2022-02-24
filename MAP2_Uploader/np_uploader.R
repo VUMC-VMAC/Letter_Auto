@@ -118,7 +118,7 @@ np_uploader<<- function(epochh,vmac) {
   if (age < 80 & age >= 75) {age_r <- "75-79"}; if (age >= 80) {age_r <- "80-85"}
   
   ra <- pdb_data$np_norm_race
-  r_conv <- c("White/Caucasian" = "C","Black" = "AA")
+  r_conv <- c("White/Caucasian" = "C","African American/Black" = "AA")
   race <- r_conv[ra]
   
   sex <- pdb_data$sex
