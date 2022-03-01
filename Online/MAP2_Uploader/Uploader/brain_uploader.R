@@ -7,8 +7,8 @@ brain_uploader <- function(epoch,vmac) {
   library(tidyverse)
   
   # Global Pathing
-  local <- 1
-  online <- 0
+  local <- 0
+  online <- 1
   if (local) {
     # Add Local Paths Here
     out_path <- "C:/Users/sweelyb/Documents/output/"
