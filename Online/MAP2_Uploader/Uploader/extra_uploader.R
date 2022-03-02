@@ -1,4 +1,4 @@
-brain_uploader <- function(epoch,vmac) {
+extra_uploader <- function(epoch,vmac) {
   
   library(redcapAPI)
   library(WordR)
@@ -7,8 +7,8 @@ brain_uploader <- function(epoch,vmac) {
   library(tidyverse)
   
   # Global Pathing
-  local <- 1
-  online <- 0
+  local <- 0
+  online <- 1
   if (local) {
     # Add Local Paths Here
     out_path <- "C:/Users/sweelyb/Documents/output/"
@@ -29,8 +29,8 @@ brain_uploader <- function(epoch,vmac) {
   pdb_datas <- exportReports(pdb, 267451)
   echo_datas <- exportReports(EDC,281651)
   
-  ptp_path <- paste0(main_path,"resources/Templates/Incidentals/MAP_brain_temp_ptp.docx")
-  phys_path <- paste0(main_path,"resources/Templates/Incidentals/MAP_brain_temp_phys.docx")
+  ptp_path <- paste0(main_path,"resources/Templates/Incidentals/MAP_extra_temp_ptp.docx")
+  phys_path <- paste0(main_path,"resources/Templates/Incidentals/MAP_extra_temp_phys.docx")
   
   events <- c("eligibility_arm_1","enrollmentbaseline_arm_1","18month_followup_arm_1","3year_followup_arm_1","5year_followup_arm_1","7year_followup_arm_1")
   pdb_datas <- pdb_datas[which(pdb_datas[,"redcap_event_name"]== events[epoch+1]),]
@@ -40,7 +40,7 @@ brain_uploader <- function(epoch,vmac) {
   
   echo_datas <- echo_datas[which(echo_datas$map_id==as.integer(map_id)),]
   echo_data <- echo_datas[which(echo_datas[,"redcap_event_name"]== events[epoch+1]),]
-
+  
   err <<- ""
   
   i <- 1
@@ -86,14 +86,18 @@ brain_uploader <- function(epoch,vmac) {
   fb_date1 <- pdb_data[i, "feedback_date"]
   if (is.na(fb_date1)) {feedback_date1 <<- "UNKNOWN"} else {feedback_date1 <<- format(as.Date(fb_date1), "%m/%d/%Y")}
   feedback_location <<- as.character(pdb_data[i, "feedback_location"])
-  bld_date_time <<- format(as.Date(echo_data$bld_date_time), "%m/%d/%Y")
   
-  brain_incidental_davis <<- echo_data$brain_incidental_davis
   
-  output <- paste0(out_path,"MAP_",input,"_",ep,"_brain_letter.docx")
+  cmr_date_time <<- format(as.Date(echo_data$cmr_date_time), "%m/%d/%Y")
+  
+  extracardiac_incidental_describe <<- echo_data$extracardiac_incidental_describe
+  
+  
+  
+  output <- paste0(out_path,"MAP_",input,"_",ep,"_extra_letter.docx")
   renderInlineCode(ptp_path, output)
   
-  importFiles(rcon = pdb, file = output, record = record, field = "feedback_incidental_brain_letter", event = pdb_data[,"redcap_event_name"],
+  importFiles(rcon = pdb, file = output, record = record, field = "feedback_incidental_extracardiac_letter", event = pdb_data[,"redcap_event_name"],
               overwrite = TRUE, repeat_instance = 1)
   
   # Compiling Physician Data
@@ -185,10 +189,10 @@ brain_uploader <- function(epoch,vmac) {
     state_physician<<- state_physician1
     zip_physician<<- zip_physician1
     
-    output <- paste0(out_path,"MAP_",input,"_",ep,"_brain_phys_incidental.docx")
+    output <- paste0(out_path,"MAP_",input,"_",ep,"_extracardiac_phys_incidental.docx")
     renderInlineCode(phys_path, output)
     
-    importFiles(rcon = pdb, file = output, record = record, field = "feedback_incidental_brain_physician1_letter", event = events[e+1],
+    importFiles(rcon = pdb, file = output, record = record, field = "feedback_incidental_extracardiac_physician1_letter", event = events[e+1],
                 overwrite = TRUE, repeat_instance = 1)
     
     if (num_phys > 1) {
@@ -200,10 +204,10 @@ brain_uploader <- function(epoch,vmac) {
       state_physician<<- state_physician2
       zip_physician<<- zip_physician2
       
-      output <- paste0(out_path,"MAP_",input,"_",ep,"_brain_phys2_incidental.docx")
+      output <- paste0(out_path,"MAP_",input,"_",ep,"_extracardiac_phys2_incidental.docx")
       renderInlineCode(phys_path, output)
       
-      importFiles(rcon = pdb, file = output, record = record, field = "feedback_incidental_brain_physician2_letter", event = events[e+1],
+      importFiles(rcon = pdb, file = output, record = record, field = "feedback_incidental_extracardiac_physician2_letter", event = events[e+1],
                   overwrite = TRUE, repeat_instance = 1)
       
       if (num_phys > 2) {
@@ -215,10 +219,10 @@ brain_uploader <- function(epoch,vmac) {
         state_physician<<- state_physician3
         zip_physician<<- zip_physician3
         
-        output <- paste0(out_path,"MAP_",input,"_",ep,"_brain_phys3_incidental.docx")
+        output <- paste0(out_path,"MAP_",input,"_",ep,"_extracardiac_phys3_incidental.docx")
         renderInlineCode(phys_path, output)
         
-        importFiles(rcon = pdb, file = output, record = record, field = "feedback_incidental_brain_physician3_letter",event = events[e+1],
+        importFiles(rcon = pdb, file = output, record = record, field = "feedback_incidental_extracardiac_physician3_letter",event = events[e+1],
                     overwrite = TRUE, repeat_instance = 1)
         
         if (num_phys > 3) {
@@ -230,10 +234,10 @@ brain_uploader <- function(epoch,vmac) {
           state_physician<<- state_physician4
           zip_physician<<- zip_physician4
           
-          output <- paste0(out_path,"MAP_",input,"_",ep,"_brain_phys4_incidental.docx")
+          output <- paste0(out_path,"MAP_",input,"_",ep,"_extracardiac_phys4_incidental.docx")
           renderInlineCode(phys_path, output)
           
-          importFiles(rcon = pdb, file = output, record = record, field = "feedback_incidental_brain_physician4_letter",event = events[e+1],
+          importFiles(rcon = pdb, file = output, record = record, field = "feedback_incidental_extracardiac_physician4_letter",event = events[e+1],
                       overwrite = TRUE, repeat_instance = 1)
           
           if (is.na(first_name_physician5)==FALSE) {
@@ -245,13 +249,13 @@ brain_uploader <- function(epoch,vmac) {
             state_physician<<- state_physician5
             zip_physician<<- zip_physician5
             
-            output <- paste0(out_path,"MAP_",input,"_",ep,"_brain_phys5_incidental.docx")
+            output <- paste0(out_path,"MAP_",input,"_",ep,"_extracardiac_phys5_incidental.docx")
             renderInlineCode(phys_path, output)
             
-            importFiles(rcon = pdb, file = output, record = record, field = "feedback_incidental_brain_physician5_letter",event = events[e+1],
+            importFiles(rcon = pdb, file = output, record = record, field = "feedback_incidental_extracardiac_physician5_letter",event = events[e+1],
                         overwrite = TRUE, repeat_instance = 1)
           }}}}}
-
+  
   
   return(err)
 }
