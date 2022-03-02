@@ -39,7 +39,9 @@ brain_uploader <- function(epoch,vmac) {
   map_id <- pdb_data$map_id
   
   echo_datas <- echo_datas[which(echo_datas$map_id==as.integer(map_id)),]
-  echo_data <- echo_datas[which(echo_datas[,"redcap_event_name"]== events[epoch+1]),]
+  echo_datas <- echo_datas[which(echo_datas[,"redcap_event_name"]== events[epoch+1]),]
+  echo_data <- echo_datas[which(is.na(echo_datas$redcap_repeat_instrument)),]
+  brain_data <- echo_datas[which(is.na(echo_datas$redcap_repeat_instrument)==FALSE),]
 
   err <<- ""
   
@@ -86,7 +88,9 @@ brain_uploader <- function(epoch,vmac) {
   fb_date1 <- pdb_data[i, "feedback_date"]
   if (is.na(fb_date1)) {feedback_date1 <<- "UNKNOWN"} else {feedback_date1 <<- format(as.Date(fb_date1), "%m/%d/%Y")}
   feedback_location <<- as.character(pdb_data[i, "feedback_location"])
-  bld_date_time <<- format(as.Date(echo_data$bld_date_time), "%m/%d/%Y")
+  
+  
+  brain_date_time <<- format(as.Date(brain_data$scan_date_time), "%m/%d/%Y")
   
   brain_incidental_davis <<- echo_data$brain_incidental_davis
   
