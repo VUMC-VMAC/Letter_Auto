@@ -95,14 +95,14 @@ server <- function(input, output) {
         
         if (epoch == 5) {
             results <- data.frame(
-                "Epoch" = c("Enrollment", "3 Year", "5 Year", "7 Year"),
+                "Epoch" = c("Enrollment", "3 Year", "5 Year", "7 Year","RAW 7 Year"),
                 dat
             )
         }
-        
+         
         if (epoch == 1){
             results <- data.frame(
-                "Epoch" = c("Enrollment"),
+                "Epoch" = c("Enrollment","Raw"),
                 dat
             )
         }
