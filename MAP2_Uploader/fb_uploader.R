@@ -58,7 +58,7 @@ fb_uploader<<- function(epochh,vmac) {
   dde <- redcapConnection(url = "https://redcap.vanderbilt.edu/api/",
                           token = "0676EDF59CA88377654227BB56028EEE", conn, project = 124389)
   dde2 <- redcapConnection(url = "https://redcap.vanderbilt.edu/api/",
-                          token = "F009A86ED43B42332AC26C21411F37BC", conn, project = 140071)
+                           token = "F009A86ED43B42332AC26C21411F37BC", conn, project = 140071)
   
   EDC <- redcapConnection(url = "https://redcap.vanderbilt.edu/api/",
                           token = "09B0A6B7F207F51C6F656BAE567FA390", conn, project = 119047)
@@ -82,7 +82,7 @@ fb_uploader<<- function(epochh,vmac) {
   
   fail <- 0
   dde_data <- dde2_datas[grep(inp,dde2_datas$record_id),]
-  if (length(dde_data$record_id)==0) {fail <- 1}
+  #if (length(dde_data$record_id)==0) {fail <- 1}
   ij <- grep("--1",dde_data$record_id)
   if(length(ij)==0) {ij <- 1}
   
@@ -95,7 +95,11 @@ fb_uploader<<- function(epochh,vmac) {
   dep_data <- dep_data[which(dep_data[,"redcap_event_name"]== events[epochh]),]
   
   echo_datas <- echo_datas[which(echo_datas$map_id==as.integer(map_id)),]
+  echo_datas_brain <- echo_datas[which(is.na(echo_datas$redcap_repeat_instrument)==FALSE),]
+  echo_datas <- echo_datas[which(is.na(echo_datas$redcap_repeat_instrument)),]
   echo_data <- echo_datas[which(echo_datas[,"redcap_event_name"]== events[epochh+1]),]
+  #echo_data <- echo_data_s[which(is.na(echo_data_s$redcap_repeat_instrument)),]
+  brain_data <- echo_datas_brain[which(echo_datas_brain[,"redcap_event_name"]== events[epochh+1]),]
   
   if (length(echo_data$map_id)==0) {fail <- 1}
   
@@ -548,7 +552,7 @@ fb_uploader<<- function(epochh,vmac) {
       }
       
       
-   
+      
       print("Compiling Memory results")
       
       decline <<- ""
@@ -633,8 +637,8 @@ fb_uploader<<- function(epochh,vmac) {
         ggfp <- data.frame(nnp)
         
         if (any(is.na(ggfp))) {
-        
-        #### If Norm Scores are not available ####
+          
+          #### If Norm Scores are not available ####
           incomplete <- any(dde_data[ij,]==-7777); if (is.na(incomplete)) {incomplete <- 0}
           dnf <- any(dde_data[ij,]==-9999); if (is.na(dnf)) {dnf <- 0}
           miss <- any(is.na(dde_data[ij,3:28])); if(is.na(miss)) {miss <- 0}
@@ -857,12 +861,12 @@ fb_uploader<<- function(epochh,vmac) {
           
         }
       } # End of memory testing
-  
+      
       print("Compiling Epoch 5 Heart Results")
       
       echo_p2 <- echo_datas[which(echo_datas[,"redcap_event_name"]== events[epochh-1]),]
       echo_p1 <- echo_datas[which(echo_datas[,"redcap_event_name"]== events[epochh]),]
-      echo_c <- echo_datas[which(echo_datas[,"redcap_event_name"]== events[epochh+1]),]
+      echo_c <- echo_data
       
       lv_p2 <<- paste0("     1.  ",as.character(echo_p2$echo_find1_lv_dys_fx))
       val_p2<<- as.character(echo_p2$echo_find2_valve_fx)
@@ -874,17 +878,28 @@ fb_uploader<<- function(epochh,vmac) {
       val_c<<- as.character(echo_c$echo_find2_valve_fx)
       if (val_c=="Normal"){val_c<<-"     2.  No significant"} else {val_c<<-"     2.  Significant"}
       
+      # Depression Statement
+      
       qids <- edc_data$qids
       gds <- edc_data$gds_total_score
+      
+      if (is.na(qids) | is.na(gds)) {
+        dep <- tm7yr_data$visit_depress 
+        if (dep == "Yes") {
+        gds_phys <<- paste0("On a measure assessing depressive symptoms, ",first_name," scored in a range suggesting moderate/severe symptoms of depression. Based upon this score, we recommended that ",first_name," make an appointment for a more detailed clinical assessment of these symptoms.")
+        gds <<- paste0("As discussed on ",feedback_date1,", your scores on a measure assessing depressive symptoms fell in a range suggesting moderate/severe symptoms of depression.  We recommend you make an appointment for a more detailed clinical assessment of these symptoms.  You can request a referral from your primary care doctor.  We would recommend our colleagues who offer clinical services in the Department of Psychiatry at Vanderbilt University.  You can schedule an appointment by calling: 615-936-3555.")
+        } else {gds<<- ""; gds_phys<<- ""}
+      } else {
+        if (qids > 9 | gds > 10) {
+          int <- "moderate"
+          if (gds > 11 | qids > 15) {int <- "severe"}
+          gds_phys <<- paste0("On a measure assessing depressive symptoms, ",first_name," scored in a range suggesting ",int," symptoms of depression. Based upon this score, we recommended that ",first_name," make an appointment for a more detailed clinical assessment of these symptoms.")
+          gds <<- paste0("As discussed on ",feedback_date1,", your scores on a measure assessing depressive symptoms fell in a range suggesting ",int," symptoms of depression.  We recommend you make an appointment for a more detailed clinical assessment of these symptoms.  You can request a referral from your primary care doctor.  We would recommend our colleagues who offer clinical services in the Department of Psychiatry at Vanderbilt University.  You can schedule an appointment by calling: 615-936-3555.")
+        } else {gds<<- ""; gds_phys<<- ""}
+      }
+      
       #if (is.null(row.names(visit_depress))==FALSE) {visit_depress <<- 0}
       #if (is.na(visit_depress)) {visit_depress <<- 0}
-      if (qids > 5 | gds > 4) {
-        int <- "mild"
-        if (gds > 8 | qids > 10) {int <- "moderate"}
-        if (gds > 11 | qids > 15) {int <- "severe"}
-        gds_phys <<- paste0("On a measure assessing depressive symptoms, ",first_name," scored in a range suggesting ",int," symptoms of depression. Based upon this score, we recommended that ",first_name," make an appointment for a more detailed clinical assessment of these symptoms.")
-        gds <<- paste0("As discussed on ",feedback_date1,", your scores on a measure assessing depressive symptoms fell in a range suggesting ",int," symptoms of depression.  We recommend you make an appointment for a more detailed clinical assessment of these symptoms.  You can request a referral from your primary care doctor.  We would recommend our colleagues who offer clinical services in the Department of Psychiatry at Vanderbilt University.  You can schedule an appointment by calling: 615-936-3555.")
-      } else {gds<<- ""; gds_phys<<- ""}
       
       ei_p2 <- echo_p2$extracardiac_incidental; if (is.na(ei_p2)) {ei_p2 <- "No"}
       ei_p1 <- echo_p1$extracardiac_incidental; if (is.na(ei_p1)) {ei_p1 <- "No"}
@@ -963,7 +978,7 @@ fb_uploader<<- function(epochh,vmac) {
       ft <- theme_box(ft)
       
       
-    
+      
       ft <- fontsize(ft, j=1:5, size = 10, part="header")
       ft <- fontsize(ft, j=1:5, size = 10, part="body")
       ft <- width(ft,j = 5, width = 1)
@@ -980,7 +995,7 @@ fb_uploader<<- function(epochh,vmac) {
       ft <- width(ft, j=1:2, width = .75)
       ft <- align(ft, i = 1:3, j = 1:2, align="left",part="body")
       evens<-c(4)
-    
+      
       
       
       
@@ -1044,7 +1059,7 @@ fb_uploader<<- function(epochh,vmac) {
       ft2 <- font(ft2,fontname = "Arial",part = "body")
       ft2 <- theme_box(ft2)
       
-    
+      
       ft2 <- width(ft2, j = 1:4, width=.9)
       ft2 <- merge_at(ft2, i = 1, j = 1:2, part = "header")
       ft2 <- merge_at(ft2, i = 1:4, j = 1, part = "body")
@@ -1059,7 +1074,7 @@ fb_uploader<<- function(epochh,vmac) {
       ft2 <- height(ft2, height = .4, part = "header")
       #ft2 <- width(ft2, j = 1, width = .85)
       ft2 <- width(ft2, j = 2, width = 1.25)
-    
+      
       
       for (ii in 3:(ncol(df2)-1)) {
         if (df2[1,ii]=="-"){ft2<-bold(ft2, i = 1, j = ii, bold = FALSE, part = "body")}else{if(as.integer(df2[1,ii]) > 200){ft2<-bold(ft2, i = 1, j = ii, bold = TRUE, part = "body")}}
@@ -1230,7 +1245,8 @@ fb_uploader<<- function(epochh,vmac) {
       
       print("Compiling Heart Results")
       
-      echo_c <- echo_datas[which(echo_datas[,"redcap_event_name"]== events[epochh+1]),]
+      #echo_c <- echo_datas[which(echo_datas[,"redcap_event_name"]== events[epochh+1]),]
+      echo_c <- echo_data
       
       lv_c <<- paste0("     1.  ",as.character(echo_c$echo_find1_lv_dys_fx))
       val_c<<- as.character(echo_c$echo_find2_valve_fx)
@@ -1240,7 +1256,7 @@ fb_uploader<<- function(epochh,vmac) {
       gds <- dep_data$gds_total_score
       #if (is.null(row.names(visit_depress))==FALSE) {visit_depress <<- 0}
       #if (is.na(visit_depress)) {visit_depress <<- 0}
-      if (gds > 8 | qids > 10) {
+      if (qids > 9 | gds > 10) {
         int <- "moderate"
         if (gds > 11 | qids > 15) {int <- "severe"}
         gds_phys <<- paste0("On a measure assessing depressive symptoms, ",first_name," scored in a range suggesting ",int," symptoms of depression. Based upon this score, we recommended that ",first_name," make an appointment for a more detailed clinical assessment of these symptoms.")
@@ -1248,14 +1264,10 @@ fb_uploader<<- function(epochh,vmac) {
       } else {gds<<- ""; gds_phys<<- ""}
       
       ei_c <- echo_c$extracardiac_incidental; if (is.na(ei_c)) {ei_c <- "No"}
-      if (ei_c=="Yes") {
-        lung_c<<-paste("     3.  ",echo_c$extracardiac_incidental_describe)} else {lung_c<<-""
-        ## Create echo incidental letter here
-      }
+      if (ei_c=="Yes") {lung_c<<-paste("     3.  ",echo_c$extracardiac_incidental_describe)} else {lung_c<<-""}
       
       bi_c <- echo_c$brain_incidental; if (is.na(bi_c)) {bi_c <- "No"}
       if (bi_c=="Yes") {
-        ## Create brain incidental letter here
         brain_intro1<<-"Brain Test Results"
         brain_intro2<<-"You underwent brain testing, which was read by board-certified neuroradiologists."
       } else {brain_intro1<<-""; brain_intro2<<-""}
@@ -1281,7 +1293,7 @@ fb_uploader<<- function(epochh,vmac) {
     output<- paste0(out_path,"feedback_MAP",input,"_",epoch,".docx")
     renderInlineCode(ptp_temp, output)
     
-    importFiles(rcon = pdb, file = output, record = record, field = "feedback_letter", event = events[e+1],
+      importFiles(rcon = pdb, file = output, record = record, field = "feedback_letter", event = events[e+1],
                 overwrite = TRUE, repeat_instance = 1)
     
     print("Imported File")
@@ -1302,7 +1314,7 @@ fb_uploader<<- function(epochh,vmac) {
       
       importFiles(rcon = pdb, file = output, record = record, field = "feedback_physician1_letter", event = events[e+1],
                   overwrite = TRUE, repeat_instance = 1)
-    
+      
       if (num_phys > 1) {
         first_name_physician<<-first_name_physician2
         last_name_physician<<- last_name_physician2
@@ -1317,7 +1329,7 @@ fb_uploader<<- function(epochh,vmac) {
         
         importFiles(rcon = pdb, file = output, record = record, field = "feedback_physician2_letter", event = events[e+1],
                     overwrite = TRUE, repeat_instance = 1)
-    
+        
         if (num_phys > 2) {
           first_name_physician<<-first_name_physician3
           last_name_physician<<- last_name_physician3
@@ -1332,7 +1344,7 @@ fb_uploader<<- function(epochh,vmac) {
           
           importFiles(rcon = pdb, file = output, record = record, field = "feedback_physician3_letter",event = events[e+1],
                       overwrite = TRUE, repeat_instance = 1)
-    
+          
           if (num_phys > 3) {
             first_name_physician<<-first_name_physician4
             last_name_physician<<- last_name_physician4
@@ -1362,8 +1374,8 @@ fb_uploader<<- function(epochh,vmac) {
               
               importFiles(rcon = pdb, file = output, record = record, field = "feedback_physician5_letter",event = events[e+1],
                           overwrite = TRUE, repeat_instance = 1)
-    }}}}}
-        
+            }}}}}
+    
   }
   return(err)
 }
