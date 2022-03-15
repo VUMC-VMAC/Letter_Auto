@@ -32,7 +32,7 @@ ui <- fluidPage(
         tabPanel("Letters", fluid = TRUE,
                  textInput(inputId = "n", "VMAC ID", ""),
                  numericInput(inputId = "d", "Epoch", value=5),
-                 selectInput(inputId = "l", "Type of Letter", choices = c("Feedback Letter" = "fb", "LP Previsit Letter" = "LP","Thank You"="ty","Previsit"="previsit","Full Previsit"="pv","Bloodwork Incidental"="blood","Brain Incidental"="brain","Extracardiac Incidental"="extra","Echo Incidental"="echo")),
+                 selectInput(inputId = "l", "Type of Letter", choices = c("Feedback Letter" = "fb", "LP Previsit Letter" = "LP","Thank You"="ty","Previsit"="pv","Bloodwork Incidental"="blood","Brain Incidental"="brain","Extracardiac Incidental"="extra","Echo Incidental"="echo")),
                  actionButton(inputId = "submit",label = "Submit"),
                  textOutput(outputId = "d"),
                  textOutput(outputId = "error")
@@ -63,7 +63,7 @@ server <- function(input, output) {
             command <- paste0(letter,"_uploader(",epoch,",",vmac_int,")")
             print(command)
             err <- eval(parse(text = command))
-            letter_conv <- c("fb"="Feedback", "LP"="LP Previsit","ty"="Thank You","previsit"="Previsit","pv"="Full Previsit","blood"="Blood Incidental","brain"="Brain Incidental","extra"="Extracardiac Incidental","echo"="Echo Incidental")
+            letter_conv <- c("fb"="Feedback", "LP"="LP Previsit","ty"="Thank You","pv"="Previsit","blood"="Blood Incidental","brain"="Brain Incidental","extra"="Extracardiac Incidental","echo"="Echo Incidental")
             lett <- letter_conv[letter]
             conf <- ""
             if (err=="") {conf <- paste0(lett," Letter for VMAC ID: ",input$n," has been generated!")} else {conf <- "An error has occurred."}

@@ -44,7 +44,7 @@ pv_uploader <- function(epoch,vmac) {
   #if (exists("pdb_data")==FALSE) {print("No Updates")} else {
   pdb_data[which(is.na(pdb_data[,"proxy_diff_address"])),"proxy_diff_address"]<- "No"
   
-  events <- c("eligibility_arm_1","enrollmentbaseline_arm_1","18month_followup_arm_1","3year_followup_arm_1","5year_followup_arm_1","7year_followup_arm_1")
+  events <- c("eligibility_arm_1","enrollmentbaseline_arm_1","18month_followup_arm_1","3year_followup_arm_1","5year_followup_arm_1","7year_followup_arm_1","9year_followup_arm_1")
   pdb_datas <- pdb_data[which(pdb_data[,"redcap_event_name"]== events[epoch+1]),]
   
   ii <- which(pdb_datas["vmac_id"]==as.integer(vmac))
@@ -232,10 +232,18 @@ pv_uploader <- function(epoch,vmac) {
       field <- "visit_letter"
       field_proxy <- "visit_letter_proxy"
       
-      path_in <- paste0(main_path,"resources/Templates/Previsit/MAP_pv2.docx")
-      temp <- paste0(out_path,"previsit_temp.docx")
-      path_in_proxy <- paste0(main_path,"resources/Templates/Previsit/MAP_pv2_proxy.docx")
-      temp_proxy <- paste0(out_path,"previsit_temp_prox.docx")
+      lp_date <- pdb_data$lp_date
+      if (is.na(lp_date)) {
+        path_in <- paste0(main_path,"resources/Templates/Previsit/MAP_template.docx")
+        temp <- paste0(out_path,"previsit_temp.docx")
+        path_in_proxy <- paste0(main_path,"resources/Templates/Previsit/MAP_proxy_template.docx")
+        temp_proxy <- paste0(out_path,"previsit_temp_prox.docx")
+      } else {
+        path_in <- paste0(main_path,"resources/Templates/Previsit/MAP_pv2.docx")
+        temp <- paste0(out_path,"previsit_temp.docx")
+        path_in_proxy <- paste0(main_path,"resources/Templates/Previsit/MAP_pv2_proxy.docx")
+        temp_proxy <- paste0(out_path,"previsit_temp_prox.docx")
+      }
       
       #################### EPOCH 5 Ends HERE
       
@@ -578,15 +586,15 @@ pv_uploader <- function(epoch,vmac) {
     output <- paste0(out_path,"VMAC_",input,"_",ep,"_ptp_letter.docx")
     renderInlineCode(temp, output)
     
-    importFiles(rcon = pdb, file = output, record = record, field = field, event = pdb_data[,"redcap_event_name"],
-                overwrite = TRUE, repeat_instance = 1)
+    #importFiles(rcon = pdb, file = output, record = record, field = field, event = pdb_data[,"redcap_event_name"],
+    #            overwrite = TRUE, repeat_instance = 1)
     
     if (is.na(proxy_first_name)==FALSE) {
       output_proxy <- paste0(out_path,"VMAC_",input,"_",ep,"_proxy_letter.docx")
       renderInlineCode(temp_proxy, output_proxy)
       
-      importFiles(rcon = pdb, file = output_proxy, record = record, field = field_proxy, event = pdb_data[,"redcap_event_name"],
-                  overwrite = TRUE, repeat_instance = 1)
+      #importFiles(rcon = pdb, file = output_proxy, record = record, field = field_proxy, event = pdb_data[,"redcap_event_name"],
+      #            overwrite = TRUE, repeat_instance = 1)
     }
     
     #}
@@ -594,3 +602,4 @@ pv_uploader <- function(epoch,vmac) {
   }
   return(err)
 }
+

@@ -232,10 +232,18 @@ pv_uploader <- function(epoch,vmac) {
       field <- "visit_letter"
       field_proxy <- "visit_letter_proxy"
       
-      path_in <- paste0(main_path,"resources/Templates/Previsit/MAP_pv2.docx")
-      temp <- paste0(out_path,"previsit_temp.docx")
-      path_in_proxy <- paste0(main_path,"resources/Templates/Previsit/MAP_pv2_proxy.docx")
-      temp_proxy <- paste0(out_path,"previsit_temp_prox.docx")
+      lp_date <- pdb_data$lp_date
+      if (is.na(lp_date)) {
+        path_in <- paste0(main_path,"resources/Templates/Previsit/MAP_template.docx")
+        temp <- paste0(out_path,"previsit_temp.docx")
+        path_in_proxy <- paste0(main_path,"resources/Templates/Previsit/MAP_proxy_template.docx")
+        temp_proxy <- paste0(out_path,"previsit_temp_prox.docx")
+      } else {
+        path_in <- paste0(main_path,"resources/Templates/Previsit/MAP_pv2.docx")
+        temp <- paste0(out_path,"previsit_temp.docx")
+        path_in_proxy <- paste0(main_path,"resources/Templates/Previsit/MAP_pv2_proxy.docx")
+        temp_proxy <- paste0(out_path,"previsit_temp_prox.docx")
+      }
       
       #################### EPOCH 5 Ends HERE
       
@@ -594,3 +602,4 @@ pv_uploader <- function(epoch,vmac) {
   }
   return(err)
 }
+
