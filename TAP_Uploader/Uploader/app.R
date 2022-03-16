@@ -59,11 +59,13 @@ server <- function(input, output) {
             print(vmac_int)
             command <- paste0(letter,"_uploader(",epoch,",",vmac_int,")")
             print(command)
-            eval(parse(text = command))
+            err <- eval(parse(text = command))
             letter_conv <- c("fb"="Feedback", "LP"="LP Previsit","ty"="Thank You","pv"="Previsit","cond"="Condolence")
             lett <- letter_conv[letter]
+            conf <- ""
+            if (err=="") {conf <- paste0(lett," Letter for VMAC ID: ",input$n," has been generated!")} else {conf <- "An error has occurred."}
         }
-        rea <<- list(confirm = paste0(lett," Letter for Record ID: ",input$n," has been generated!"),error = "")
+        rea <<- list(confirm = conf,error = err)
         
     }
     )

@@ -6,6 +6,21 @@ ty_uploader <- function(epoch,vmac) {
   library(Hmisc)
   library(tidyverse)
   
+  # Global Pathing
+  local <- 1
+  online <- 0
+  if (local) {
+    # Add Local Paths Here
+    out_path <- "C:/Users/sweelyb/Documents/output/"
+    main_path <- "C:/Users/sweelyb/Documents/Letter_Auto/"
+    
+  } else if (online) {
+    # Add Global Paths Here
+    out_path <- "/app/"
+    main_path <- "/srv/shiny-server/"
+    
+  }
+  
   edc <- redcapConnection(url = "https://redcap.vanderbilt.edu/api/",
                           token = "A2F023358C81C065E1D98575795DCD5B", conn, project = 135160)
   pdb <- redcapConnection(url = "https://redcap.vanderbilt.edu/api/",
@@ -42,31 +57,38 @@ ty_uploader <- function(epoch,vmac) {
   date_next <- paste0("visit_estimate_",ep_next,"_date")
   date_ty <<- format(as.Date(pdb_data[1, date_next]), "%B %Y")
   
-  if (e==1){
-    elig_out <- edc_data$elig_outcome
-    if (is.na(elig_out)) {elig_out <- "Yes"}
-    #enroll_stat <- edc_data$enrollment_status
-    
-    if (elig_out=="Yes") {
-      ef <<- paste0("We look forward to seeing you in ",date_ty," for your next follow up visit!")
-      elig <<- "You are now part of a valuable research study that will help middle aged and older adults at risk for memory loss. Your participation will help contribute to research understanding brain health. Thank you for your contribution to this important project. Our efforts would not be possible without your generous help."
+  bc <- edc_data$blood_complete; if (is.na(bc)) {bc <- "No"}
+  ec <- edc_data$echo_complete; if (is.na(ec)) {ec <- "No"}
+  nc <- edc_data$np_complete; if (is.na(nc)) {nc <- "No"}
+  brc <- edc_data_brain$brain_complete; if (is.na(brc)) {brc <- "No"}
+  
+  if (nc != "Yes" & ec != "Yes" & bc != "Yes" & brc != "Yes") {err <<- "Insufficient data for thank you letter."} else {
+    err <<- ""
+    if (e==1){
+      elig_out <- edc_data$elig_outcome
+      if (is.na(elig_out)) {elig_out <- "Yes"}
+      #enroll_stat <- edc_data$enrollment_status
+      
+      if (elig_out=="Yes") {
+        ef <<- paste0("We look forward to seeing you in ",date_ty," for your next follow up visit!")
+        elig <<- "You are now part of a valuable research study that will help middle aged and older adults at risk for memory loss. Your participation will help contribute to research understanding brain health. Thank you for your contribution to this important project. Our efforts would not be possible without your generous help."
+      } else {
+        ef <<- ""
+        elig <<- "Even though it was determined that you are not eligible to participate in the Tennessee Alzheimer's Project, we appreciate you donating your time to our research efforts. Thank you for your contribution to this important project. Our efforts would not be possible without your generous help and time."
+      }
+      
+      path_in <- paste0(main_path,"resources/Templates/Thank You/TAP Thank You Template_e.docx")
     } else {
-      ef <<- ""
-      elig <<- "Even though it was determined that you are not eligible to participate in the Tennessee Alzheimer's Project, we appreciate you donating your time to our research efforts. Thank you for your contribution to this important project. Our efforts would not be possible without your generous help and time."
+      path_in <- paste0(main_path,"resources/Templates/Thank You/TAP Thank You Template.docx")
+      
+      fu <<- "To date, your participation has helped generate more than 130 scientific publications and conference presentations, and it has provided significant teaching opportunities for more than 40 investigators and clinicians-in-training."
     }
     
-    path_in <- "~/resources/Templates/Thank You/TAP Thank You Template_e.docx"
-  } else {
-    path_in <- "~/resources/Templates/Thank You/TAP Thank You Template.docx"
+    output <- paste0(out_path,"TAP_",input,"_",ep,"_ty_letter.docx")
+    renderInlineCode(path_in, output)
     
-    fu <<- "To date, your participation has helped generate more than 130 scientific publications and conference presentations, and it has provided significant teaching opportunities for more than 40 investigators and clinicians-in-training."
+    #importFiles(rcon = pdb, file = output, record = record, field = "card_thank_letter", event = events[e],
+    #            overwrite = TRUE, repeat_instance = 1)
   }
-  
-  output <- paste0("~/resources/Output/TAP_",input,"_",ep,"_ty_letter.docx")
-  renderInlineCode(path_in, output)
-  
-  importFiles(rcon = pdb, file = output, record = record, field = "card_thank_letter", event = events[e],
-              overwrite = TRUE, repeat_instance = 1)
-  }
-  
-#}
+  return(err)
+}
