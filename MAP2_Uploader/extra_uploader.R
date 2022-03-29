@@ -97,7 +97,7 @@ extra_uploader <- function(epoch,vmac) {
   output <- paste0(out_path,"MAP_",input,"_",ep,"_extra_letter.docx")
   renderInlineCode(ptp_path, output)
   
-  importFiles(rcon = pdb, file = output, record = record, field = "feedback_incidental_stat_extracardiac_letter", event = pdb_data[,"redcap_event_name"],
+  importFiles(rcon = pdb, file = output, record = record, field = "feedback_incidental_stat_letter_extracardiac", event = pdb_data[,"redcap_event_name"],
               overwrite = TRUE, repeat_instance = 1)
   
   # Compiling Physician Data

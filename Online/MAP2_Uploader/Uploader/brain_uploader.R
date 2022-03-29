@@ -97,7 +97,7 @@ brain_uploader <- function(epoch,vmac) {
   output <- paste0(out_path,"MAP_",input,"_",ep,"_brain_letter.docx")
   renderInlineCode(ptp_path, output)
   
-  importFiles(rcon = pdb, file = output, record = record, field = "feedback_incidental_stat_brain_letter", event = pdb_data[,"redcap_event_name"],
+  importFiles(rcon = pdb, file = output, record = record, field = "feedback_incidental_stat_letter_brain", event = pdb_data[,"redcap_event_name"],
               overwrite = TRUE, repeat_instance = 1)
   
   # Compiling Physician Data
