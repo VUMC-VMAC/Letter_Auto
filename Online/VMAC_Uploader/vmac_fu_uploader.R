@@ -11,57 +11,124 @@ vmac_fu_uploader <- function(vmac_id) {
   
   dir(path = paste0(getwd(), "/resources/Templates/VMAC Registry"), pattern = ".docx")
   
-  token <- "B07286F2BCFC9B49C157FD44A62F3320"
+  if (nchar(vmac_id)==1) {record <- paste0("0000",vmac_id)} else if (nchar(vmac_id)==2) {record <- paste0("000",vmac_id)} else if (nchar(vmac_id)==3) {record <- paste0("00",vmac_id)} else if (nchar(vmac_id)==4) {record <- paste0("0",vmac_id)} else {record <- vmac_id}
+  
+  token <- "31F3F4459CDE37C4327B75A3A07236C3"
   url <- "https://redcap.vanderbilt.edu/api/"
   formData <- list("token"=token,
-                   content='report',
+                   content='record',
+                   action='export',
                    format='json',
-                   report_id='243399',
+                   type='flat',
                    csvDelimiter='',
+                   'records[0]'=record,
+                   'fields[0]'='vmac_id',
+                   'fields[1]'='first_name',
+                   'fields[2]'='last_name',
+                   'fields[3]'='salutation',
+                   'fields[4]'='preferred_name',
+                   'fields[5]'='sex',
+                   #'forms[0]'='vmac_participant_questionnaire_static',
                    rawOrLabel='raw',
                    rawOrLabelHeaders='raw',
                    exportCheckboxLabel='false',
+                   exportSurveyFields='false',
+                   exportDataAccessGroups='false',
                    returnFormat='json'
   )
-  #response <- httr::POST(url, body = formData, encode = "form")
-  try(response <- httr::POST(url, body = formData, encode = "form"), silent = TRUE)
+  response <- httr::POST(url, body = formData, encode = "form")
+  vmac <- httr::content(response); vmac1 <- vmac[[1]]
+  
+  formData <- list("token"=token,
+                   content='record',
+                   action='export',
+                   format='json',
+                   type='flat',
+                   csvDelimiter='',
+                   'records[0]'=record,
+                   #'fields[0]'='vmac_id',
+                   'fields[0]'='street_address',
+                   'fields[1]'='city',
+                   'fields[2]'='state',
+                   'fields[3]'='zip',
+                   #'forms[0]'='vmac_participant_questionnaire_static',
+                   rawOrLabel='raw',
+                   rawOrLabelHeaders='raw',
+                   exportCheckboxLabel='false',
+                   exportSurveyFields='false',
+                   exportDataAccessGroups='false',
+                   returnFormat='json'
+  )
+  response <- httr::POST(url, body = formData, encode = "form")
+  vmac <- httr::content(response); vmac2 <- vmac[[1]]
+  
+  formData <- list("token"=token,
+                   content='record',
+                   action='export',
+                   format='json',
+                   type='flat',
+                   csvDelimiter='',
+                   'records[0]'=record,
+                   #'fields[0]'='vmac_id',
+                   'fields[0]'='tp_user',
+                   'fields[1]'='tp_date',
+                   #'forms[0]'='vmac_participant_questionnaire_static',
+                   rawOrLabel='raw',
+                   rawOrLabelHeaders='raw',
+                   exportCheckboxLabel='false',
+                   exportSurveyFields='false',
+                   exportDataAccessGroups='false',
+                   returnFormat='json'
+  )
+  response <- httr::POST(url, body = formData, encode = "form")
+  vmac <- httr::content(response); tp <- vmac[[1]]
+  
+  
+  #try(response <- httr::POST(url, body = formData, encode = "form"), silent = TRUE)
   if (exists("response")==FALSE) {print("No Updates")} else {
-    vmacs <<- httr::content(response)
-    df <- data.frame(vmacs[[1]])
-    for (i in (2:length(vmacs))) {
-      df <- rbind(df,vmacs[[i]])
-    }
+    #vmacs <<- httr::content(response)
+    #df <- data.frame(vmacs[[1]])
+    #for (i in (2:length(vmacs))) {
+    #  df <- rbind(df,vmacs[[i]])
+    #}
     
     # ID Selector
-    dff <<-  df["vmac_id"][[1]]
-    try(indd <- grep(vmac_id,dff),silent = TRUE)
-    vmac <<- vmacs[[indd]]
+    #dff <<-  df["vmac_id"][[1]]
+    #try(indd <- grep(vmac_id,dff),silent = TRUE)
+    #vmac <<- vmacs[indd]
+    #vmac1 <<- vmac[[1]]
+    #vmac2 <<- vmac[[2]]
+    #tp <- vmac[[]]
     
     
-    first_name <<- vmac[["first_name"]]
-    last_name <<- vmac[["last_name"]]
-    address <<- vmac[["address"]]
-    address_city <<- vmac[["address_city"]]
+    first_name <<- vmac1$first_name
+    last_name <<- vmac1$last_name
+    address <<- vmac2$street_address
+    address_city <<- vmac2$city
     address_city <<- gsub(" $","",address_city)
-    address_state <<- vmac[["address_state"]]
-    address_zip <<- vmac[["address_zip"]]
-    sal <- as.character(vmac[["salutation"]])
+    address_state <<- vmac2$state
+    address_zip <<- vmac2$zip
+    sal <- as.character(vmac1$salutation)
     sal_conv <- c("1"="Mr.","2"="Mrs.","3"="Ms.","4"="Dr.","5"="Rev.")
     salutation <<- sal_conv[sal]
-    screen_p <- vmac[["screen_person"]]
-    screen_conv <- c("93"="Nicole Boog","98"="Natalie Pettirossi","92"="Mekenzie Meadows","96"="Chloe Motley","91"="Dominic Roby","94"="Sydney Wilhoite","81"="Sope Adeleye", "33"="Maddy Berkowitz-Cerasano", "61"="Sameeksha Malhotra","64"="Natalie Givens", "32"="Marilyn Steinbach", "62" ="Shelbie Wenner", "31"="Jordan Rahm","63"="Hannah Gavins","35"="Malek Jacobs","3"="Samantha Brown","34"="Emily Bradford")
-    initial_conv <- c("93"="NB","98"="NP","92"="MM","96"="CM","91"="DR","94"="SW","81"="SA","33"="MBC","61"="SHM","64"="NRG","32"="MS","62"="SW","31"="JR","63"="HG","35"="MJ","30"="SB","34"="EB")
+    screen_p <- tp$tp_user
+    
+    
+    screen_conv <- c("98"="Tineciaa Harris","11"="Katie Gifford","59"="Jessica Steele","3"="Sydney Wilhoite","15"="Raymond Romano","6"="Paige Crepezzi","21"="Natalie Pettirossi","16"="Chloe Motley","20"="Dominic Roby","22"="Sope Adeleye", "74"="Maddy Berkowitz-Cerasano", "89"="Sameeksha Malhotra","64"="Natalie Givens", "30"="Marilyn Steinbach", "93" ="Shelbie Wenner", "62"="Jordan Rahm")
+    initial_conv <- c("98"="TH","11"="KG","59"="JS","3"="SW","15"="RR","6"="PC","21"="NP","16"="CM","20"="DR","22"="SA","74"="MBC","89"="SHM","64"="NRG","30"="MS","93"="SW","62"="JR")
+    
+    
     screen_person <<- screen_conv[screen_p]
     initial <<- initial_conv[screen_p]
     #letter_sent <- vmac[["vmac_followup_letter_mailing"]]
-    output <- paste0("/app/VMAC_",vmac[["vmac_id"]],"_",initial,".docx")
+    output <- paste0("/app/VMAC_",record,"_",initial,".docx")
     path_in <- paste0("/srv/shiny-server/resources/Templates/VMAC Registry/VMAC_template.docx")
     renderInlineCode(path_in, output)
     #importFiles(rcon = vmac_database, file = output, record = vmac_id, field = "vmac_letter", event='initial_vmac_call_arm_1',
     #            overwrite = TRUE, repeat_instance = 1)
     #cmmd <- paste0("python /srv/shiny-server/resources/fu_uploader.py -v ",vmac[["vmac_id"]]," -f \"",output,"\"")
     #system(cmmd)
-    formData <- list("token"=token,content='file',action='import',record=vmac[["vmac_id"]],
+    formData <- list("token"=token,content='file',action='import',record=record,
                      field='vmac_letter',event='initial_vmac_call_arm_1',
                      returnFormat='json',file=httr::upload_file(output))
     response <- httr::POST(url,body=formData,encode="multipart")

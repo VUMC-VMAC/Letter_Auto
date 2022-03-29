@@ -10,7 +10,7 @@
 options(shiny.port = 5001)
 options(shiny.host = '127.0.0.1')
 
-source("~/Letter_Automation/VMAC_Uploader/vmac_fu_uploader.R")
+source("~/Letter_Auto/VMAC_Uploader/vmac_fu_uploader.R")
 
 library(shiny)
 

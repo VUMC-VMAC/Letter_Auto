@@ -193,7 +193,7 @@ echo_uploader <- function(epoch,vmac) {
     output <- paste0(out_path,"MAP_",input,"_",ep,"_echo_phys_incidental.docx")
     renderInlineCode(phys_path, output)
     
-    importFiles(rcon = pdb, file = output, record = record, field = "feedback_incidental_echo_physician1_letter", event = events[e+1],
+    importFiles(rcon = pdb, file = output, record = record, field = "feedback_incidental_stat_echo_physician1_letter", event = events[e+1],
                 overwrite = TRUE, repeat_instance = 1)
     
     if (num_phys > 1) {
@@ -208,7 +208,7 @@ echo_uploader <- function(epoch,vmac) {
       output <- paste0(out_path,"MAP_",input,"_",ep,"_echo_phys2_incidental.docx")
       renderInlineCode(phys_path, output)
       
-      importFiles(rcon = pdb, file = output, record = record, field = "feedback_incidental_echo_physician2_letter", event = events[e+1],
+      importFiles(rcon = pdb, file = output, record = record, field = "feedback_incidental_stat_echo_physician2_letter", event = events[e+1],
                   overwrite = TRUE, repeat_instance = 1)
       
       if (num_phys > 2) {
@@ -223,7 +223,7 @@ echo_uploader <- function(epoch,vmac) {
         output <- paste0(out_path,"MAP_",input,"_",ep,"_echo_phys3_incidental.docx")
         renderInlineCode(phys_path, output)
         
-        importFiles(rcon = pdb, file = output, record = record, field = "feedback_incidental_echo_physician3_letter",event = events[e+1],
+        importFiles(rcon = pdb, file = output, record = record, field = "feedback_incidental_stat_echo_physician3_letter",event = events[e+1],
                     overwrite = TRUE, repeat_instance = 1)
         
         if (num_phys > 3) {
@@ -238,7 +238,7 @@ echo_uploader <- function(epoch,vmac) {
           output <- paste0(out_path,"MAP_",input,"_",ep,"_echo_phys4_incidental.docx")
           renderInlineCode(phys_path, output)
           
-          importFiles(rcon = pdb, file = output, record = record, field = "feedback_incidental_echo_physician4_letter",event = events[e+1],
+          importFiles(rcon = pdb, file = output, record = record, field = "feedback_incidental_stat_echo_physician4_letter",event = events[e+1],
                       overwrite = TRUE, repeat_instance = 1)
           
           if (is.na(first_name_physician5)==FALSE) {
@@ -253,7 +253,7 @@ echo_uploader <- function(epoch,vmac) {
             output <- paste0(out_path,"MAP_",input,"_",ep,"_echo_phys5_incidental.docx")
             renderInlineCode(phys_path, output)
             
-            importFiles(rcon = pdb, file = output, record = record, field = "feedback_incidental_echo_physician5_letter",event = events[e+1],
+            importFiles(rcon = pdb, file = output, record = record, field = "feedback_incidental_stat_echo_physician5_letter",event = events[e+1],
                         overwrite = TRUE, repeat_instance = 1)
           }}}}}
   

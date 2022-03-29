@@ -40,7 +40,7 @@ ui <- fluidPage(
                  numericInput(inputId = "epoch", "Epoch", value=1),
                  selectInput(inputId = "type", "Type of Table", choices = c("Neuropsych"="np")),
                  actionButton(inputId = "submit2",label = "Submit"),
-                 dataTableOutput(outputId = "ses"),
+                 dataTableOutput(outputId = "ses")
                  #textOutput("exp1")
         )
     )

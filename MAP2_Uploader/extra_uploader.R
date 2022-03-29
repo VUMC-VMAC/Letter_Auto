@@ -97,7 +97,7 @@ extra_uploader <- function(epoch,vmac) {
   output <- paste0(out_path,"MAP_",input,"_",ep,"_extra_letter.docx")
   renderInlineCode(ptp_path, output)
   
-  importFiles(rcon = pdb, file = output, record = record, field = "feedback_incidental_extracardiac_letter", event = pdb_data[,"redcap_event_name"],
+  importFiles(rcon = pdb, file = output, record = record, field = "feedback_incidental_stat_extracardiac_letter", event = pdb_data[,"redcap_event_name"],
               overwrite = TRUE, repeat_instance = 1)
   
   # Compiling Physician Data
@@ -192,7 +192,7 @@ extra_uploader <- function(epoch,vmac) {
     output <- paste0(out_path,"MAP_",input,"_",ep,"_extracardiac_phys_incidental.docx")
     renderInlineCode(phys_path, output)
     
-    importFiles(rcon = pdb, file = output, record = record, field = "feedback_incidental_extracardiac_physician1_letter", event = events[e+1],
+    importFiles(rcon = pdb, file = output, record = record, field = "feedback_incidental_stat_extracardiac_physician1_letter", event = events[e+1],
                 overwrite = TRUE, repeat_instance = 1)
     
     if (num_phys > 1) {
@@ -207,7 +207,7 @@ extra_uploader <- function(epoch,vmac) {
       output <- paste0(out_path,"MAP_",input,"_",ep,"_extracardiac_phys2_incidental.docx")
       renderInlineCode(phys_path, output)
       
-      importFiles(rcon = pdb, file = output, record = record, field = "feedback_incidental_extracardiac_physician2_letter", event = events[e+1],
+      importFiles(rcon = pdb, file = output, record = record, field = "feedback_incidental_stat_extracardiac_physician2_letter", event = events[e+1],
                   overwrite = TRUE, repeat_instance = 1)
       
       if (num_phys > 2) {
@@ -222,7 +222,7 @@ extra_uploader <- function(epoch,vmac) {
         output <- paste0(out_path,"MAP_",input,"_",ep,"_extracardiac_phys3_incidental.docx")
         renderInlineCode(phys_path, output)
         
-        importFiles(rcon = pdb, file = output, record = record, field = "feedback_incidental_extracardiac_physician3_letter",event = events[e+1],
+        importFiles(rcon = pdb, file = output, record = record, field = "feedback_incidental_stat_extracardiac_physician3_letter",event = events[e+1],
                     overwrite = TRUE, repeat_instance = 1)
         
         if (num_phys > 3) {
@@ -237,7 +237,7 @@ extra_uploader <- function(epoch,vmac) {
           output <- paste0(out_path,"MAP_",input,"_",ep,"_extracardiac_phys4_incidental.docx")
           renderInlineCode(phys_path, output)
           
-          importFiles(rcon = pdb, file = output, record = record, field = "feedback_incidental_extracardiac_physician4_letter",event = events[e+1],
+          importFiles(rcon = pdb, file = output, record = record, field = "feedback_incidental_stat_extracardiac_physician4_letter",event = events[e+1],
                       overwrite = TRUE, repeat_instance = 1)
           
           if (is.na(first_name_physician5)==FALSE) {
@@ -252,7 +252,7 @@ extra_uploader <- function(epoch,vmac) {
             output <- paste0(out_path,"MAP_",input,"_",ep,"_extracardiac_phys5_incidental.docx")
             renderInlineCode(phys_path, output)
             
-            importFiles(rcon = pdb, file = output, record = record, field = "feedback_incidental_extracardiac_physician5_letter",event = events[e+1],
+            importFiles(rcon = pdb, file = output, record = record, field = "feedback_incidental_stat_extracardiac_physician5_letter",event = events[e+1],
                         overwrite = TRUE, repeat_instance = 1)
           }}}}}
   

@@ -22,7 +22,7 @@ def main(argv):
 
     file_path = filename
     data = {
-        'token': 'B07286F2BCFC9B49C157FD44A62F3320',
+        'token': '31F3F4459CDE37C4327B75A3A07236C3',
         'content': 'file',
         'action': 'import',
         'record': vmac_id,
