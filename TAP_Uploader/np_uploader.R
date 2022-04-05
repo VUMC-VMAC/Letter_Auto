@@ -48,24 +48,24 @@ np_uploader<<- function(epochh,vmac) {
   if (sex=="Male") {sex_r <- 0} else {sex_r <- 2}
   
   np_moca_total <<- np_data$np_moca_total
-  craftvrs <<- np_data$craftvrs
-  crafturs <<- np_data$crafturs
-  craftdvr <<- np_data$craftdvr
-  craftdre <<- np_data$craftdre
-  udsbentc <<- np_data$udsbentc
-  udsbentd <<- np_data$udsbentd
-  digforct <<- np_data$digforct
-  digforsl <<- np_data$digforsl
-  digbacct <<- np_data$digbacct
-  digbacls <<- np_data$digbacls
-  minttots <<- np_data$minttots
-  udsverfc <<- np_data$udsverfc
-  udsverlc <<- np_data$udsverlc
-  udsvertn <<- np_data$udsvertn
-  animals <<- np_data$animals
-  veg <<- np_data$veg
-  traila <<- np_data$traila
-  trailb <<- np_data$trailb
+  craftvrs <<- as.character(np_data$craftvrs)
+  crafturs <<- as.character(np_data$crafturs)
+  craftdvr <<- as.character(np_data$craftdvr)
+  craftdre <<- as.character(np_data$craftdre)
+  udsbentc <<- as.character(np_data$udsbentc)
+  udsbentd <<- as.character(np_data$udsbentd)
+  digforct <<- as.character(np_data$digforct)
+  digforsl <<- as.character(np_data$digforsl)
+  digbacct <<- as.character(np_data$digbacct)
+  digbacls <<- as.character(np_data$digbacls)
+  minttots <<- as.character(np_data$minttots)
+  udsverfc <<- as.character(np_data$udsverfc)
+  udsverlc <<- as.character(np_data$udsverlc)
+  udsvertn <<- as.character(np_data$udsvertn)
+  animals <<- as.character(np_data$animals)
+  veg <<- as.character(np_data$veg)
+  traila <<- as.character(np_data$traila)
+  trailb <<- as.character(np_data$trailb)
   
   # GET MEAN and SD
   moca_ex <- read_excel("~/Letter_Automation - Copy/TAP_np_lookup.xlsx", sheet = "moca")
@@ -146,24 +146,24 @@ np_uploader<<- function(epochh,vmac) {
   
   # transform variables
   moca_z <- as.double((as.integer(np_moca_total)-moca_mean)/moca_sd)
-  craftvrs_z <- as.double((as.integer(craftvrs)-craftvrs_mean-1)/craftvrs_sd)
-  crafturs_z <- as.double((as.integer(crafturs)-crafturs_mean-1)/crafturs_sd)
-  craftdvr_z <- as.double((as.integer(craftdvr)-craftdvr_mean-1)/craftdvr_sd)
-  craftdre_z <- as.double((as.integer(craftdre)-craftdre_mean-1)/craftdre_sd)
-  udsbentc_z <- as.double((as.integer(udsbentc)-udsbentc_mean-1)/udsbentc_sd)
-  udsbentd_z <- as.double((as.integer(udsbentd)-udsbentd_mean-1)/udsbentd_sd)
-  digforct_z <- as.double((as.integer(digforct)-digforct_mean-1)/digforct_sd)
-  digforsl_z <- as.double((as.integer(digforsl)-digforsl_mean+1)/digforsl_sd)
-  digbacct_z <- as.double((as.integer(digbacct)-digbacct_mean-1)/digbacct_sd)
+  craftvrs_z <- as.double((as.integer(craftvrs)-craftvrs_mean)/craftvrs_sd)
+  crafturs_z <- as.double((as.integer(crafturs)-crafturs_mean)/crafturs_sd)
+  craftdvr_z <- as.double((as.integer(craftdvr)-craftdvr_mean)/craftdvr_sd)
+  craftdre_z <- as.double((as.integer(craftdre)-craftdre_mean)/craftdre_sd)
+  udsbentc_z <- as.double((as.integer(udsbentc)-udsbentc_mean)/udsbentc_sd)
+  udsbentd_z <- as.double((as.integer(udsbentd)-udsbentd_mean)/udsbentd_sd)
+  digforct_z <- as.double((as.integer(digforct)-digforct_mean)/digforct_sd)
+  digforsl_z <- as.double((as.integer(digforsl)-digforsl_mean)/digforsl_sd)
+  digbacct_z <- as.double((as.integer(digbacct)-digbacct_mean)/digbacct_sd)
   digbacls_z <- as.double((as.integer(digbacls)-digbacls_mean)/digbacls_sd)
-  minttots_z <- as.double((as.integer(minttots)-minttots_mean-1)/minttots_sd)
-  udsverfc_z <- as.double((as.integer(udsverfc)-udsverfc_mean-1)/udsverfc_sd)
-  udsverlc_z <- as.double((as.integer(udsverlc)-udsverlc_mean-1)/udsverlc_sd)
-  udsvertn_z <- as.double((as.integer(udsvertn)-udsvertn_mean-1)/udsvertn_sd)
-  animals_z <- as.double((as.integer(animals)-animals_mean-1)/animals_sd)
-  veg_z <- as.double((as.integer(veg)-veg_mean-1)/veg_sd)
-  traila_z <- as.double((as.integer(traila)-traila_mean-1)/traila_sd)
-  trailb_z <- as.double((as.integer(trailb)-trailb_mean-1)/trailb_sd)
+  minttots_z <- as.double((as.integer(minttots)-minttots_mean)/minttots_sd)
+  udsverfc_z <- as.double((as.integer(udsverfc)-udsverfc_mean)/udsverfc_sd)
+  udsverlc_z <- as.double((as.integer(udsverlc)-udsverlc_mean)/udsverlc_sd)
+  udsvertn_z <- as.double((as.integer(udsvertn)-udsvertn_mean)/udsvertn_sd)
+  animals_z <- as.double((as.integer(animals)-animals_mean)/animals_sd)
+  veg_z <- as.double((as.integer(veg)-veg_mean)/veg_sd)
+  traila_z <- as.double((as.integer(traila)-traila_mean)/traila_sd)*-1
+  trailb_z <- as.double((as.integer(trailb)-trailb_mean)/trailb_sd)*-1
   
   #Tower
   np_tower1 <- as.integer(np_data$np_tower1)-1
