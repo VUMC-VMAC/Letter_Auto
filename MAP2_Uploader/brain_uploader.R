@@ -26,7 +26,7 @@ brain_uploader <- function(epoch,vmac) {
   EDC <- redcapConnection(url = "https://redcap.vanderbilt.edu/api/",
                           token = "09B0A6B7F207F51C6F656BAE567FA390", conn, project = 119047)
   
-  pdb_datas <- exportReports(pdb, 267451)
+  pdb_datas <- exportReports(pdb, 305656)
   echo_datas <- exportReports(EDC,281651)
   
   ptp_path <- paste0(main_path,"resources/Templates/Incidentals/MAP_brain_temp_ptp.docx")
@@ -92,7 +92,8 @@ brain_uploader <- function(epoch,vmac) {
   
   brain_date_time <<- format(as.Date(brain_data$scan_date_time), "%m/%d/%Y")
   
-  brain_incidental_davis <<- echo_data$brain_incidental_davis
+  brain_incidental_ptp <<- echo_data$brain_incidental_letter_participant
+  brain_incidental_phys <<- echo_data$brain_incidental_letter_physician
   
   output <- paste0(out_path,"MAP_",input,"_",ep,"_brain_letter.docx")
   renderInlineCode(ptp_path, output)

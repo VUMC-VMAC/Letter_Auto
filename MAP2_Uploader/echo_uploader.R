@@ -26,7 +26,7 @@ echo_uploader <- function(epoch,vmac) {
   EDC <- redcapConnection(url = "https://redcap.vanderbilt.edu/api/",
                           token = "09B0A6B7F207F51C6F656BAE567FA390", conn, project = 119047)
   
-  pdb_datas <- exportReports(pdb, 267451)
+  pdb_datas <- exportReports(pdb, 305656)
   echo_datas <- exportReports(EDC,281651)
   
   ptp_path <- paste0(main_path,"resources/Templates/Incidentals/MAP_echo_temp_ptp.docx")
@@ -39,7 +39,9 @@ echo_uploader <- function(epoch,vmac) {
   map_id <- pdb_data$map_id
   
   echo_datas <- echo_datas[which(echo_datas$map_id==as.integer(map_id)),]
-  echo_data <- echo_datas[which(echo_datas[,"redcap_event_name"]== events[epoch+1]),]
+  echo_datas <- echo_datas[which(echo_datas[,"redcap_event_name"]== events[epoch+1]),]
+  echo_data <- echo_datas[which(is.na(echo_datas$redcap_repeat_instrument)),]
+  brain_data <- echo_datas[which(is.na(echo_datas$redcap_repeat_instrument)==FALSE),]
   
   err <<- ""
   
@@ -91,8 +93,8 @@ echo_uploader <- function(epoch,vmac) {
   echo_date_time <<- format(as.Date(echo_data$echo_date_time), "%m/%d/%Y")
   
   #extracardiac_incidental_describe <<- echo_data$extracardiac_incidental_describe
-  echo_find_notes <<- echo_data$echo_find_notes
-  echo_comments <<- echo_data$echo_comments
+  echo_ptp <<- echo_data$echo_incidental_letter_participant
+  echo_phys <<- echo_data$echo_incidental_letter_physican
   
   
   output <- paste0(out_path,"MAP_",input,"_",ep,"_echo_letter.docx")

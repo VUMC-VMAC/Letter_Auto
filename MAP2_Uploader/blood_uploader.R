@@ -39,7 +39,7 @@ blood_uploader <- function(epochh,vmac) {
   pdb <- redcapConnection(url = "https://redcap.vanderbilt.edu/api/",
                           token = "496ED1BD518B29CB96B5CFD9C48844FE", conn, project = 136242)
   
-  pdb_datas <- exportReports(pdb, 267451)
+  pdb_datas <- exportReports(pdb, 305656)
   
   
   # NP Norm Scores
@@ -83,7 +83,9 @@ blood_uploader <- function(epochh,vmac) {
   dep_data <- dep_data[which(dep_data[,"redcap_event_name"]== events[epochh]),]
   
   echo_datas <- echo_datas[which(echo_datas$map_id==as.integer(map_id)),]
-  echo_data <- echo_datas[which(echo_datas[,"redcap_event_name"]== events[epochh+1]),]
+  echo_datas <- echo_datas[which(echo_datas[,"redcap_event_name"]== events[epoch+1]),]
+  echo_data <- echo_datas[which(is.na(echo_datas$redcap_repeat_instrument)),]
+  brain_data <- echo_datas[which(is.na(echo_datas$redcap_repeat_instrument)==FALSE),]
   
   #if (length(echo_data$map_id)==0) {fail <- 1}
   
