@@ -146,82 +146,82 @@ blood_uploader <- function(epochh,vmac) {
   bld_date_time <<- format(as.Date(echo_data$bld_date_time), "%m/%d/%Y")
   
   # Compiling Physician Data
-  first_name_physician1<<- pdb_data[i, "feedback_physician1_first_name"]
-  last_name_physician1<<- pdb_data[i, "feedback_physician1_last_name"]
-  credentials1<<- pdb_data[i,"feedback_physician1_credentials"]
-  street_address_physician1<<- pdb_data[i, "feedback_physician1_street_address"]
-  city_physician1<<- pdb_data[i, "feedback_physician1_city"]
-  state_physician1<<- pdb_data[i, "feedback_physician1_state"]
-  zip_physician1<<- pdb_data[i, "feedback_physician1_zip"]
-  first_name_physician2<<- pdb_data[i, "feedback_physician2_first_name"]
-  last_name_physician2<<- pdb_data[i, "feedback_physician2_last_name"]
-  credentials2<<- pdb_data[i,"feedback_physician2_credentials"]
-  street_address_physician2<<- pdb_data[i, "feedback_physician2_street_address"]
-  city_physician2<<- pdb_data[i, "feedback_physician2_city"]
-  state_physician2<<- pdb_data[i, "feedback_physician2_state"]
-  zip_physician2<<- pdb_data[i, "feedback_physician2_zip"]
-  first_name_physician3<<- pdb_data[i, "feedback_physician3_first_name"]
-  last_name_physician3<<- pdb_data[i, "feedback_physician3_last_name"]
-  credentials3<<- pdb_data[i,"feedback_physician3_credentials"]
-  street_address_physician3<<- pdb_data[i, "feedback_physician3_street_address"]
-  city_physician3<<- pdb_data[i, "feedback_physician3_city"]
-  state_physician3<<- pdb_data[i, "feedback_physician3_state"]
-  zip_physician3<<- pdb_data[i, "feedback_physician3_zip"]
-  first_name_physician4<<- pdb_data[i, "feedback_physician4_first_name"]
-  last_name_physician4<<- pdb_data[i, "feedback_physician4_last_name"]
-  credentials4<<- pdb_data[i,"feedback_physician4_credentials"]
-  street_address_physician4<<- pdb_data[i, "feedback_physician4_street_address"]
-  city_physician4<<- pdb_data[i, "feedback_physician4_city"]
-  state_physician4<<- pdb_data[i, "feedback_physician4_state"]
-  zip_physician4<<- pdb_data[i, "feedback_physician4_zip"]
-  first_name_physician5<<- pdb_data[i, "feedback_physician5_first_name"]
-  last_name_physician5<<- pdb_data[i, "feedback_physician5_last_name"]
-  street_address_physician5<<- pdb_data[i, "feedback_physician5_street_address"]
-  credentials5<<- pdb_data[i,"feedback_physician5_credentials"]
-  city_physician5<<- pdb_data[i, "feedback_physician5_city"]
-  state_physician5<<- pdb_data[i, "feedback_physician5_state"]
-  zip_physician5<<- pdb_data[i, "feedback_physician5_zip"]
+  first_name_physician1<<- pdb_data[i, "feedback_incidental_stat_blood_physician1_first_name"]
+  last_name_physician1<<- pdb_data[i, "feedback_incidental_stat_blood_physician1_last_name"]
+  credentials1<<- pdb_data[i,"feedback_incidental_stat_blood_physician1_credentials"]
+  street_address_physician1<<- pdb_data[i, "feedback_incidental_stat_blood_physician1_street_address"]
+  city_physician1<<- pdb_data[i, "feedback_incidental_stat_blood_physician1_city"]
+  state_physician1<<- pdb_data[i, "feedback_incidental_stat_blood_physician1_state"]
+  zip_physician1<<- pdb_data[i, "feedback_incidental_stat_blood_physician1_zip"]
+  first_name_physician2<<- pdb_data[i, "feedback_incidental_stat_blood_physician2_first_name"]
+  last_name_physician2<<- pdb_data[i, "feedback_incidental_stat_blood_physician2_last_name"]
+  credentials2<<- pdb_data[i,"feedback_incidental_stat_blood_physician2_credentials"]
+  street_address_physician2<<- pdb_data[i, "feedback_incidental_stat_blood_physician2_street_address"]
+  city_physician2<<- pdb_data[i, "feedback_incidental_stat_blood_physician2_city"]
+  state_physician2<<- pdb_data[i, "feedback_incidental_stat_blood_physician2_state"]
+  zip_physician2<<- pdb_data[i, "feedback_incidental_stat_blood_physician2_zip"]
+  first_name_physician3<<- pdb_data[i, "feedback_incidental_stat_blood_physician3_first_name"]
+  last_name_physician3<<- pdb_data[i, "feedback_incidental_stat_blood_physician3_last_name"]
+  credentials3<<- pdb_data[i,"feedback_incidental_stat_blood_physician3_credentials"]
+  street_address_physician3<<- pdb_data[i, "feedback_incidental_stat_blood_physician3_street_address"]
+  city_physician3<<- pdb_data[i, "feedback_incidental_stat_blood_physician3_city"]
+  state_physician3<<- pdb_data[i, "feedback_incidental_stat_blood_physician3_state"]
+  zip_physician3<<- pdb_data[i, "feedback_incidental_stat_blood_physician3_zip"]
+  first_name_physician4<<- pdb_data[i, "feedback_incidental_stat_blood_physician4_first_name"]
+  last_name_physician4<<- pdb_data[i, "feedback_incidental_stat_blood_physician4_last_name"]
+  credentials4<<- pdb_data[i,"feedback_incidental_stat_blood_physician4_credentials"]
+  street_address_physician4<<- pdb_data[i, "feedback_incidental_stat_blood_physician4_street_address"]
+  city_physician4<<- pdb_data[i, "feedback_incidental_stat_blood_physician4_city"]
+  state_physician4<<- pdb_data[i, "feedback_incidental_stat_blood_physician4_state"]
+  zip_physician4<<- pdb_data[i, "feedback_incidental_stat_blood_physician4_zip"]
+  #first_name_physician5<<- pdb_data[i, "feedback_incidental_stat_blood_physician5_first_name"]
+  #last_name_physician5<<- pdb_data[i, "feedback_incidental_stat_blood_physician5_last_name"]
+  #street_address_physician5<<- pdb_data[i, "feedback_incidental_stat_blood_physician5_street_address"]
+  #credentials5<<- pdb_data[i,"feedback_incidental_stat_blood_physician5_credentials"]
+  #city_physician5<<- pdb_data[i, "feedback_incidental_stat_blood_physician5_city"]
+  #state_physician5<<- pdb_data[i, "feedback_incidental_stat_blood_physician5_state"]
+  #zip_physician5<<- pdb_data[i, "feedback_incidental_stat_blood_physician5_zip"]
   
-  if (is.na(first_name_physician1)) {first_name_physician1<<- ""} else {first_name_physician1<<- paste0("     1.  ",pdb_data[i, "feedback_physician1_first_name"])}
-  if (is.na(last_name_physician1)) {last_name_physician1<<- ""} else {last_name_physician1<<- paste0(pdb_data[i, "feedback_physician1_last_name"])}
-  if (is.na(street_address_physician1)) {street_address_physician1<<- ""} else {street_address_physician1<<- paste0("          ",pdb_data[i, "feedback_physician1_street_address"])}
-  if (is.na(city_physician1)) {city_physician1<<- ""} else {city_physician1<<- paste0("          ",pdb_data[i, "feedback_physician1_city"],",")}
-  state_physician1<<- pdb_data[i, "feedback_physician1_state"]
+  if (is.na(first_name_physician1)) {first_name_physician1<<- ""} else {first_name_physician1<<- paste0("     1.  ",pdb_data[i, "feedback_incidental_stat_blood_physician1_first_name"])}
+  if (is.na(last_name_physician1)) {last_name_physician1<<- ""} else {last_name_physician1<<- paste0(pdb_data[i, "feedback_incidental_stat_blood_physician1_last_name"])}
+  if (is.na(street_address_physician1)) {street_address_physician1<<- ""} else {street_address_physician1<<- paste0("          ",pdb_data[i, "feedback_incidental_stat_blood_physician1_street_address"])}
+  if (is.na(city_physician1)) {city_physician1<<- ""} else {city_physician1<<- paste0("          ",pdb_data[i, "feedback_incidental_stat_blood_physician1_city"],",")}
+  state_physician1<<- pdb_data[i, "feedback_incidental_stat_blood_physician1_state"]
   if (is.na(state_physician1)) {state_physician1<<- ""}
-  zip_physician1<<- pdb_data[i, "feedback_physician1_zip"]
+  zip_physician1<<- pdb_data[i, "feedback_incidental_stat_blood_physician1_zip"]
   if (is.na(zip_physician1)) {zip_physician1<<- ""}
-  if (is.na(first_name_physician2)) {first_name_physician2<<- ""} else {first_name_physician2<<- paste0("     2.  ",pdb_data[i, "feedback_physician2_first_name"])}
-  if (is.na(last_name_physician2)) {last_name_physician2<<- ""} else {last_name_physician2<<- paste0(pdb_data[i, "feedback_physician2_last_name"])}
-  if (is.na(street_address_physician2)) {street_address_physician2<<- ""} else {street_address_physician2<<- paste0("          ",pdb_data[i, "feedback_physician2_street_address"])}
-  if (is.na(city_physician2)) {city_physician2<<- ""} else {city_physician2<<- paste0("          ",pdb_data[i, "feedback_physician2_city"],",")}
-  state_physician2<<- pdb_data[i, "feedback_physician2_state"]
+  if (is.na(first_name_physician2)) {first_name_physician2<<- ""} else {first_name_physician2<<- paste0("     2.  ",pdb_data[i, "feedback_incidental_stat_blood_physician2_first_name"])}
+  if (is.na(last_name_physician2)) {last_name_physician2<<- ""} else {last_name_physician2<<- paste0(pdb_data[i, "feedback_incidental_stat_blood_physician2_last_name"])}
+  if (is.na(street_address_physician2)) {street_address_physician2<<- ""} else {street_address_physician2<<- paste0("          ",pdb_data[i, "feedback_incidental_stat_blood_physician2_street_address"])}
+  if (is.na(city_physician2)) {city_physician2<<- ""} else {city_physician2<<- paste0("          ",pdb_data[i, "feedback_incidental_stat_blood_physician2_city"],",")}
+  state_physician2<<- pdb_data[i, "feedback_incidental_stat_blood_physician2_state"]
   if (is.na(state_physician2)) {state_physician2<<- ""}
-  zip_physician2<<- pdb_data[i, "feedback_physician2_zip"]
+  zip_physician2<<- pdb_data[i, "feedback_incidental_stat_blood_physician2_zip"]
   if (is.na(zip_physician2)) {zip_physician2<<- ""}
-  if (is.na(first_name_physician3)) {first_name_physician3<<- ""} else {first_name_physician3<<- paste0("     3.  ",pdb_data[i, "feedback_physician3_first_name"])}
-  if (is.na(last_name_physician3)) {last_name_physician3<<- ""} else {last_name_physician3<<- paste0(pdb_data[i, "feedback_physician3_last_name"])}
-  if (is.na(street_address_physician3)) {street_address_physician3<<- ""} else {street_address_physician3<<- paste0("          ",pdb_data[i, "feedback_physician3_street_address"])}
-  if (is.na(city_physician3)) {city_physician3<<- ""} else {city_physician3<<- paste0("          ",pdb_data[i, "feedback_physician3_city"],",")}
-  state_physician3<<- pdb_data[i, "feedback_physician3_state"]
+  if (is.na(first_name_physician3)) {first_name_physician3<<- ""} else {first_name_physician3<<- paste0("     3.  ",pdb_data[i, "feedback_incidental_stat_blood_physician3_first_name"])}
+  if (is.na(last_name_physician3)) {last_name_physician3<<- ""} else {last_name_physician3<<- paste0(pdb_data[i, "feedback_incidental_stat_blood_physician3_last_name"])}
+  if (is.na(street_address_physician3)) {street_address_physician3<<- ""} else {street_address_physician3<<- paste0("          ",pdb_data[i, "feedback_incidental_stat_blood_physician3_street_address"])}
+  if (is.na(city_physician3)) {city_physician3<<- ""} else {city_physician3<<- paste0("          ",pdb_data[i, "feedback_incidental_stat_blood_physician3_city"],",")}
+  state_physician3<<- pdb_data[i, "feedback_incidental_stat_blood_physician3_state"]
   if (is.na(state_physician3)) {state_physician3<<- ""}
-  zip_physician3<<- pdb_data[i, "feedback_physician3_zip"]
+  zip_physician3<<- pdb_data[i, "feedback_incidental_stat_blood_physician3_zip"]
   if (is.na(zip_physician3)) {zip_physician3<<- ""}
-  if (is.na(first_name_physician4)) {first_name_physician4<<- ""} else {first_name_physician4<<- paste0("     3.  ",pdb_data[i, "feedback_physician4_first_name"])}
-  if (is.na(last_name_physician4)) {last_name_physician4<<- ""} else {last_name_physician4<<- paste0(pdb_data[i, "feedback_physician4_last_name"])}
-  if (is.na(street_address_physician4)) {street_address_physician4<<- ""} else {street_address_physician4<<- paste0("          ",pdb_data[i, "feedback_physician4_street_address"])}
-  if (is.na(city_physician4)) {city_physician4<<- ""} else {city_physician4<<- paste0("          ",pdb_data[i, "feedback_physician4_city"],",")}
-  state_physician4<<- pdb_data[i, "feedback_physician4_state"]
+  if (is.na(first_name_physician4)) {first_name_physician4<<- ""} else {first_name_physician4<<- paste0("     3.  ",pdb_data[i, "feedback_incidental_stat_blood_physician4_first_name"])}
+  if (is.na(last_name_physician4)) {last_name_physician4<<- ""} else {last_name_physician4<<- paste0(pdb_data[i, "feedback_incidental_stat_blood_physician4_last_name"])}
+  if (is.na(street_address_physician4)) {street_address_physician4<<- ""} else {street_address_physician4<<- paste0("          ",pdb_data[i, "feedback_incidental_stat_blood_physician4_street_address"])}
+  if (is.na(city_physician4)) {city_physician4<<- ""} else {city_physician4<<- paste0("          ",pdb_data[i, "feedback_incidental_stat_blood_physician4_city"],",")}
+  state_physician4<<- pdb_data[i, "feedback_incidental_stat_blood_physician4_state"]
   if (is.na(state_physician4)) {state_physician4<<- ""}
-  zip_physician4<<- pdb_data[i, "feedback_physician4_zip"]
+  zip_physician4<<- pdb_data[i, "feedback_incidental_stat_blood_physician4_zip"]
   if (is.na(zip_physician4)) {zip_physician4<<- ""}
-  if (is.na(first_name_physician5)) {first_name_physician5<<- ""} else {first_name_physician5<<- paste0("     3.  ",pdb_data[i, "feedback_physician5_first_name"])}
-  if (is.na(last_name_physician5)) {last_name_physician5<<- ""} else {last_name_physician5<<- paste0(pdb_data[i, "feedback_physician5_last_name"])}
-  if (is.na(street_address_physician5)) {street_address_physician5<<- ""} else {street_address_physician5<<- paste0("          ",pdb_data[i, "feedback_physician5_street_address"])}
-  if (is.na(city_physician5)) {city_physician5<<- ""} else {city_physician5<<- paste0("          ",pdb_data[i, "feedback_physician5_city"],",")}
-  state_physician5<<- pdb_data[i, "feedback_physician5_state"]
-  if (is.na(state_physician5)) {state_physician5<<- ""}
-  zip_physician5<<- pdb_data[i, "feedback_physician5_zip"]
-  if (is.na(zip_physician5)) {zip_physician5<<- ""}
+  #if (is.na(first_name_physician5)) {first_name_physician5<<- ""} else {first_name_physician5<<- paste0("     3.  ",pdb_data[i, "feedback_incidental_stat_blood_physician5_first_name"])}
+  #if (is.na(last_name_physician5)) {last_name_physician5<<- ""} else {last_name_physician5<<- paste0(pdb_data[i, "feedback_incidental_stat_blood_physician5_last_name"])}
+  #if (is.na(street_address_physician5)) {street_address_physician5<<- ""} else {street_address_physician5<<- paste0("          ",pdb_data[i, "feedback_incidental_stat_blood_physician5_street_address"])}
+  #if (is.na(city_physician5)) {city_physician5<<- ""} else {city_physician5<<- paste0("          ",pdb_data[i, "feedback_incidental_stat_blood_physician5_city"],",")}
+  #state_physician5<<- pdb_data[i, "feedback_incidental_stat_blood_physician5_state"]
+  #if (is.na(state_physician5)) {state_physician5<<- ""}
+  #zip_physician5<<- pdb_data[i, "feedback_incidental_stat_blood_physician5_zip"]
+  #if (is.na(zip_physician5)) {zip_physician5<<- ""}
   
   if (e > 3) {
     if (e > 4) {
@@ -450,7 +450,7 @@ blood_uploader <- function(epochh,vmac) {
   importFiles(rcon = pdb, file = output, record = record, field = "feedback_incidental_stat_blood_letter", event = pdb_data[,"redcap_event_name"],
               overwrite = TRUE, repeat_instance = 1)
   
-  num_phys <- pdb_data$feedback_number_letter
+  num_phys <- pdb_data$feedback_incidental_stat_blood_number_letter; if (is.na(num_phys)) {num_phys <- 0}
   
   if (num_phys > 0) {
     first_name_physician<<-first_name_physician1

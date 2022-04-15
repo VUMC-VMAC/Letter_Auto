@@ -181,7 +181,7 @@ extra_uploader <- function(epoch,vmac) {
   #zip_physician5<<- pdb_data[i, "feedback_incidental_stat_extracardiac_physician5_zip"]
   #if (is.na(zip_physician5)) {zip_physician5<<- ""}
   
-  num_phys <- as.integer(pdb_data$feedback_incidental_stat_extracardiac_number_letter)
+  num_phys <- as.integer(pdb_data$feedback_incidental_stat_extracardiac_number_letter); if (is.na(num_phys)) {num_phys <- 0}
   
   if (num_phys > 0) {
     first_name_physician<<-first_name_physician1
