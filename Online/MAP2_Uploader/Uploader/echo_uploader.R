@@ -94,7 +94,7 @@ echo_uploader <- function(epoch,vmac) {
   
   #extracardiac_incidental_describe <<- echo_data$extracardiac_incidental_describe
   echo_ptp <<- echo_data$echo_incidental_letter_participant
-  echo_phys <<- echo_data$echo_incidental_letter_physican
+  echo_phys <<- echo_data$echo_incidental_letter_physician
   
   
   output <- paste0(out_path,"MAP_",input,"_",ep,"_echo_letter.docx")
