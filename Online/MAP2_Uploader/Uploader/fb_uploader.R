@@ -28,6 +28,34 @@ fb_uploader<<- function(epochh,vmac) {
     
   }
   
+  library(ggplot2)
+  library(plotly)
+  library(redcapAPI)
+  library(WordR)
+  library(officer)
+  library(Hmisc)
+  library(tidyverse)
+  library(flextable)
+  #library(ggpattern)
+  #library(patternplot)
+  library(png)
+  library(readxl)
+  
+  # Global Pathing
+  local <- 1
+  online <- 0
+  if (local) {
+    # Add Local Paths Here
+    out_path <- "C:/Users/sweelyb/Documents/output/"
+    main_path <- "C:/Users/sweelyb/Documents/Letter_Auto/"
+    
+  } else if (online) {
+    # Add Global Paths Here
+    out_path <- "/app/"
+    main_path <- "/srv/shiny-server/"
+    
+  }
+  
   ex_path <- paste0(main_path,"epoch5dde_lookup.xlsx")
   
   FII <- redcapConnection(url = "https://redcap.vanderbilt.edu/api/",
@@ -933,7 +961,7 @@ fb_uploader<<- function(epochh,vmac) {
       Epoc_conv <- c("enrollment","18-month","3-year","5-year","7-year","9-year","11-year","13-year")
       Epoch <<- Epoch_conv[e]; Epoc <<- Epoc_conv[e]
       epoch_conv <- c("enroll","18mos","36mos","60mos","7yr","9yr","11yr","13yr")
-      epoch <<- epoch_conv[e-1]
+      epoch <<- epoch_conv[e]
       epoch_conv2 <- c("","3yr_","5yr_","7yr_","9yr_","11yr_","13yr_")
       ep_next <<- epoch_conv2[e]
       ep <- epoch
