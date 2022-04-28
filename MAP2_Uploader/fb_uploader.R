@@ -117,23 +117,7 @@ fb_uploader<<- function(epochh,vmac) {
   if (bc == "No" & ec =="No" & nc == "No" | fail) {err <<- "Echo and/or Blood Work not complete; insufficient data"} else {
     err <<- ""
     
-    # Epoch Selector
     e <- epochh
-    Epoch_conv <- c("Enrollment","18-Month","3-Year","5-Year","7-Year","9-Year","11-Year","13-Year")
-    Epoc_conv <- c("enrollment","18-month","3-year","5-year","7-year","9-year","11-year","13-year")
-    Epoch <<- Epoch_conv[e]; Epoc <<- Epoc_conv[e]
-    Epoch2 <<- Epoch_conv[e-2]; Epoc2 <<- Epoc_conv[e-2]
-    Epoch1 <<- Epoch_conv[e-1]; Epoc1 <<- Epoc_conv[e-1]
-    epoch_conv <- c("18mos","36mos","60mos","7yr","9yr","11yr","13yr")
-    epoch2 <<- epoch_conv[e-3]
-    epoch1 <<- epoch_conv[e-2]
-    epoch <<- epoch_conv[e-1]
-    epoch_conv2 <- c("","3yr_","5yr_","7yr_","9yr_","11yr_","13yr_")
-    ep_next <<- epoch_conv2[e]
-    ep <- epoch
-    date_next <<- paste0("visit_estimate_",ep_next,"date")
-    date_ty <<- format(as.Date(pdb_data[, date_next]), "%B %Y")
-    
     
     map_id <- as.character(pdb_data[,"map_id"])
     
@@ -325,6 +309,22 @@ fb_uploader<<- function(epochh,vmac) {
         fii36 <- fii36s[inddd,]
         #if (nrow(fii36)==FALSE) {stop("Not Enough Data")}
       }
+      
+      # Epoch Selector
+      Epoch_conv <- c("Enrollment","18-Month","3-Year","5-Year","7-Year","9-Year","11-Year","13-Year")
+      Epoc_conv <- c("enrollment","18-month","3-year","5-year","7-year","9-year","11-year","13-year")
+      Epoch <<- Epoch_conv[e]; Epoc <<- Epoc_conv[e]
+      Epoch2 <<- Epoch_conv[e-2]; Epoc2 <<- Epoc_conv[e-2]
+      Epoch1 <<- Epoch_conv[e-1]; Epoc1 <<- Epoc_conv[e-1]
+      epoch_conv <- c("18mos","36mos","60mos","7yr","9yr","11yr","13yr")
+      epoch2 <<- epoch_conv[e-3]
+      epoch1 <<- epoch_conv[e-2]
+      epoch <<- epoch_conv[e-1]
+      epoch_conv2 <- c("","3yr_","5yr_","7yr_","9yr_","11yr_","13yr_")
+      ep_next <<- epoch_conv2[e]
+      ep <- epoch
+      date_next <<- paste0("visit_estimate_",ep_next,"date")
+      date_ty <<- format(as.Date(pdb_data[, date_next]), "%B %Y")
       
       # Enrollment Data
       tme_datas <- exportReports(tme, 248431)
@@ -886,8 +886,8 @@ fb_uploader<<- function(epochh,vmac) {
       if (is.na(qids) | is.na(gds)) {
         dep <- tm7yr_data$visit_depress 
         if (dep == "Yes") {
-        gds_phys <<- paste0("On a measure assessing depressive symptoms, ",first_name," scored in a range suggesting moderate/severe symptoms of depression. Based upon this score, we recommended that ",first_name," make an appointment for a more detailed clinical assessment of these symptoms.")
-        gds <<- paste0("As discussed on ",feedback_date1,", your scores on a measure assessing depressive symptoms fell in a range suggesting moderate/severe symptoms of depression.  We recommend you make an appointment for a more detailed clinical assessment of these symptoms.  You can request a referral from your primary care doctor.  We would recommend our colleagues who offer clinical services in the Department of Psychiatry at Vanderbilt University.  You can schedule an appointment by calling: 615-936-3555.")
+          gds_phys <<- paste0("On a measure assessing depressive symptoms, ",first_name," scored in a range suggesting moderate/severe symptoms of depression. Based upon this score, we recommended that ",first_name," make an appointment for a more detailed clinical assessment of these symptoms.")
+          gds <<- paste0("As discussed on ",feedback_date1,", your scores on a measure assessing depressive symptoms fell in a range suggesting moderate/severe symptoms of depression.  We recommend you make an appointment for a more detailed clinical assessment of these symptoms.  You can request a referral from your primary care doctor.  We would recommend our colleagues who offer clinical services in the Department of Psychiatry at Vanderbilt University.  You can schedule an appointment by calling: 615-936-3555.")
         } else {gds<<- ""; gds_phys<<- ""}
       } else {
         if (qids > 9 | gds > 10) {
@@ -927,6 +927,18 @@ fb_uploader<<- function(epochh,vmac) {
     }
     
     if (e == 1) {
+      
+      # Epoch Selector
+      Epoch_conv <- c("Enrollment","18-Month","3-Year","5-Year","7-Year","9-Year","11-Year","13-Year")
+      Epoc_conv <- c("enrollment","18-month","3-year","5-year","7-year","9-year","11-year","13-year")
+      Epoch <<- Epoch_conv[e]; Epoc <<- Epoc_conv[e]
+      epoch_conv <- c("enroll","18mos","36mos","60mos","7yr","9yr","11yr","13yr")
+      epoch <<- epoch_conv[e-1]
+      epoch_conv2 <- c("","3yr_","5yr_","7yr_","9yr_","11yr_","13yr_")
+      ep_next <<- epoch_conv2[e]
+      ep <- epoch
+      date_next <<- paste0("visit_estimate_",ep_next,"date")
+      date_ty <<- format(as.Date(pdb_data[, date_next]), "%B %Y")
       
       enroll_date <<- format(as.Date(pdb_data$visit1_date), "%m/%d/%Y")
       if (is.na(enroll_date)) {enroll_date <<- format(as.Date(map_data[1, "visit1_date"]), "%m/%d/%Y")}
@@ -1294,7 +1306,7 @@ fb_uploader<<- function(epochh,vmac) {
     output<- paste0(out_path,"feedback_MAP",input,"_",epoch,".docx")
     renderInlineCode(ptp_temp, output)
     
-      importFiles(rcon = pdb, file = output, record = record, field = "feedback_letter", event = events[e+1],
+    importFiles(rcon = pdb, file = output, record = record, field = "feedback_letter", event = events[e+1],
                 overwrite = TRUE, repeat_instance = 1)
     
     print("Imported File")
@@ -1380,4 +1392,3 @@ fb_uploader<<- function(epochh,vmac) {
   }
   return(err)
 }
-

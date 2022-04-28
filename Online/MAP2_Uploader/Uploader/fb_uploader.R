@@ -117,23 +117,7 @@ fb_uploader<<- function(epochh,vmac) {
   if (bc == "No" & ec =="No" & nc == "No" | fail) {err <<- "Echo and/or Blood Work not complete; insufficient data"} else {
     err <<- ""
     
-    # Epoch Selector
     e <- epochh
-    Epoch_conv <- c("Enrollment","18-Month","3-Year","5-Year","7-Year","9-Year","11-Year","13-Year")
-    Epoc_conv <- c("enrollment","18-month","3-year","5-year","7-year","9-year","11-year","13-year")
-    Epoch <<- Epoch_conv[e]; Epoc <<- Epoc_conv[e]
-    Epoch2 <<- Epoch_conv[e-2]; Epoc2 <<- Epoc_conv[e-2]
-    Epoch1 <<- Epoch_conv[e-1]; Epoc1 <<- Epoc_conv[e-1]
-    epoch_conv <- c("18mos","36mos","60mos","7yr","9yr","11yr","13yr")
-    epoch2 <<- epoch_conv[e-3]
-    epoch1 <<- epoch_conv[e-2]
-    epoch <<- epoch_conv[e-1]
-    epoch_conv2 <- c("","3yr_","5yr_","7yr_","9yr_","11yr_","13yr_")
-    ep_next <<- epoch_conv2[e]
-    ep <- epoch
-    date_next <<- paste0("visit_estimate_",ep_next,"date")
-    date_ty <<- format(as.Date(pdb_data[, date_next]), "%B %Y")
-    
     
     map_id <- as.character(pdb_data[,"map_id"])
     
@@ -325,6 +309,22 @@ fb_uploader<<- function(epochh,vmac) {
         fii36 <- fii36s[inddd,]
         #if (nrow(fii36)==FALSE) {stop("Not Enough Data")}
       }
+      
+      # Epoch Selector
+      Epoch_conv <- c("Enrollment","18-Month","3-Year","5-Year","7-Year","9-Year","11-Year","13-Year")
+      Epoc_conv <- c("enrollment","18-month","3-year","5-year","7-year","9-year","11-year","13-year")
+      Epoch <<- Epoch_conv[e]; Epoc <<- Epoc_conv[e]
+      Epoch2 <<- Epoch_conv[e-2]; Epoc2 <<- Epoc_conv[e-2]
+      Epoch1 <<- Epoch_conv[e-1]; Epoc1 <<- Epoc_conv[e-1]
+      epoch_conv <- c("18mos","36mos","60mos","7yr","9yr","11yr","13yr")
+      epoch2 <<- epoch_conv[e-3]
+      epoch1 <<- epoch_conv[e-2]
+      epoch <<- epoch_conv[e-1]
+      epoch_conv2 <- c("","3yr_","5yr_","7yr_","9yr_","11yr_","13yr_")
+      ep_next <<- epoch_conv2[e]
+      ep <- epoch
+      date_next <<- paste0("visit_estimate_",ep_next,"date")
+      date_ty <<- format(as.Date(pdb_data[, date_next]), "%B %Y")
       
       # Enrollment Data
       tme_datas <- exportReports(tme, 248431)
@@ -927,6 +927,18 @@ fb_uploader<<- function(epochh,vmac) {
     }
     
     if (e == 1) {
+      
+      # Epoch Selector
+      Epoch_conv <- c("Enrollment","18-Month","3-Year","5-Year","7-Year","9-Year","11-Year","13-Year")
+      Epoc_conv <- c("enrollment","18-month","3-year","5-year","7-year","9-year","11-year","13-year")
+      Epoch <<- Epoch_conv[e]; Epoc <<- Epoc_conv[e]
+      epoch_conv <- c("enroll","18mos","36mos","60mos","7yr","9yr","11yr","13yr")
+      epoch <<- epoch_conv[e-1]
+      epoch_conv2 <- c("","3yr_","5yr_","7yr_","9yr_","11yr_","13yr_")
+      ep_next <<- epoch_conv2[e]
+      ep <- epoch
+      date_next <<- paste0("visit_estimate_",ep_next,"date")
+      date_ty <<- format(as.Date(pdb_data[, date_next]), "%B %Y")
       
       enroll_date <<- format(as.Date(pdb_data$visit1_date), "%m/%d/%Y")
       if (is.na(enroll_date)) {enroll_date <<- format(as.Date(map_data[1, "visit1_date"]), "%m/%d/%Y")}
