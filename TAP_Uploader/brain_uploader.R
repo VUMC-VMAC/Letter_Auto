@@ -27,23 +27,25 @@ brain_uploader <- function(epoch,vmac) {
   
   events <- c("enrollmentbaseline_arm_1","18month_followup_arm_1","3year_followup_arm_1","5year_followup_arm_1","7year_followup_arm_1")
   
-  pdb_datas <- pdb_datas[which(as.integer(as.factor(pdb_datas[,"redcap_event_name"]))== epochh),]
+  pdb_datas <- pdb_datas[which(as.integer(as.factor(pdb_datas[,"redcap_event_name"]))== epoch),]
   i <- which(pdb_datas["vmac_id"]==as.integer(vmac))
   pdb_data <- pdb_datas[i,]
   
   edc <- redcapConnection(url = "https://redcap.vanderbilt.edu/api/",
                           token = "A2F023358C81C065E1D98575795DCD5B", conn, project = 135160)
   edc_datas <- exportReports(edc, 280483)
-  edc_data <- edc_datas[which(edc_datas["vmac_id"]==as.integer(vmac)),]
+  edc_datas <- edc_datas[which(edc_datas["vmac_id"]==as.integer(vmac)),]
+  edc_data <- edc_datas[which(is.na(edc_datas$redcap_repeat_instrument)),]
+  brain_data <- edc_datas[which(is.na(edc_datas$redcap_repeat_instrument)==FALSE),]
   
-  ptp_path <- paste0(main_path,"resources/Templates/Incidentals/MAP_brain_temp_ptp.docx")
-  phys_path <- paste0(main_path,"resources/Templates/Incidentals/MAP_brain_temp_phys.docx")
+  ptp_path <- paste0(main_path,"resources/Templates/Incidentals/TAP_brain_temp_ptp.docx")
+  phys_path <- paste0(main_path,"resources/Templates/Incidentals/TAP_brain_temp_phys.docx")
   
   #events <- c("eligibility_arm_1","enrollmentbaseline_arm_1","18month_followup_arm_1","3year_followup_arm_1","5year_followup_arm_1","7year_followup_arm_1")
   #pdb_datas <- pdb_datas[which(pdb_datas[,"redcap_event_name"]== events[epoch+1]),]
   #ii <- which(pdb_datas["vmac_id"]==as.integer(vmac)) #need to find i for map id
   #pdb_data <- pdb_datas[ii,]
-  record_id <- pdb_data$record_id
+  #record_id <- pdb_data$record_id
   
   #echo_datas <- echo_datas[which(echo_datas$map_id==as.integer(map_id)),]
   #echo_datas <- echo_datas[which(echo_datas[,"redcap_event_name"]== events[epoch+1]),]
@@ -54,13 +56,9 @@ brain_uploader <- function(epoch,vmac) {
   
   i <- 1
   e <- epoch
-  map_id <- as.character(pdb_data[i,"map_id"])
-  if (nchar(map_id)==1) {input <- paste0("00",map_id)} else if (nchar(map_id)==2) {input <- paste0("0",map_id)} else {input <- map_id}
-  #if (nchar(map_id)==1) {input <- paste0("00",map_id)} else if (nchar(map_id)==2) {input <- paste0("0",map_id)} else {input <- map_id}
-  vmac_id <- as.character(pdb_data[i,"vmac_id"])
-  if (nchar(vmac_id)==1) {record <- paste0("0000",vmac_id)} else if (nchar(vmac_id)==2) {record <- paste0("000",vmac_id)} else if (nchar(vmac_id)==3) {record <- paste0("00",vmac_id)} else if (nchar(vmac_id)==4) {record <- paste0("0",vmac_id)} else {record <- vmac_id}
-  last_name <<- pdb_data[i, "last_name"]
-  salutation <<- as.character(pdb_data[i,"salutation"])
+  vmac_id<<- as.character(pdb_data$vmac_id)
+  if (nchar(vmac_id)==1) {record<<- paste0("0000",vmac_id)} else if (nchar(vmac_id)==2) {record<<- paste0("000",vmac_id)} else if (nchar(vmac_id)==3) {record<<- paste0("00",vmac_id)} else if (nchar(vmac_id)==4) {record<<- paste0("0",vmac_id)} else {record<<- vmac_id}
+  input <- record
   
   epoch_conv <- c("enrollment","18 month","3 year","5 year","7 year","9 year","11 year","13 year")
   epoch <<- epoch_conv[e]
@@ -92,21 +90,21 @@ brain_uploader <- function(epoch,vmac) {
   pronoun_poss<<- pronoun_conv_poss[sex]
   pronoun_poss_cap<<- pronoun_conv_poss_cap[sex]
   salutation<<- as.character(pdb_data[i, "salutation"])
-  fb_date1 <- pdb_data[i, "feedback_date"]
-  if (is.na(fb_date1)) {feedback_date1 <<- "UNKNOWN"} else {feedback_date1 <<- format(as.Date(fb_date1), "%m/%d/%Y")}
-  feedback_location <<- as.character(pdb_data[i, "feedback_location"])
+  #fb_date1 <- pdb_data[i, "feedback_date"]
+  #if (is.na(fb_date1)) {feedback_date1 <<- "UNKNOWN"} else {feedback_date1 <<- format(as.Date(fb_date1), "%m/%d/%Y")}
+  #feedback_location <<- as.character(pdb_data[i, "feedback_location"])
   
   
   brain_date_time <<- format(as.Date(brain_data$scan_date_time), "%m/%d/%Y")
   
-  brain_incidental_ptp <<- echo_data$brain_incidental_letter_participant
-  brain_incidental_physician <<- echo_data$brain_incidental_letter_physician
+  brain_incidental_ptp <<- edc_data$brain_incidental_letter_participant
+  brain_incidental_physician <<- edc_data$brain_incidental_letter_physician
   
   output <- paste0(out_path,"MAP_",input,"_",ep,"_brain_letter.docx")
   renderInlineCode(ptp_path, output)
   
-  importFiles(rcon = pdb, file = output, record = record, field = "feedback_incidental_stat_letter_brain", event = pdb_data[,"redcap_event_name"],
-              overwrite = TRUE, repeat_instance = 1)
+  #importFiles(rcon = pdb, file = output, record = record, field = "feedback_incidental_stat_letter_brain", event = pdb_data[,"redcap_event_name"],
+  #            overwrite = TRUE, repeat_instance = 1)
   
   # Compiling Physician Data
   first_name_physician1<<- pdb_data[i, "feedback_incidental_stat_brain_physician1_first_name"]
@@ -145,45 +143,35 @@ brain_uploader <- function(epoch,vmac) {
   #state_physician5<<- pdb_data[i, "feedback_incidental_stat_brain_physician5_state"]
   #zip_physician5<<- pdb_data[i, "feedback_incidental_stat_brain_physician5_zip"]
   
-  if (is.na(first_name_physician1)) {first_name_physician1<<- ""} else {first_name_physician1<<- paste0("     1.  ",pdb_data[i, "feedback_incidental_stat_brain_physician1_first_name"])}
-  if (is.na(last_name_physician1)) {last_name_physician1<<- ""} else {last_name_physician1<<- paste0(pdb_data[i, "feedback_incidental_stat_brain_physician1_last_name"])}
-  if (is.na(street_address_physician1)) {street_address_physician1<<- ""} else {street_address_physician1<<- paste0("          ",pdb_data[i, "feedback_incidental_stat_brain_physician1_street_address"])}
-  if (is.na(city_physician1)) {city_physician1<<- ""} else {city_physician1<<- paste0("          ",pdb_data[i, "feedback_incidental_stat_brain_physician1_city"],",")}
-  state_physician1<<- pdb_data[i, "feedback_incidental_stat_brain_physician1_state"]
+  if (is.na(first_name_physician1)) {first_name_physician1<<- ""}
+  if (is.na(last_name_physician1)) {last_name_physician1<<- ""}
+  if (is.na(street_address_physician1)) {street_address_physician1<<- ""}
+  if (is.na(city_physician1)) {city_physician1<<- ""}
   if (is.na(state_physician1)) {state_physician1<<- ""}
-  zip_physician1<<- pdb_data[i, "feedback_incidental_stat_brain_physician1_zip"]
   if (is.na(zip_physician1)) {zip_physician1<<- ""}
-  if (is.na(first_name_physician2)) {first_name_physician2<<- ""} else {first_name_physician2<<- paste0("     2.  ",pdb_data[i, "feedback_incidental_stat_brain_physician2_first_name"])}
-  if (is.na(last_name_physician2)) {last_name_physician2<<- ""} else {last_name_physician2<<- paste0(pdb_data[i, "feedback_incidental_stat_brain_physician2_last_name"])}
-  if (is.na(street_address_physician2)) {street_address_physician2<<- ""} else {street_address_physician2<<- paste0("          ",pdb_data[i, "feedback_incidental_stat_brain_physician2_street_address"])}
-  if (is.na(city_physician2)) {city_physician2<<- ""} else {city_physician2<<- paste0("          ",pdb_data[i, "feedback_incidental_stat_brain_physician2_city"],",")}
-  state_physician2<<- pdb_data[i, "feedback_incidental_stat_brain_physician2_state"]
+  if (is.na(first_name_physician2)) {first_name_physician2<<- ""}
+  if (is.na(last_name_physician2)) {last_name_physician2<<- ""}
+  if (is.na(street_address_physician2)) {street_address_physician2<<- ""}
+  if (is.na(city_physician2)) {city_physician2<<- ""}
   if (is.na(state_physician2)) {state_physician2<<- ""}
-  zip_physician2<<- pdb_data[i, "feedback_incidental_stat_brain_physician2_zip"]
   if (is.na(zip_physician2)) {zip_physician2<<- ""}
-  if (is.na(first_name_physician3)) {first_name_physician3<<- ""} else {first_name_physician3<<- paste0("     3.  ",pdb_data[i, "feedback_incidental_stat_brain_physician3_first_name"])}
-  if (is.na(last_name_physician3)) {last_name_physician3<<- ""} else {last_name_physician3<<- paste0(pdb_data[i, "feedback_incidental_stat_brain_physician3_last_name"])}
-  if (is.na(street_address_physician3)) {street_address_physician3<<- ""} else {street_address_physician3<<- paste0("          ",pdb_data[i, "feedback_incidental_stat_brain_physician3_street_address"])}
-  if (is.na(city_physician3)) {city_physician3<<- ""} else {city_physician3<<- paste0("          ",pdb_data[i, "feedback_incidental_stat_brain_physician3_city"],",")}
-  state_physician3<<- pdb_data[i, "feedback_incidental_stat_brain_physician3_state"]
+  if (is.na(first_name_physician3)) {first_name_physician3<<- ""}
+  if (is.na(last_name_physician3)) {last_name_physician3<<- ""}
+  if (is.na(street_address_physician3)) {street_address_physician3<<- ""}
+  if (is.na(city_physician3)) {city_physician3<<- ""}
   if (is.na(state_physician3)) {state_physician3<<- ""}
-  zip_physician3<<- pdb_data[i, "feedback_incidental_stat_brain_physician3_zip"]
   if (is.na(zip_physician3)) {zip_physician3<<- ""}
-  if (is.na(first_name_physician4)) {first_name_physician4<<- ""} else {first_name_physician4<<- paste0("     3.  ",pdb_data[i, "feedback_incidental_stat_brain_physician4_first_name"])}
-  if (is.na(last_name_physician4)) {last_name_physician4<<- ""} else {last_name_physician4<<- paste0(pdb_data[i, "feedback_incidental_stat_brain_physician4_last_name"])}
-  if (is.na(street_address_physician4)) {street_address_physician4<<- ""} else {street_address_physician4<<- paste0("          ",pdb_data[i, "feedback_incidental_stat_brain_physician4_street_address"])}
-  if (is.na(city_physician4)) {city_physician4<<- ""} else {city_physician4<<- paste0("          ",pdb_data[i, "feedback_incidental_stat_brain_physician4_city"],",")}
-  state_physician4<<- pdb_data[i, "feedback_incidental_stat_brain_physician4_state"]
+  if (is.na(first_name_physician4)) {first_name_physician4<<- ""}
+  if (is.na(last_name_physician4)) {last_name_physician4<<- ""}
+  if (is.na(street_address_physician4)) {street_address_physician4<<- ""}
+  if (is.na(city_physician4)) {city_physician4<<- ""}
   if (is.na(state_physician4)) {state_physician4<<- ""}
-  zip_physician4<<- pdb_data[i, "feedback_incidental_stat_brain_physician4_zip"]
   if (is.na(zip_physician4)) {zip_physician4<<- ""}
-  #if (is.na(first_name_physician5)) {first_name_physician5<<- ""} else {first_name_physician5<<- paste0("     3.  ",pdb_data[i, "feedback_incidental_stat_brain_physician5_first_name"])}
-  #if (is.na(last_name_physician5)) {last_name_physician5<<- ""} else {last_name_physician5<<- paste0(pdb_data[i, "feedback_incidental_stat_brain_physician5_last_name"])}
-  #if (is.na(street_address_physician5)) {street_address_physician5<<- ""} else {street_address_physician5<<- paste0("          ",pdb_data[i, "feedback_incidental_stat_brain_physician5_street_address"])}
-  ##if (is.na(city_physician5)) {city_physician5<<- ""} else {city_physician5<<- paste0("          ",pdb_data[i, "feedback_incidental_stat_brain_physician5_city"],",")}
-  #state_physician5<<- pdb_data[i, "feedback_incidental_stat_brain_physician5_state"]
+  #if (is.na(first_name_physician5)) {first_name_physician5<<- ""}
+  #if (is.na(last_name_physician5)) {last_name_physician5<<- ""}
+  #if (is.na(street_address_physician5)) {street_address_physician5<<- ""}
+  ##if (is.na(city_physician5)) {city_physician5<<- ""}
   #if (is.na(state_physician5)) {state_physician5<<- ""}
-  #zip_physician5<<- pdb_data[i, "feedback_incidental_stat_brain_physician5_zip"]
   #if (is.na(zip_physician5)) {zip_physician5<<- ""}
   
   num_phys <- as.integer(pdb_data$feedback_incidental_stat_brain_number_letter); if (is.na(num_phys)) {num_phys <- 0}
@@ -200,8 +188,8 @@ brain_uploader <- function(epoch,vmac) {
     output <- paste0(out_path,"MAP_",input,"_",ep,"_brain_phys_incidental.docx")
     renderInlineCode(phys_path, output)
     
-    importFiles(rcon = pdb, file = output, record = record, field = "feedback_incidental_stat_brain_physician1_letter", event = events[e+1],
-                overwrite = TRUE, repeat_instance = 1)
+    #importFiles(rcon = pdb, file = output, record = record, field = "feedback_incidental_stat_brain_physician1_letter", event = events[e+1],
+    #            overwrite = TRUE, repeat_instance = 1)
     
     if (num_phys > 1) {
       first_name_physician<<-first_name_physician2
@@ -215,8 +203,8 @@ brain_uploader <- function(epoch,vmac) {
       output <- paste0(out_path,"MAP_",input,"_",ep,"_brain_phys2_incidental.docx")
       renderInlineCode(phys_path, output)
       
-      importFiles(rcon = pdb, file = output, record = record, field = "feedback_incidental_stat_brain_physician2_letter", event = events[e+1],
-                  overwrite = TRUE, repeat_instance = 1)
+      #importFiles(rcon = pdb, file = output, record = record, field = "feedback_incidental_stat_brain_physician2_letter", event = events[e+1],
+      #            overwrite = TRUE, repeat_instance = 1)
       
       if (num_phys > 2) {
         first_name_physician<<-first_name_physician3
@@ -230,8 +218,8 @@ brain_uploader <- function(epoch,vmac) {
         output <- paste0(out_path,"MAP_",input,"_",ep,"_brain_phys3_incidental.docx")
         renderInlineCode(phys_path, output)
         
-        importFiles(rcon = pdb, file = output, record = record, field = "feedback_incidental_stat_brain_physician3_letter",event = events[e+1],
-                    overwrite = TRUE, repeat_instance = 1)
+        #importFiles(rcon = pdb, file = output, record = record, field = "feedback_incidental_stat_brain_physician3_letter",event = events[e+1],
+        #            overwrite = TRUE, repeat_instance = 1)
         
         if (num_phys > 3) {
           first_name_physician<<-first_name_physician4

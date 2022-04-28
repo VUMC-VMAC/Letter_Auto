@@ -7,8 +7,8 @@ blood_uploader <- function(epochh,vmac) {
   library(tidyverse)
   
   # Global Pathing
-  local <- 1
-  online <- 0
+  local <- 0
+  online <- 1
   if (local) {
     # Add Local Paths Here
     out_path <- "C:/Users/sweelyb/Documents/output/"
@@ -264,8 +264,8 @@ blood_uploader <- function(epochh,vmac) {
   output<- paste0(out_path,"TAP_",input,"_",ep,"_blood_incidental.docx")
   renderInlineCode(ptp_temp, output)
   
-  #importFiles(rcon = pdb, file = output, record = record, field = "feedback_incidental_stat_blood_letter", event = pdb_data[,"redcap_event_name"],
-  #            overwrite = TRUE, repeat_instance = 1)
+  importFiles(rcon = pdb, file = output, record = record, field = "feedback_incidental_stat_blood_letter", event = pdb_data[,"redcap_event_name"],
+              overwrite = TRUE, repeat_instance = 1)
   
   num_phys <- as.integer(pdb_data$feedback_incidental_stat_blood_number_letter); if (is.na(num_phys)) {num_phys <- 0}
   
@@ -281,8 +281,8 @@ blood_uploader <- function(epochh,vmac) {
     output <- paste0(out_path,"MAP_",input,"_",ep,"_blood_phys_incidental.docx")
     renderInlineCode(phys_temp, output)
     
-    #importFiles(rcon = pdb, file = output, record = record, field = "feedback_incidental_stat_blood_physician1_letter", event = events[e],
-    #            overwrite = TRUE, repeat_instance = 1)
+    importFiles(rcon = pdb, file = output, record = record, field = "feedback_incidental_stat_blood_physician1_letter", event = events[e],
+                overwrite = TRUE, repeat_instance = 1)
     
     if (num_phys > 1) {
       first_name_physician<<-first_name_physician2
@@ -296,8 +296,8 @@ blood_uploader <- function(epochh,vmac) {
       output <- paste0(out_path,"MAP_",input,"_",ep,"_blood_phys2_incidental.docx")
       renderInlineCode(phys_temp, output)
       
-      #importFiles(rcon = pdb, file = output, record = record, field = "feedback_incidental_stat_blood_physician2_letter", event = events[e],
-      #            overwrite = TRUE, repeat_instance = 1)
+      importFiles(rcon = pdb, file = output, record = record, field = "feedback_incidental_stat_blood_physician2_letter", event = events[e],
+                  overwrite = TRUE, repeat_instance = 1)
       
       if (num_phys > 2) {
         first_name_physician<<-first_name_physician3

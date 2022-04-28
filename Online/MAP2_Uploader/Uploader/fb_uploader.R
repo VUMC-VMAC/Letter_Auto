@@ -934,6 +934,7 @@ fb_uploader<<- function(epochh,vmac) {
       age <- pdb_data$age
       edu <- pdb_data$education
       race <- pdb_data$np_norm_race
+      if (is.na(race)) {race <- pdb_data$race}
       
       if (age < 55) {age_r <- "50-54"}; if (age < 60 & age >= 55) {age_r <- "55-59"}; if (age < 65 & age >= 60) {age_r <- "60-64"}
       if (age < 70 & age >= 65) {age_r <- "65-69"}; if (age < 75 & age >= 70) {age_r <- "70-74"} 
@@ -1379,4 +1380,3 @@ fb_uploader<<- function(epochh,vmac) {
   }
   return(err)
 }
-

@@ -36,7 +36,10 @@ fb_uploader<<- function(epochh,vmac) {
   
   #pdb_data[,which(is.na(pdb_data[,"feedback_location"]))]<-"other"
   
-  edc_data <- edc_datas[which(edc_datas["vmac_id"]==as.integer(vmac)),]
+  edc_datas <- edc_datas[which(edc_datas["vmac_id"]==as.integer(vmac)),]
+  
+  edc_data <- edc_datas[which(is.na(edc_datas$redcap_repeat_instrument)),]
+  brain_data <- edc_datas[which(is.na(edc_datas$redcap_repeat_instrument)==FALSE),]
   
   np_datas <- np_datas[grep(vmac,np_datas$record_id),]
   

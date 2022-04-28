@@ -1,4 +1,4 @@
-echo_uploader <- function(epoch,vmac) {
+brain_uploader <- function(epoch,vmac) {
   
   library(redcapAPI)
   library(WordR)
@@ -7,8 +7,8 @@ echo_uploader <- function(epoch,vmac) {
   library(tidyverse)
   
   # Global Pathing
-  local <- 1
-  online <- 0
+  local <- 0
+  online <- 1
   if (local) {
     # Add Local Paths Here
     out_path <- "C:/Users/sweelyb/Documents/output/"
@@ -38,8 +38,19 @@ echo_uploader <- function(epoch,vmac) {
   edc_data <- edc_datas[which(is.na(edc_datas$redcap_repeat_instrument)),]
   brain_data <- edc_datas[which(is.na(edc_datas$redcap_repeat_instrument)==FALSE),]
   
-  ptp_path <- paste0(main_path,"resources/Templates/Incidentals/TAP_echo_temp_ptp.docx")
-  phys_path <- paste0(main_path,"resources/Templates/Incidentals/TAP_echo_temp_phys.docx")
+  ptp_path <- paste0(main_path,"resources/Templates/Incidentals/TAP_brain_temp_ptp.docx")
+  phys_path <- paste0(main_path,"resources/Templates/Incidentals/TAP_brain_temp_phys.docx")
+  
+  #events <- c("eligibility_arm_1","enrollmentbaseline_arm_1","18month_followup_arm_1","3year_followup_arm_1","5year_followup_arm_1","7year_followup_arm_1")
+  #pdb_datas <- pdb_datas[which(pdb_datas[,"redcap_event_name"]== events[epoch+1]),]
+  #ii <- which(pdb_datas["vmac_id"]==as.integer(vmac)) #need to find i for map id
+  #pdb_data <- pdb_datas[ii,]
+  #record_id <- pdb_data$record_id
+  
+  #echo_datas <- echo_datas[which(echo_datas$map_id==as.integer(map_id)),]
+  #echo_datas <- echo_datas[which(echo_datas[,"redcap_event_name"]== events[epoch+1]),]
+  #echo_data <- echo_datas[which(is.na(echo_datas$redcap_repeat_instrument)),]
+  #brain_data <- echo_datas[which(is.na(echo_datas$redcap_repeat_instrument)==FALSE),]
   
   err <<- ""
   
@@ -84,55 +95,53 @@ echo_uploader <- function(epoch,vmac) {
   #feedback_location <<- as.character(pdb_data[i, "feedback_location"])
   
   
-  echo_date_time <<- format(as.Date(edc_data$echo_date_time), "%m/%d/%Y")
+  brain_date_time <<- format(as.Date(brain_data$scan_date_time), "%m/%d/%Y")
   
-  #extracardiac_incidental_describe <<- echo_data$extracardiac_incidental_describe
-  echo_ptp <<- edc_data$echo_incidental_letter_participant
-  echo_phys <<- edc_data$echo_incidental_letter_physician
+  brain_incidental_ptp <<- edc_data$brain_incidental_letter_participant
+  brain_incidental_physician <<- edc_data$brain_incidental_letter_physician
   
-  
-  output <- paste0(out_path,"MAP_",input,"_",ep,"_echo_letter.docx")
+  output <- paste0(out_path,"MAP_",input,"_",ep,"_brain_letter.docx")
   renderInlineCode(ptp_path, output)
   
-  importFiles(rcon = pdb, file = output, record = record, field = "feedback_incidental_stat_letter_echo", event = pdb_data[,"redcap_event_name"],
+  importFiles(rcon = pdb, file = output, record = record, field = "feedback_incidental_stat_letter_brain", event = pdb_data[,"redcap_event_name"],
               overwrite = TRUE, repeat_instance = 1)
   
   # Compiling Physician Data
-  first_name_physician1<<- pdb_data[i, "feedback_incidental_stat_echo_physician1_first_name"]
-  last_name_physician1<<- pdb_data[i, "feedback_incidental_stat_echo_physician1_last_name"]
-  credentials1<<- pdb_data[i,"feedback_incidental_stat_echo_physician1_credentials"]
-  street_address_physician1<<- pdb_data[i, "feedback_incidental_stat_echo_physician1_street_address"]
-  city_physician1<<- pdb_data[i, "feedback_incidental_stat_echo_physician1_city"]
-  state_physician1<<- pdb_data[i, "feedback_incidental_stat_echo_physician1_state"]
-  zip_physician1<<- pdb_data[i, "feedback_incidental_stat_echo_physician1_zip"]
-  first_name_physician2<<- pdb_data[i, "feedback_incidental_stat_echo_physician2_first_name"]
-  last_name_physician2<<- pdb_data[i, "feedback_incidental_stat_echo_physician2_last_name"]
-  credentials2<<- pdb_data[i,"feedback_incidental_stat_echo_physician2_credentials"]
-  street_address_physician2<<- pdb_data[i, "feedback_incidental_stat_echo_physician2_street_address"]
-  city_physician2<<- pdb_data[i, "feedback_incidental_stat_echo_physician2_city"]
-  state_physician2<<- pdb_data[i, "feedback_incidental_stat_echo_physician2_state"]
-  zip_physician2<<- pdb_data[i, "feedback_incidental_stat_echo_physician2_zip"]
-  first_name_physician3<<- pdb_data[i, "feedback_incidental_stat_echo_physician3_first_name"]
-  last_name_physician3<<- pdb_data[i, "feedback_incidental_stat_echo_physician3_last_name"]
-  credentials3<<- pdb_data[i,"feedback_incidental_stat_echo_physician3_credentials"]
-  street_address_physician3<<- pdb_data[i, "feedback_incidental_stat_echo_physician3_street_address"]
-  city_physician3<<- pdb_data[i, "feedback_incidental_stat_echo_physician3_city"]
-  state_physician3<<- pdb_data[i, "feedback_incidental_stat_echo_physician3_state"]
-  zip_physician3<<- pdb_data[i, "feedback_incidental_stat_echo_physician3_zip"]
-  first_name_physician4<<- pdb_data[i, "feedback_incidental_stat_echo_physician4_first_name"]
-  last_name_physician4<<- pdb_data[i, "feedback_incidental_stat_echo_physician4_last_name"]
-  credentials4<<- pdb_data[i,"feedback_incidental_stat_echo_physician4_credentials"]
-  street_address_physician4<<- pdb_data[i, "feedback_incidental_stat_echo_physician4_street_address"]
-  city_physician4<<- pdb_data[i, "feedback_incidental_stat_echo_physician4_city"]
-  state_physician4<<- pdb_data[i, "feedback_incidental_stat_echo_physician4_state"]
-  zip_physician4<<- pdb_data[i, "feedback_incidental_stat_echo_physician4_zip"]
-  #first_name_physician5<<- pdb_data[i, "feedback_incidental_stat_echo_physician5_first_name"]
-  #last_name_physician5<<- pdb_data[i, "feedback_incidental_stat_echo_physician5_last_name"]
-  #street_address_physician5<<- pdb_data[i, "feedback_incidental_stat_echo_physician5_street_address"]
-  #credentials5<<- pdb_data[i,"feedback_incidental_stat_echo_physician5_credentials"]
-  #city_physician5<<- pdb_data[i, "feedback_incidental_stat_echo_physician5_city"]
-  #state_physician5<<- pdb_data[i, "feedback_incidental_stat_echo_physician5_state"]
-  #zip_physician5<<- pdb_data[i, "feedback_incidental_stat_echo_physician5_zip"]
+  first_name_physician1<<- pdb_data[i, "feedback_incidental_stat_brain_physician1_first_name"]
+  last_name_physician1<<- pdb_data[i, "feedback_incidental_stat_brain_physician1_last_name"]
+  credentials1<<- pdb_data[i,"feedback_incidental_stat_brain_physician1_credentials"]
+  street_address_physician1<<- pdb_data[i, "feedback_incidental_stat_brain_physician1_street_address"]
+  city_physician1<<- pdb_data[i, "feedback_incidental_stat_brain_physician1_city"]
+  state_physician1<<- pdb_data[i, "feedback_incidental_stat_brain_physician1_state"]
+  zip_physician1<<- pdb_data[i, "feedback_incidental_stat_brain_physician1_zip"]
+  first_name_physician2<<- pdb_data[i, "feedback_incidental_stat_brain_physician2_first_name"]
+  last_name_physician2<<- pdb_data[i, "feedback_incidental_stat_brain_physician2_last_name"]
+  credentials2<<- pdb_data[i,"feedback_incidental_stat_brain_physician2_credentials"]
+  street_address_physician2<<- pdb_data[i, "feedback_incidental_stat_brain_physician2_street_address"]
+  city_physician2<<- pdb_data[i, "feedback_incidental_stat_brain_physician2_city"]
+  state_physician2<<- pdb_data[i, "feedback_incidental_stat_brain_physician2_state"]
+  zip_physician2<<- pdb_data[i, "feedback_incidental_stat_brain_physician2_zip"]
+  first_name_physician3<<- pdb_data[i, "feedback_incidental_stat_brain_physician3_first_name"]
+  last_name_physician3<<- pdb_data[i, "feedback_incidental_stat_brain_physician3_last_name"]
+  credentials3<<- pdb_data[i,"feedback_incidental_stat_brain_physician3_credentials"]
+  street_address_physician3<<- pdb_data[i, "feedback_incidental_stat_brain_physician3_street_address"]
+  city_physician3<<- pdb_data[i, "feedback_incidental_stat_brain_physician3_city"]
+  state_physician3<<- pdb_data[i, "feedback_incidental_stat_brain_physician3_state"]
+  zip_physician3<<- pdb_data[i, "feedback_incidental_stat_brain_physician3_zip"]
+  first_name_physician4<<- pdb_data[i, "feedback_incidental_stat_brain_physician4_first_name"]
+  last_name_physician4<<- pdb_data[i, "feedback_incidental_stat_brain_physician4_last_name"]
+  credentials4<<- pdb_data[i,"feedback_incidental_stat_brain_physician4_credentials"]
+  street_address_physician4<<- pdb_data[i, "feedback_incidental_stat_brain_physician4_street_address"]
+  city_physician4<<- pdb_data[i, "feedback_incidental_stat_brain_physician4_city"]
+  state_physician4<<- pdb_data[i, "feedback_incidental_stat_brain_physician4_state"]
+  zip_physician4<<- pdb_data[i, "feedback_incidental_stat_brain_physician4_zip"]
+  #first_name_physician5<<- pdb_data[i, "feedback_incidental_stat_brain_physician5_first_name"]
+  #last_name_physician5<<- pdb_data[i, "feedback_incidental_stat_brain_physician5_last_name"]
+  #street_address_physician5<<- pdb_data[i, "feedback_incidental_stat_brain_physician5_street_address"]
+  #credentials5<<- pdb_data[i,"feedback_incidental_stat_brain_physician5_credentials"]
+  #city_physician5<<- pdb_data[i, "feedback_incidental_stat_brain_physician5_city"]
+  #state_physician5<<- pdb_data[i, "feedback_incidental_stat_brain_physician5_state"]
+  #zip_physician5<<- pdb_data[i, "feedback_incidental_stat_brain_physician5_zip"]
   
   if (is.na(first_name_physician1)) {first_name_physician1<<- ""}
   if (is.na(last_name_physician1)) {last_name_physician1<<- ""}
@@ -165,7 +174,7 @@ echo_uploader <- function(epoch,vmac) {
   #if (is.na(state_physician5)) {state_physician5<<- ""}
   #if (is.na(zip_physician5)) {zip_physician5<<- ""}
   
-  num_phys <- as.integer(pdb_data$feedback_number_letter); if (is.na(num_phys)) {num_phys <- 0}
+  num_phys <- as.integer(pdb_data$feedback_incidental_stat_brain_number_letter); if (is.na(num_phys)) {num_phys <- 0}
   
   if (num_phys > 0) {
     first_name_physician<<-first_name_physician1
@@ -176,10 +185,10 @@ echo_uploader <- function(epoch,vmac) {
     state_physician<<- state_physician1
     zip_physician<<- zip_physician1
     
-    output <- paste0(out_path,"MAP_",input,"_",ep,"_echo_phys_incidental.docx")
+    output <- paste0(out_path,"MAP_",input,"_",ep,"_brain_phys_incidental.docx")
     renderInlineCode(phys_path, output)
     
-    importFiles(rcon = pdb, file = output, record = record, field = "feedback_incidental_stat_echo_physician1_letter", event = events[e],
+    importFiles(rcon = pdb, file = output, record = record, field = "feedback_incidental_stat_brain_physician1_letter", event = events[e],
                 overwrite = TRUE, repeat_instance = 1)
     
     if (num_phys > 1) {
@@ -191,10 +200,10 @@ echo_uploader <- function(epoch,vmac) {
       state_physician<<- state_physician2
       zip_physician<<- zip_physician2
       
-      output <- paste0(out_path,"MAP_",input,"_",ep,"_echo_phys2_incidental.docx")
+      output <- paste0(out_path,"MAP_",input,"_",ep,"_brain_phys2_incidental.docx")
       renderInlineCode(phys_path, output)
       
-      importFiles(rcon = pdb, file = output, record = record, field = "feedback_incidental_stat_echo_physician2_letter", event = events[e],
+      importFiles(rcon = pdb, file = output, record = record, field = "feedback_incidental_stat_brain_physician2_letter", event = events[e],
                   overwrite = TRUE, repeat_instance = 1)
       
       if (num_phys > 2) {
@@ -206,10 +215,10 @@ echo_uploader <- function(epoch,vmac) {
         state_physician<<- state_physician3
         zip_physician<<- zip_physician3
         
-        output <- paste0(out_path,"MAP_",input,"_",ep,"_echo_phys3_incidental.docx")
+        output <- paste0(out_path,"MAP_",input,"_",ep,"_brain_phys3_incidental.docx")
         renderInlineCode(phys_path, output)
         
-        importFiles(rcon = pdb, file = output, record = record, field = "feedback_incidental_stat_echo_physician3_letter",event = events[e],
+        importFiles(rcon = pdb, file = output, record = record, field = "feedback_incidental_stat_brain_physician3_letter",event = events[e],
                     overwrite = TRUE, repeat_instance = 1)
         
         if (num_phys > 3) {
@@ -221,10 +230,10 @@ echo_uploader <- function(epoch,vmac) {
           state_physician<<- state_physician4
           zip_physician<<- zip_physician4
           
-          output <- paste0(out_path,"MAP_",input,"_",ep,"_echo_phys4_incidental.docx")
+          output <- paste0(out_path,"MAP_",input,"_",ep,"_brain_phys4_incidental.docx")
           renderInlineCode(phys_path, output)
           
-          importFiles(rcon = pdb, file = output, record = record, field = "feedback_incidental_stat_echo_physician4_letter",event = events[e],
+          importFiles(rcon = pdb, file = output, record = record, field = "feedback_incidental_stat_brain_physician4_letter",event = events[e],
                       overwrite = TRUE, repeat_instance = 1)
           
           if (is.na(first_name_physician5)==FALSE) {
@@ -236,10 +245,10 @@ echo_uploader <- function(epoch,vmac) {
             state_physician<<- state_physician5
             zip_physician<<- zip_physician5
             
-            output <- paste0(out_path,"MAP_",input,"_",ep,"_echo_phys5_incidental.docx")
+            output <- paste0(out_path,"MAP_",input,"_",ep,"_brain_phys5_incidental.docx")
             renderInlineCode(phys_path, output)
             
-            importFiles(rcon = pdb, file = output, record = record, field = "feedback_incidental_stat_echo_physician5_letter",event = events[e],
+            importFiles(rcon = pdb, file = output, record = record, field = "feedback_incidental_stat_brain_physician5_letter",event = events[e],
                         overwrite = TRUE, repeat_instance = 1)
           }}}}}
   
