@@ -117,7 +117,7 @@ pv_uploader <- function(epoch,vmac) {
     
     if (e > 0) {
       
-      ############# EPOCH 5 Starts HERE ###################
+      ############# EPOCH 1-5 Starts HERE ###################
       
       visit_type <- as.integer(pdb_data[i,"visit_type"])
       
@@ -132,8 +132,10 @@ pv_uploader <- function(epoch,vmac) {
       location_day3<<-""
       location_day3_prox<<-""
       visit1_date <<- format(as.Date(pdb_data[i, "visit1_date"]), "%A, %B %d, %Y")
-      visit1_time <- as.character(pdb_data[i,"visit1_time"])
-      visit1_time <<- paste0(gsub(":00$","",visit1_time), "am")
+      visit_time <- as.character(pdb_data[i,"visit1_time"])
+      merid <- "am"
+      if (visit_time != "NA") {hourr <- as.integer(substr(visit_time, 1, 2)); if (hourr > 11) {merid <- "pm"}}
+      visit1_time <<- gsub(":00$",merid,visit_time)
       visit1_hours <<- as.character(pdb_data[i,"visit1_hours"])
       loc_day1 <<- as.integer(pdb_data[i,"visit1_location"]); X <<- 1
       location <- loc_func(X,loc_day1)
@@ -143,8 +145,10 @@ pv_uploader <- function(epoch,vmac) {
       #fu_time_7yr <- sub("0","",fu_time_7yr)
       if (visit_type == 2 | visit_type==3 | visit_type==4 | visit_type==6 | visit_type == 7 | visit_type == 8 | visit_type == 9){
         visit2_date <<- format(as.Date(pdb_data[i, "visit2_date"]), "%A, %B %d, %Y")
-        visit2_time <- as.character(pdb_data[i,"visit2_time"])
-        visit2_time <<- paste0(gsub(":00$","",visit2_time),"am")
+        visit_time <- as.character(pdb_data[i,"visit2_time"])
+        merid <- "am"
+        if (visit_time != "NA") {hourr <- as.integer(substr(visit_time, 1, 2)); if (hourr > 11) {merid <- "pm"}}
+        visit2_time <<- gsub(":00$",merid,visit_time)
         visit2_hours <<- as.character(pdb_data[i,"visit2_hours"])
         loc_day2 <<- as.integer(pdb_data[i,"visit2_location"]); X <<- 2
         location <- loc_func(X,loc_day2)
@@ -156,8 +160,10 @@ pv_uploader <- function(epoch,vmac) {
         #fu_time2_7yr <- sub("0","",fu_time2_7yr)
         if (visit_type==3 | visit_type == 4 | visit_type == 8 | visit_type == 9) {
           visit3_date <<- format(as.Date(pdb_data[i, "visit3_date"]), "%A, %B %d, %Y")
-          visit3_time <- as.character(pdb_data[i,"visit3_time"])
-          visit3_time <<- paste0(gsub(":00$","",visit3_time),"am")
+          visit_time <- as.character(pdb_data[i,"visit3_time"])
+          merid <- "am"
+          if (visit_time != "NA") {hourr <- as.integer(substr(visit_time, 1, 2)); if (hourr > 11) {merid <- "pm"}}
+          visit3_time <<- gsub(":00$",merid,visit_time)
           visit3_hours <<- as.character(pdb_data[i,"visit3_hours"])
           loc_day3 <<- as.integer(pdb_data[i,"visit3_location"]); X <- 3
           location <- loc_func(X,loc_day3)
@@ -169,8 +175,10 @@ pv_uploader <- function(epoch,vmac) {
         }
         if (visit_type== 4 | visit_type == 9) {
           visit4_date <<- format(as.Date(pdb_data[i, "visit4_date"]), "%A, %B %d, %Y")
-          visit4_time <- as.character(pdb_data[i,"visit4_time"])
-          visit4_time <<- paste0(gsub(":00$","",visit4_time),"am")
+          visit_time <- as.character(pdb_data[i,"visit4_time"])
+          merid <- "am"
+          if (visit_time != "NA") {hourr <- as.integer(substr(visit_time, 1, 2)); if (hourr > 11) {merid <- "pm"}}
+          visit4_time <<- paste0(gsub(":00$","",visit_time),"am")
           visit4_hours <<- as.character(pdb_data[i,"visit4_hours"])
           location_day4 <<- as.integer(pdb_data[i,"visit4_location"]); X <- 4
           add_day4 <<- paste0("The third day of your visit is scheduled for ",visit4_date," at ",visit4_time," and will last approximately ",visit4_hours)
