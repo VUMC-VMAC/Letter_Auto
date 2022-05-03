@@ -324,7 +324,8 @@ fb_uploader<<- function(epochh,vmac) {
       ep_next <<- epoch_conv2[e]
       ep <- epoch
       date_next <<- paste0("visit_estimate_",ep_next,"date")
-      date_ty <<- format(as.Date(pdb_data[, date_next]), "%B %Y")
+      
+      tryCatch( { date_ty <<- format(as.Date(pdb_data[, date_next]), "%B %Y"); print(date_ty) } , error = function(e) {print("Applying alternate date.."); date_ty <<- "Unknown"} )
       
       # Enrollment Data
       tme_datas <- exportReports(tme, 248431)
@@ -338,19 +339,21 @@ fb_uploader<<- function(epochh,vmac) {
       if (nrow(tme_data)==FALSE) {stop("Not Enough Data")}
       
       # Follow up dates
+      le <- length(echo_datas$consent_date)
       enroll_date <<- format(as.Date(echo_datas[1, "consent_date"]), "%m/%d/%Y")
       if (is.na(enroll_date)) {enroll_date <<- format(as.Date(map_data[1, "visit1_date"]), "%m/%d/%Y")}
-      fu_date_prev2 <<- format(as.Date(echo_datas[2, "consent_date"]), "%m/%d/%Y")
-      if (is.na(fu_date_prev2)) {fu_date_prev2 <<- format(as.Date(map_data[5, "visit1_date"]), "%m/%d/%Y")}
-      fu_date_prev <<- format(as.Date(echo_datas[3, "consent_date"]), "%m/%d/%Y")
-      if (is.na(fu_date_prev)) {fu_date_prev <<- format(as.Date(map_data[4, "visit1_date"]), "%m/%d/%Y")}
+      fu_date_prev2 <<- format(as.Date(echo_datas[le-2, "consent_date"]), "%m/%d/%Y")
+      if (is.na(fu_date_prev2)) {fu_date_prev2 <<- format(as.Date(map_data[which(map_data$redcap_event_name == events[e-1]), "visit1_date"]), "%m/%d/%Y")}
+      fu_date_prev <<- format(as.Date(echo_datas[le-1, "consent_date"]), "%m/%d/%Y")
+      if (is.na(fu_date_prev)) {fu_date_prev <<- format(as.Date(map_data[which(map_data$redcap_event_name == events[e]), "visit1_date"]), "%m/%d/%Y")}
       fu_date_c <<- format(as.Date(echo_data$consent_date), "%m/%d/%Y")
-      if (is.na(fu_date_c)) {fu_date_c <<- format(as.Date(map_data[3, "visit1_date"]), "%m/%d/%Y")}
+      if (is.na(fu_date_c)) {fu_date_c <<- format(as.Date(map_data[which(map_data$redcap_event_name == events[e+1]), "visit1_date"]), "%m/%d/%Y")}
       
       print("Creating Data Tables")
       
       i <- 1
       
+      if (e == 5) {
       df <- data.frame(
         Test = c("Heart rate", "Blood pressure", "Height", "Weight", "Body Mass Index"),
         Test.1 = c("Heart rate", "Blood pressure", "Height", "Weight", "Body Mass Index"),
@@ -363,7 +366,23 @@ fb_uploader<<- function(epochh,vmac) {
         CR = c(echo_data$echo_hrate, echo_data$echo_read_sbp, paste0(round(echo_data$height*0.393701)," inches"), paste0(round(echo_data$weight*2.205)," lbs"), round((echo_data$weight/(echo_data$height/100)^2), digits = 1)),
         CR = c(echo_data$echo_hrate, echo_data$echo_read_dbp, paste0(round(echo_data$height*0.393701)," inches"), paste0(round(echo_data$weight*2.205)," lbs"), round((echo_data$weight/(echo_data$height/100)^2), digits = 1)),
         NR=c("60-100", "<120 / <80", "-", "-", "18.5-24.9")
-      )
+      )}
+      
+      if (e == 6) {
+        df <- data.frame(
+          Test = c("Heart rate", "Blood pressure", "Height", "Weight", "Body Mass Index"),
+          Test.1 = c("Heart rate", "Blood pressure", "Height", "Weight", "Body Mass Index"),
+          ER = c(tme_data[i, 2], tme_data[i, 3], paste0(round(tme_data[i, "height"]*0.393701)," inches"), paste0(round(tme_data[i, "weight"]*2.205)," lbs"), round(((tme_data[i, "weight"])/((tme_data[i, "height"])/100)^2), digits=1)),
+          ER = c(tme_data[i, 2], tme_data[i, 4], paste0(round(tme_data[i, "height"]*0.393701)," inches"), paste0(round(tme_data[i, "weight"]*2.205)," lbs"), round(((tme_data[i, "weight"])/((tme_data[i, "height"])/100)^2), digits=1)),
+          MR_60 = c(tm60_data[i, 2], fii60[i, 4], paste0(round(as.integer(tm60_data[i, "height"])*0.393701), " inches"), paste0(round(as.integer(tm60_data[i, "weight"])*2.205), " lbs"), round((as.integer(tm60_data[i, "weight"])/(as.integer(tm60_data[i, "height"])/100)^2), digits=1)),
+          MR_60 = c(tm60_data[i, 2], fii60[i, 5], paste0(round(as.integer(tm60_data[i, "height"])*0.393701), " inches"), paste0(round(as.integer(tm60_data[i, "weight"])*2.205), " lbs"), round((as.integer(tm60_data[i, "weight"])/(as.integer(tm60_data[i, "height"])/100)^2), digits=1)),
+          MR_7yr = c(echo_data$echo_hrate, echo_data$echo_read_sbp, paste0(round(echo_data$height*0.393701)," inches"), paste0(round(echo_data$weight*2.205)," lbs"), round((echo_data$weight/(echo_data$height/100)^2), digits = 1)),
+          MR_7yr = c(echo_data$echo_hrate, echo_data$echo_read_dbp, paste0(round(echo_data$height*0.393701)," inches"), paste0(round(echo_data$weight*2.205)," lbs"), round((echo_data$weight/(echo_data$height/100)^2), digits = 1)),
+          CR = c(echo_data$echo_hrate, echo_data$echo_read_sbp, paste0(round(echo_data$height*0.393701)," inches"), paste0(round(echo_data$weight*2.205)," lbs"), round((echo_data$weight/(echo_data$height/100)^2), digits = 1)),
+          CR = c(echo_data$echo_hrate, echo_data$echo_read_dbp, paste0(round(echo_data$height*0.393701)," inches"), paste0(round(echo_data$weight*2.205)," lbs"), round((echo_data$weight/(echo_data$height/100)^2), digits = 1)),
+          NR=c("60-100", "<120 / <80", "-", "-", "18.5-24.9")
+        )
+      }
       
       df[df == "-9999" | df == "-3937 inches" | df == "-22048 lbs" | df == "-1" | df == "Missing" | is.na(df)] <-"-"
       
