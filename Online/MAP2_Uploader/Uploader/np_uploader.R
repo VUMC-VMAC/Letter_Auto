@@ -79,11 +79,11 @@ np_uploader<<- function(epochh,vmac) {
   
   record_id <- dde_data[1,"record_id"]
   
-  edc_data <- edc_datas[which(edc_datas$map_id==as.integer(map_id)),]
+  edc_datas <- edc_datas[which(edc_datas$map_id==as.integer(map_id)),]
   
   map_data[,which(is.na(map_data[,"feedback_location"]))]<-"other"
   
-  edc_data <- edc_data[which(edc_data$redcap_event_name == events[epochh+1]),]
+  edc_data <- edc_datas[which(edc_datas$redcap_event_name == events[epochh+1]),]
   
   # Epoch Selector
   e <- epochh
@@ -129,6 +129,10 @@ np_uploader<<- function(epochh,vmac) {
   if (edu >= 13 & edu < 16 ) {edu_r <- "13-15"}; if (edu >= 16 & edu < 18 ) {edu_r <- "16-17"}
   if (edu >= 18) {edu_r <- "18-20"}
   
+  if (e == 1) {
+    edc_elig <- edc_datas[which(edc_datas$redcap_event_name == events[epochh]),]
+    gds <- edc_elig$gds_total_score
+  } else {gds <- edc_data$gds_total_score}
   
   if (e == 1) {
     # CVLT
@@ -230,8 +234,8 @@ np_uploader<<- function(epochh,vmac) {
     np_word_z <- (as.integer(np_word_ss)-10)/3
     
     
-    dat1 <<- cbind(np_anim_z,np_biber_ld_z,np_biber_sd_z,np_biber_t1to5_z,np_bnt_z,np_color_z,np_cvlt1to5_z,np_cvlt_ldfr_z,np_cvlt_sdfr_z,np_cvltrecog_discrim_z,np_digsymb_z,np_fas_z,np_hvot_z,np_inhibit_z,np_tmta_z,np_tmtb_z,np_tower_z,np_word_z)
-    dat2 <<- cbind(np_anim,np_biber_ld,np_biber_sd,np_biber_t1to5,np_bnt,np_color,"np_cvlt1to5","np_cvlt_ldfr","np_cvlt_sdfr","np_cvltrecog_discrim",np_digsymb,np_fas,np_hvot,np_inhibit,np_tmta,np_tmtb,np_tower,np_word)
+    dat1 <<- cbind(ra,gds,np_anim_z,np_biber_ld_z,np_biber_sd_z,np_biber_t1to5_z,np_bnt_z,np_color_z,np_cvlt1to5_z,np_cvlt_ldfr_z,np_cvlt_sdfr_z,np_cvltrecog_discrim_z,np_digsymb_z,np_fas_z,np_hvot_z,np_inhibit_z,np_tmta_z,np_tmtb_z,np_tower_z,np_word_z)
+    dat2 <<- cbind("NA","NA",np_anim,np_biber_ld,np_biber_sd,np_biber_t1to5,np_bnt,np_color,"np_cvlt1to5","np_cvlt_ldfr","np_cvlt_sdfr","np_cvltrecog_discrim",np_digsymb,np_fas,np_hvot,np_inhibit,np_tmta,np_tmtb,np_tower,np_word)
     dat <<- rbind(dat1,as.character(dat2))
   }
   
@@ -458,11 +462,12 @@ np_uploader<<- function(epochh,vmac) {
     }
     
     
-    dat1 <<- cbind(np_anim_z,np_biber_ld_z,np_biber_sd_z,np_biber_t1to5_z,np_bnt_z,np_color_z,np_cvlt1to5_z,np_cvlt_ldfr_z,np_cvlt_sdfr_z,np_cvltrecog_discrim_z,np_digsymb_z,np_fas_z,np_hvot_z,np_inhibit_z,np_tmta_z,np_tmtb_z,np_tower_z,np_word_z)
-    dat2 <<- cbind(np_anim,np_biber_ld,np_biber_sd,np_biber_t1to5,np_bnt,np_color,"np_cvlt1to5","np_cvlt_ldfr","np_cvlt_sdfr","np_cvltrecog_discrim",np_digsymb,np_fas,np_hvot,np_inhibit,np_tmta,np_tmtb,np_tower,np_word)
+    dat1 <<- cbind(ra,gds,np_anim_z,np_biber_ld_z,np_biber_sd_z,np_biber_t1to5_z,np_bnt_z,np_color_z,np_cvlt1to5_z,np_cvlt_ldfr_z,np_cvlt_sdfr_z,np_cvltrecog_discrim_z,np_digsymb_z,np_fas_z,np_hvot_z,np_inhibit_z,np_tmta_z,np_tmtb_z,np_tower_z,np_word_z)
+    dat2 <<- cbind("NA","NA",np_anim,np_biber_ld,np_biber_sd,np_biber_t1to5,np_bnt,np_color,"np_cvlt1to5","np_cvlt_ldfr","np_cvlt_sdfr","np_cvltrecog_discrim",np_digsymb,np_fas,np_hvot,np_inhibit,np_tmta,np_tmtb,np_tower,np_word)
     dat <<- rbind(dat1,dat2)
   }
   
   return(dat)
   
 }
+

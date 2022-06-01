@@ -100,7 +100,7 @@ brain_uploader <- function(epoch,vmac) {
   brain_incidental_ptp <<- edc_data$brain_incidental_letter_participant
   brain_incidental_physician <<- edc_data$brain_incidental_letter_physician
   
-  output <- paste0(out_path,"MAP_",input,"_",ep,"_brain_letter.docx")
+  output <- paste0(out_path,"TAP_",input,"_",ep,"_brain_letter.docx")
   renderInlineCode(ptp_path, output)
   
   importFiles(rcon = pdb, file = output, record = record, field = "feedback_incidental_stat_letter_brain", event = pdb_data[,"redcap_event_name"],
@@ -185,7 +185,7 @@ brain_uploader <- function(epoch,vmac) {
     state_physician<<- state_physician1
     zip_physician<<- zip_physician1
     
-    output <- paste0(out_path,"MAP_",input,"_",ep,"_brain_phys_incidental.docx")
+    output <- paste0(out_path,"TAP_",input,"_",ep,"_brain_phys_incidental.docx")
     renderInlineCode(phys_path, output)
     
     importFiles(rcon = pdb, file = output, record = record, field = "feedback_incidental_stat_brain_physician1_letter", event = events[e],
@@ -200,7 +200,7 @@ brain_uploader <- function(epoch,vmac) {
       state_physician<<- state_physician2
       zip_physician<<- zip_physician2
       
-      output <- paste0(out_path,"MAP_",input,"_",ep,"_brain_phys2_incidental.docx")
+      output <- paste0(out_path,"TAP_",input,"_",ep,"_brain_phys2_incidental.docx")
       renderInlineCode(phys_path, output)
       
       importFiles(rcon = pdb, file = output, record = record, field = "feedback_incidental_stat_brain_physician2_letter", event = events[e],
@@ -215,7 +215,7 @@ brain_uploader <- function(epoch,vmac) {
         state_physician<<- state_physician3
         zip_physician<<- zip_physician3
         
-        output <- paste0(out_path,"MAP_",input,"_",ep,"_brain_phys3_incidental.docx")
+        output <- paste0(out_path,"TAP_",input,"_",ep,"_brain_phys3_incidental.docx")
         renderInlineCode(phys_path, output)
         
         importFiles(rcon = pdb, file = output, record = record, field = "feedback_incidental_stat_brain_physician3_letter",event = events[e],
@@ -230,7 +230,7 @@ brain_uploader <- function(epoch,vmac) {
           state_physician<<- state_physician4
           zip_physician<<- zip_physician4
           
-          output <- paste0(out_path,"MAP_",input,"_",ep,"_brain_phys4_incidental.docx")
+          output <- paste0(out_path,"TAP_",input,"_",ep,"_brain_phys4_incidental.docx")
           renderInlineCode(phys_path, output)
           
           importFiles(rcon = pdb, file = output, record = record, field = "feedback_incidental_stat_brain_physician4_letter",event = events[e],
@@ -245,7 +245,7 @@ brain_uploader <- function(epoch,vmac) {
             state_physician<<- state_physician5
             zip_physician<<- zip_physician5
             
-            output <- paste0(out_path,"MAP_",input,"_",ep,"_brain_phys5_incidental.docx")
+            output <- paste0(out_path,"TAP_",input,"_",ep,"_brain_phys5_incidental.docx")
             renderInlineCode(phys_path, output)
             
             importFiles(rcon = pdb, file = output, record = record, field = "feedback_incidental_stat_brain_physician5_letter",event = events[e],

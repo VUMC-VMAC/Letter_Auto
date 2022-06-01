@@ -23,7 +23,7 @@ MAP_uploader <- function(epoch,vmac) {
   print("Start")
   
   pdb <- redcapConnection(url = "https://redcap.vanderbilt.edu/api/",
-                          token = "CBF02E285BFC1874F0EAF11D3F4E2842", conn, project = 23166)
+                          token = "496ED1BD518B29CB96B5CFD9C48844FE", conn, project = 23166)
   if (epoch > 0) {pdb_data <- exportReports(pdb, 252698)} else {pdb_data <- exportReports(pdb, 266747)}
   #try(pdb_data <- exportReports(pdb, 252698), silent = TRUE)
   #if (exists("pdb_data")==FALSE) {print("No Updates")} else {
