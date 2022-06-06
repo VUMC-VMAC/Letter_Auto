@@ -8,8 +8,6 @@ np_uploader<<- function(epochh,vmac) {
   library(Hmisc)
   library(tidyverse)
   library(flextable)
-  library(ggpattern)
-  library(patternplot)
   library(png)
   library(readxl)
   
@@ -36,7 +34,9 @@ np_uploader<<- function(epochh,vmac) {
   
   np_data <- np_datas[grep("--1",np_datas$record_id),]
   
-  edc_data <- edc_datas[which(edc_datas["vmac_id"]==as.integer(vmac)),]
+  edc_datas <- edc_datas[which(edc_datas["vmac_id"]==as.integer(vmac)),]
+  
+  edc_data <- edc_datas[which(is.na(edc_datas$redcap_repeat_instrument)),]
  
   print("Compiling Memory results")
   
@@ -47,6 +47,9 @@ np_uploader<<- function(epochh,vmac) {
   ind <- age_r + edu_r
   sex <- pdb_data$sex
   if (sex=="Male") {sex_r <- 0} else {sex_r <- 2}
+  
+  race <- as.character(pdb_data$race)
+  label(race) <- "race"
   
   np_moca_total <<- np_data$np_moca_total
   craftvrs <<- as.character(np_data$craftvrs)
@@ -214,8 +217,10 @@ np_uploader<<- function(epochh,vmac) {
   ex_func<- cbind(digbacct_z, digbacls_z, udsverfc_z, udsverlc_z, udsvertn_z, trailb_z)
   attention<- cbind(digforct_z, digforsl_z, traila_z)
   
-  dat1 <<- cbind(mem_ver,mem_vis,lang,ex_func,attention,np_cvlt1to5_z,np_cvlt_ldfr_z,np_cvlt_sdfr_z,np_word_z,np_color_z,np_digsymb_z,np_inhibit_z,np_tower_z)
-  dat2 <<- cbind(craftvrs,crafturs,craftdvr,craftdre,udsbentc, udsbentd,minttots,animals,veg,digbacct, digbacls, udsverfc, udsverlc, udsvertn, trailb,digforct, digforsl, traila,"np_cvlt1to5","np_cvlt_ldfr","np_cvlt_sdfr",np_word,np_color,np_digsymb,np_inhibit,np_tower)
+  gds <- edc_data$gds_total
+  
+  dat1 <<- cbind(race,gds,mem_ver,mem_vis,lang,ex_func,attention,np_cvlt1to5_z,np_cvlt_ldfr_z,np_cvlt_sdfr_z,np_word_z,np_color_z,np_digsymb_z,np_inhibit_z,np_tower_z)
+  dat2 <<- cbind("NA","NA",craftvrs,crafturs,craftdvr,craftdre,udsbentc, udsbentd,minttots,animals,veg,digbacct, digbacls, udsverfc, udsverlc, udsvertn, trailb,digforct, digforsl, traila,"np_cvlt1to5","np_cvlt_ldfr","np_cvlt_sdfr",np_word,np_color,np_digsymb,np_inhibit,np_tower)
   dat <<- rbind(dat1,dat2)
 
   return(dat)

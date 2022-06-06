@@ -147,7 +147,7 @@ fb_uploader<<- function(epochh,vmac) {
     salutation<<- as.character(pdb_data[i, "salutation"])
     fb_date1 <- pdb_data[i, "feedback_date"]
     if (is.na(fb_date1)) {feedback_date1 <<- "UNKNOWN"} else {feedback_date1 <<- format(as.Date(fb_date1), "%m/%d/%Y")}
-    feedback_location <<- as.character(pdb_data[i, "feedback_location"])
+    #feedback_location <<- as.character(pdb_data[i, "feedback_location"])
     
     # Compiling Physician Data
     first_name_physician1<<- pdb_data[i, "feedback_physician1_first_name"]
@@ -228,7 +228,8 @@ fb_uploader<<- function(epochh,vmac) {
     if (is.na(zip_physician5)) {zip_physician5<<- ""}
     
     if (e > 3) {
-      if (e > 4) {
+      # These are needed for np data, still used for bloodwork but can use echo_data instead
+      if (e == 5) {
         # 7 Year Data
         tm7yr_datas <- exportReports(tm7yr, 248514)
         fii7yrs <- exportReports(FII, 252309)
@@ -254,10 +255,6 @@ fb_uploader<<- function(epochh,vmac) {
         fii7yr <- fii7yrs[inddd,]
         fii7yr[which(is.na(fii7yr))] <- "Missing"
         #if (nrow(fii7yr)==FALSE) {stop("Not Enough Data")}
-      }
-      
-      if (e > 3) {
-        # 5 Year Data 
         
         tm60_datas <- exportReports(tm60, 248512)
         fii60s <- exportReports(FII, 252308)
@@ -281,10 +278,6 @@ fb_uploader<<- function(epochh,vmac) {
         fii60s[inddd,which(is.na(fii60s[inddd,]))]<- "Missing"
         fii60 <- fii60s[inddd,]
         #if (nrow(fii60)==FALSE) {stop("Not Enough Data")}
-      }
-      
-      if (e > 2) {
-        #3 Year Data
         
         tm36_datas <- exportReports(tm36, 248500)
         fii36s <- exportReports(FII, 252306)
@@ -308,6 +301,84 @@ fb_uploader<<- function(epochh,vmac) {
         fii36s[inddd,which(is.na(fii36s[inddd,]))]<- "Missing"
         fii36 <- fii36s[inddd,]
         #if (nrow(fii36)==FALSE) {stop("Not Enough Data")}
+        
+        # Enrollment Data
+        tme_datas <- exportReports(tme, 248431)
+        inddd <- c()
+        if (exists("indd")==TRUE) remove("indd")
+        try(indd <- find.matches(tme_datas[, "map_id"],ind),silent = TRUE)
+        if (exists("indd")==FALSE) stop("Not Enough Data")
+        for (i in (1:length(indd$matches))){if (indd$matches[i]>0){inddd<-c(inddd,i)}}
+        tme_datas[inddd,which(is.na(tme_datas[inddd,]))]<- "Missing"
+        tme_data <- tme_datas[inddd,]
+        if (nrow(tme_data)==FALSE) {stop("Not Enough Data")}
+      }
+      
+      if (e == 6) {
+        
+        tm7yr_datas <- exportReports(tm7yr, 248514)
+        fii7yrs <- exportReports(FII, 252309)
+        fii7yrs[which(is.na(fii7yrs["brain_incidental"])),"brain_incidental"]<- "No"
+        
+        ind <- as.integer(map_id)
+        inddd <- c()
+        if (exists("indd")==TRUE) remove("indd")
+        try(indd <- find.matches(tm7yr_datas[, "map_id"],ind),silent = TRUE)
+        if (exists("indd")==FALSE) stop("Not Enough Data")
+        for (i in (1:length(indd$matches))){if (indd$matches[i]>0){inddd<-c(inddd,i)}}
+        tm7yr_datas[inddd,which(is.na(tm7yr_datas[inddd,1:17]))]<- "Missing"
+        tm7yr_data <- tm7yr_datas[inddd,]
+        #if (nrow(tm7yr_data)==FALSE) {stop("Not Enough Data")}
+        if (nrow(tm7yr_data)==FALSE) {tm7yr_data <- c(rep(NA,38))}
+        
+        inddd <- c()
+        if (exists("indd")==TRUE) remove("indd")
+        try(indd <- find.matches(fii7yrs[, "map_id"],ind),silent = TRUE)
+        if (exists("indd")==FALSE) stop("Not Enough Data")
+        for (i in (1:length(indd$matches))){if (indd$matches[i]>0){inddd<-c(inddd,i)}}
+        #fii7yrs[inddd,which(is.na(fii7yrs[inddd,]))] <- "Missing"
+        fii7yr <- fii7yrs[inddd,]
+        fii7yr[which(is.na(fii7yr))] <- "Missing"
+        #if (nrow(fii7yr)==FALSE) {stop("Not Enough Data")}
+        
+        tm60_datas <- exportReports(tm60, 248512)
+        fii60s <- exportReports(FII, 252308)
+        fii60s[which(is.na(fii60s["extracardiac_incidental"])),"extracardiac_incidental"]<- "No"
+        fii60s[which(is.na(fii60s["brain_incidental"])),"brain_incidental"]<- "No"
+        
+        inddd <- c()
+        if (exists("indd")==TRUE) remove("indd")
+        try(indd <- find.matches(tm60_datas[, "map_id"],ind),silent = TRUE)
+        if (exists("indd")==FALSE) stop("Not Enough Data")
+        for (i in (1:length(indd$matches))){if (indd$matches[i]>0){inddd<-c(inddd,i)}}
+        tm60_datas[inddd,which(is.na(tm60_datas[inddd,]))]<- "Missing"
+        tm60_data <- tm60_datas[inddd,]
+        #if (nrow(tm60_data)==FALSE) {stop("Not Enough Data")}
+        
+        inddd <- c()
+        if (exists("indd")==TRUE) remove("indd")
+        try(indd <- find.matches(fii60s[, "map_id"],ind),silent = TRUE)
+        if (exists("indd")==FALSE) stop("Not Enough Data")
+        for (i in (1:length(indd$matches))){if (indd$matches[i]>0){inddd<-c(inddd,i)}}
+        fii60s[inddd,which(is.na(fii60s[inddd,]))]<- "Missing"
+        fii60 <- fii60s[inddd,]
+        #if (nrow(fii60)==FALSE) {stop("Not Enough Data")}
+        
+        # Enrollment Data
+        tme_datas <- exportReports(tme, 248431)
+        inddd <- c()
+        if (exists("indd")==TRUE) remove("indd")
+        try(indd <- find.matches(tme_datas[, "map_id"],ind),silent = TRUE)
+        if (exists("indd")==FALSE) stop("Not Enough Data")
+        for (i in (1:length(indd$matches))){if (indd$matches[i]>0){inddd<-c(inddd,i)}}
+        tme_datas[inddd,which(is.na(tme_datas[inddd,]))]<- "Missing"
+        tme_data <- tme_datas[inddd,]
+        if (nrow(tme_data)==FALSE) {stop("Not Enough Data")}
+        
+        dog <- cbind(pdb_data,echo_data,edc_data,dde_data[ij,])
+        dog_e <- cbind(map_data[1,],tme_data,echo_datas[which(echo_datas$redcap_event_name == events[2]),])
+        dog_p2 <- cbind(map_data[5,],tm60_data,fii60,echo_datas[which(echo_datas$redcap_event_name == events[e-1]),])
+        dog_p <- cbind(map_data[4,],tm7yr_data,fii7yr,echo_datas[which(echo_datas$redcap_event_name == events[e]),])
       }
       
       # Epoch Selector
@@ -324,46 +395,60 @@ fb_uploader<<- function(epochh,vmac) {
       ep_next <<- epoch_conv2[e]
       ep <- epoch
       date_next <<- paste0("visit_estimate_",ep_next,"date")
-      date_ty <<- format(as.Date(pdb_data[, date_next]), "%B %Y")
       
-      # Enrollment Data
-      tme_datas <- exportReports(tme, 248431)
-      inddd <- c()
-      if (exists("indd")==TRUE) remove("indd")
-      try(indd <- find.matches(tme_datas[, "map_id"],ind),silent = TRUE)
-      if (exists("indd")==FALSE) stop("Not Enough Data")
-      for (i in (1:length(indd$matches))){if (indd$matches[i]>0){inddd<-c(inddd,i)}}
-      tme_datas[inddd,which(is.na(tme_datas[inddd,]))]<- "Missing"
-      tme_data <- tme_datas[inddd,]
-      if (nrow(tme_data)==FALSE) {stop("Not Enough Data")}
+      tryCatch( { date_ty <<- format(as.Date(pdb_data[, date_next]), "%B %Y"); print(date_ty) } , error = function(e) {print("Applying alternate date.."); date_ty <<- "Unknown"} )
       
       # Follow up dates
+      le <- length(echo_datas$consent_date)
       enroll_date <<- format(as.Date(echo_datas[1, "consent_date"]), "%m/%d/%Y")
       if (is.na(enroll_date)) {enroll_date <<- format(as.Date(map_data[1, "visit1_date"]), "%m/%d/%Y")}
-      fu_date_prev2 <<- format(as.Date(echo_datas[2, "consent_date"]), "%m/%d/%Y")
-      if (is.na(fu_date_prev2)) {fu_date_prev2 <<- format(as.Date(map_data[5, "visit1_date"]), "%m/%d/%Y")}
-      fu_date_prev <<- format(as.Date(echo_datas[3, "consent_date"]), "%m/%d/%Y")
-      if (is.na(fu_date_prev)) {fu_date_prev <<- format(as.Date(map_data[4, "visit1_date"]), "%m/%d/%Y")}
+      fu_date_prev2 <<- format(as.Date(echo_datas[which(echo_datas$redcap_event_name == events[e-1]), "consent_date"]), "%m/%d/%Y")
+      if (is.na(fu_date_prev2)) {fu_date_prev2 <<- format(as.Date(map_data[which(map_data$redcap_event_name == events[e-1]), "visit1_date"]), "%m/%d/%Y")}
+      fu_date_prev <<- format(as.Date(echo_datas[which(echo_datas$redcap_event_name == events[e]), "consent_date"]), "%m/%d/%Y")
+      if (is.na(fu_date_prev)) {fu_date_prev <<- format(as.Date(map_data[which(map_data$redcap_event_name == events[e]), "visit1_date"]), "%m/%d/%Y")}
       fu_date_c <<- format(as.Date(echo_data$consent_date), "%m/%d/%Y")
-      if (is.na(fu_date_c)) {fu_date_c <<- format(as.Date(map_data[3, "visit1_date"]), "%m/%d/%Y")}
+      if (is.na(fu_date_c)) {fu_date_c <<- format(as.Date(map_data[which(map_data$redcap_event_name == events[e+1]), "visit1_date"]), "%m/%d/%Y")}
+      
+      # Echo Data
+      #echo_e <- echo_datas[which(echo_datas$redcap_event_name == events[2]),]
+      #echo_p2 <- echo_datas[which(echo_datas$redcap_event_name == events[e-1]),]
+      #echo_p <- echo_datas[which(echo_datas$redcap_event_name == events[e]),]
       
       print("Creating Data Tables")
       
       i <- 1
       
-      df <- data.frame(
-        Test = c("Heart rate", "Blood pressure", "Height", "Weight", "Body Mass Index"),
-        Test.1 = c("Heart rate", "Blood pressure", "Height", "Weight", "Body Mass Index"),
-        ER = c(tme_data[i, 2], tme_data[i, 3], paste0(round(tme_data[i, "height"]*0.393701)," inches"), paste0(round(tme_data[i, "weight"]*2.205)," lbs"), round(((tme_data[i, "weight"])/((tme_data[i, "height"])/100)^2), digits=1)),
-        ER = c(tme_data[i, 2], tme_data[i, 4], paste0(round(tme_data[i, "height"]*0.393701)," inches"), paste0(round(tme_data[i, "weight"]*2.205)," lbs"), round(((tme_data[i, "weight"])/((tme_data[i, "height"])/100)^2), digits=1)),
-        MR_36 = c(tm36_data[i, 2], fii36[i, 4], paste0(round(tm36_data[i, "height"]*0.393701), " inches"), paste0(round(tm36_data[i, "weight"]*2.205), " lbs"), round((tm36_data[i, "weight"]/(tm36_data[i, "height"]/100)^2), digits=1)),
-        MR_36 = c(tm36_data[i, 2], fii36[i, 5], paste0(round(tm36_data[i, "height"]*0.393701), " inches"), paste0(round(tm36_data[i, "weight"]*2.205), " lbs"), round((tm36_data[i, "weight"]/(tm36_data[i, "height"]/100)^2), digits=1)),
-        MR_60 = c(tm60_data[i, 2], fii60[i, 4], paste0(round(as.integer(tm60_data[i, "height"])*0.393701), " inches"), paste0(round(as.integer(tm60_data[i, "weight"])*2.205), " lbs"), round((as.integer(tm60_data[i, "weight"])/(as.integer(tm60_data[i, "height"])/100)^2), digits=1)),
-        MR_60 = c(tm60_data[i, 2], fii60[i, 5], paste0(round(as.integer(tm60_data[i, "height"])*0.393701), " inches"), paste0(round(as.integer(tm60_data[i, "weight"])*2.205), " lbs"), round((as.integer(tm60_data[i, "weight"])/(as.integer(tm60_data[i, "height"])/100)^2), digits=1)),
-        CR = c(echo_data$echo_hrate, echo_data$echo_read_sbp, paste0(round(echo_data$height*0.393701)," inches"), paste0(round(echo_data$weight*2.205)," lbs"), round((echo_data$weight/(echo_data$height/100)^2), digits = 1)),
-        CR = c(echo_data$echo_hrate, echo_data$echo_read_dbp, paste0(round(echo_data$height*0.393701)," inches"), paste0(round(echo_data$weight*2.205)," lbs"), round((echo_data$weight/(echo_data$height/100)^2), digits = 1)),
-        NR=c("60-100", "<120 / <80", "-", "-", "18.5-24.9")
-      )
+      if (e == 5) {
+        df <- data.frame(
+          Test = c("Heart rate", "Blood pressure", "Height", "Weight", "Body Mass Index"),
+          Test.1 = c("Heart rate", "Blood pressure", "Height", "Weight", "Body Mass Index"),
+          ER = c(tme_data[i, 2], tme_data[i, 3], paste0(round(tme_data[i, "height"]*0.393701)," inches"), paste0(round(tme_data[i, "weight"]*2.205)," lbs"), round(((tme_data[i, "weight"])/((tme_data[i, "height"])/100)^2), digits=1)),
+          ER = c(tme_data[i, 2], tme_data[i, 4], paste0(round(tme_data[i, "height"]*0.393701)," inches"), paste0(round(tme_data[i, "weight"]*2.205)," lbs"), round(((tme_data[i, "weight"])/((tme_data[i, "height"])/100)^2), digits=1)),
+          MR_p2 = c(tm36_data[i, 2], fii36[i, 4], paste0(round(tm36_data[i, "height"]*0.393701), " inches"), paste0(round(tm36_data[i, "weight"]*2.205), " lbs"), round((tm36_data[i, "weight"]/(tm36_data[i, "height"]/100)^2), digits=1)),
+          MR_p2 = c(tm36_data[i, 2], fii36[i, 5], paste0(round(tm36_data[i, "height"]*0.393701), " inches"), paste0(round(tm36_data[i, "weight"]*2.205), " lbs"), round((tm36_data[i, "weight"]/(tm36_data[i, "height"]/100)^2), digits=1)),
+          MR_p = c(tm60_data[i, 2], fii60[i, 4], paste0(round(as.integer(tm60_data[i, "height"])*0.393701), " inches"), paste0(round(as.integer(tm60_data[i, "weight"])*2.205), " lbs"), round((as.integer(tm60_data[i, "weight"])/(as.integer(tm60_data[i, "height"])/100)^2), digits=1)),
+          MR_p = c(tm60_data[i, 2], fii60[i, 5], paste0(round(as.integer(tm60_data[i, "height"])*0.393701), " inches"), paste0(round(as.integer(tm60_data[i, "weight"])*2.205), " lbs"), round((as.integer(tm60_data[i, "weight"])/(as.integer(tm60_data[i, "height"])/100)^2), digits=1)),
+          CR = c(echo_data$echo_hrate, echo_data$echo_read_sbp, paste0(round(echo_data$height*0.393701)," inches"), paste0(round(echo_data$weight*2.205)," lbs"), round((echo_data$weight/(echo_data$height/100)^2), digits = 1)),
+          CR = c(echo_data$echo_hrate, echo_data$echo_read_dbp, paste0(round(echo_data$height*0.393701)," inches"), paste0(round(echo_data$weight*2.205)," lbs"), round((echo_data$weight/(echo_data$height/100)^2), digits = 1)),
+          NR=c("60-100", "<120 / <80", "-", "-", "18.5-24.9")
+        )}
+      
+      if (e == 6) {
+        # Need to change this so that it doesnt use tm## so it is more flexable
+        df <- data.frame(
+          Test = c("Heart rate", "Blood pressure", "Height", "Weight", "Body Mass Index"),
+          Test.1 = c("Heart rate", "Blood pressure", "Height", "Weight", "Body Mass Index"),
+          ER = c(dog_e$echo_hrate, dog_e$echo_sbp, paste0(round(dog_e$height*0.393701)," inches"), paste0(round(dog_e$weight*2.205)," lbs"), round((dog_e$weight/(dog_e$height/100)^2), digits = 1)),
+          ER = c(dog_e$echo_hrate, dog_e$echo_dbp, paste0(round(dog_e$height*0.393701)," inches"), paste0(round(dog_e$weight*2.205)," lbs"), round((dog_e$weight/(dog_e$height/100)^2), digits = 1)),
+          MR_p2 = c(dog_p2$echo_hrate, dog_p2$echo_read_sbp, paste0(round(dog_p2$height*0.393701)," inches"), paste0(round(dog_p2$weight*2.205)," lbs"), round((dog_p2$weight/(dog_p2$height/100)^2), digits = 1)),
+          MR_p2 = c(dog_p2$echo_hrate, dog_p2$echo_read_dbp, paste0(round(dog_p2$height*0.393701)," inches"), paste0(round(dog_p2$weight*2.205)," lbs"), round((dog_p2$weight/(dog_p2$height/100)^2), digits = 1)),
+          MR_p = c(dog_p$echo_hrate, dog_p$echo_read_sbp, paste0(round(dog_p$height*0.393701)," inches"), paste0(round(dog_p$weight*2.205)," lbs"), round((dog_p$weight/(dog_p$height/100)^2), digits = 1)),
+          MR_p = c(dog_p$echo_hrate, dog_p$echo_read_dbp, paste0(round(dog_p$height*0.393701)," inches"), paste0(round(dog_p$weight*2.205)," lbs"), round((dog_p$weight/(dog_p$height/100)^2), digits = 1)),
+          CR = c(echo_data$echo_hrate, echo_data$echo_read_sbp, paste0(round(echo_data$height*0.393701)," inches"), paste0(round(echo_data$weight*2.205)," lbs"), round((echo_data$weight/(echo_data$height/100)^2), digits = 1)),
+          CR = c(echo_data$echo_hrate, echo_data$echo_read_dbp, paste0(round(echo_data$height*0.393701)," inches"), paste0(round(echo_data$weight*2.205)," lbs"), round((echo_data$weight/(echo_data$height/100)^2), digits = 1)),
+          NR=c("60-100", "<120 / <80", "-", "-", "18.5-24.9")
+        )
+      }
       
       df[df == "-9999" | df == "-3937 inches" | df == "-22048 lbs" | df == "-1" | df == "Missing" | is.na(df)] <-"-"
       
@@ -375,8 +460,8 @@ fb_uploader<<- function(epochh,vmac) {
       
       ft <- set_header_labels(ft, Test = "Test", Test.1="Test",
                               ER = paste0("Enrollment Results ",enroll_date),ER.1 = paste0("Enrollment Results ",enroll_date), 
-                              MR_36 = paste0(Epoch2," Results ", fu_date_prev2),MR_36.1 = paste0(Epoch2," Results ", fu_date_prev2),
-                              MR_60 = paste0(Epoch1," Results ", fu_date_prev),MR_60.1 = paste0(Epoch1," Results ", fu_date_prev), 
+                              MR_p2 = paste0(Epoch2," Results ", fu_date_prev2),MR_p2.1 = paste0(Epoch2," Results ", fu_date_prev2),
+                              MR_p = paste0(Epoch1," Results ", fu_date_prev),MR_p.1 = paste0(Epoch1," Results ", fu_date_prev), 
                               CR = paste0("Current Results ", fu_date_c),CR.1 = paste0("Current Results ", fu_date_c),
                               NR = "Normal Range*" )
       ft <- bg(ft, bg="grey",part = "header")
@@ -467,15 +552,28 @@ fb_uploader<<- function(epochh,vmac) {
       }
       
       
-      df2 <- data.frame(
-        Test1 = c("Cholesterol", "Cholesterol", "Cholesterol", "Cholesterol", "Blood Sugar", "Blood Sugar", "Blood Sugar", "Thyroid", "Inflammation"),
-        Test2 = c("Total","HDL", "LDL", "Triglycerides", "Hemoglobin A1C", "Fasting Insulin", "Fasting Glucose", "Thyroid Stimulating Hormone (TSH)", "High Sensitivity C-Reactive Protein"),
-        ER = c(tme_data[i, 5], tme_data[i, 6], tme_data[i,7], tme_data[i,8], tme_data[i,9], tme_data[i,10], tme_data[i,11], tme_data[i,12], tme_data[i,13]),
-        MR_36 = c(tm36_data[i, 5], tm36_data[i, 6], tm36_data[i,7], tm36_data[i,8], tm36_data[i,9], tm36_data[i,10], tm36_data[i,11], tm36_data[i,12], tm36_data[i,13]),
-        MR_60 = c(tm60_data[i, 5], tm60_data[i, 6], tm60_data[i,7], tm60_data[i,8], tm60_data[i,9], tm60_data[i,10], tm60_data[i,11], tm60_data[i,12], tm60_data[i,13]),
-        CR = as.character(c(echo_data$bld_c_chol, echo_data$bld_c_hdlc, echo_data$bld_c_ldlc, echo_data$bld_c_trig, echo_data$bld_c_hgba1c, echo_data$bld_c_insulin, echo_data$bld_c_glucose, echo_data$bld_c_tsh, echo_data$bld_c_crp)),  
-        NR = c("<200", "men >40, women >50", "<100", "<150", "<5.7", "<17", "70-99", "0.35-3.6", "0-2.9")
-      )
+      if (e == 5) {
+        df2 <- data.frame(
+          Test1 = c("Cholesterol", "Cholesterol", "Cholesterol", "Cholesterol", "Blood Sugar", "Blood Sugar", "Blood Sugar", "Thyroid", "Inflammation"),
+          Test2 = c("Total","HDL", "LDL", "Triglycerides", "Hemoglobin A1C", "Fasting Insulin", "Fasting Glucose", "Thyroid Stimulating Hormone (TSH)", "High Sensitivity C-Reactive Protein"),
+          ER = c(tme_data[i, 5], tme_data[i, 6], tme_data[i,7], tme_data[i,8], tme_data[i,9], tme_data[i,10], tme_data[i,11], tme_data[i,12], tme_data[i,13]),
+          MR_p2 = c(tm36_data[i, 5], tm36_data[i, 6], tm36_data[i,7], tm36_data[i,8], tm36_data[i,9], tm36_data[i,10], tm36_data[i,11], tm36_data[i,12], tm36_data[i,13]),
+          MR_p = c(tm60_data[i, 5], tm60_data[i, 6], tm60_data[i,7], tm60_data[i,8], tm60_data[i,9], tm60_data[i,10], tm60_data[i,11], tm60_data[i,12], tm60_data[i,13]),
+          CR = as.character(c(echo_data$bld_c_chol, echo_data$bld_c_hdlc, echo_data$bld_c_ldlc, echo_data$bld_c_trig, echo_data$bld_c_hgba1c, echo_data$bld_c_insulin, echo_data$bld_c_glucose, echo_data$bld_c_tsh, echo_data$bld_c_crp)),  
+          NR = c("<200", "men >40, women >50", "<100", "<150", "<5.7", "<17", "70-99", "0.35-3.6", "0-2.9")
+        )}
+      
+      if (e == 6) {
+        df2 <- data.frame(
+          Test1 = c("Cholesterol", "Cholesterol", "Cholesterol", "Cholesterol", "Blood Sugar", "Blood Sugar", "Blood Sugar", "Thyroid", "Inflammation"),
+          Test2 = c("Total","HDL", "LDL", "Triglycerides", "Hemoglobin A1C", "Fasting Insulin", "Fasting Glucose", "Thyroid Stimulating Hormone (TSH)", "High Sensitivity C-Reactive Protein"),
+          ER = c(dog_e$bld_c_chol, dog_e$bld_c_hdlc, dog_e$bld_c_ldlc, dog_e$bld_c_trig, dog_e$bld_c_hgba1c, dog_e$bld_c_insulin, dog_e$bld_c_glucose, dog_e$bld_c_tsh, dog_e$bld_c_crp),
+          MR_p2 = c(dog_p2$bld_c_chol, dog_p2$bld_c_hdlc, dog_p2$bld_c_ldlc, dog_p2$bld_c_trig, dog_p2$bld_c_hgba1c, dog_p2$bld_c_insulin, dog_p2$bld_c_glucose, dog_p2$bld_c_tsh, dog_p2$bld_c_crp),
+          MR_p = c(dog_p$bld_c_chol, dog_p$bld_c_hdlc, dog_p$bld_c_ldlc, dog_p$bld_c_trig, dog_p$bld_c_hgba1c, dog_p$bld_c_insulin, dog_p$bld_c_glucose, dog_p$bld_c_tsh, dog_p$bld_c_crp),
+          CR = as.character(c(echo_data$bld_c_chol, echo_data$bld_c_hdlc, echo_data$bld_c_ldlc, echo_data$bld_c_trig, echo_data$bld_c_hgba1c, echo_data$bld_c_insulin, echo_data$bld_c_glucose, echo_data$bld_c_tsh, echo_data$bld_c_crp)),  
+          NR = c("<200", "men >40, women >50", "<100", "<150", "<5.7", "<17", "70-99", "0.35-3.6", "0-2.9")
+        )
+      }
       
       
       df2[df2 == "-9999" | is.na(df2)] <-"-"
@@ -485,8 +583,8 @@ fb_uploader<<- function(epochh,vmac) {
       
       ft2 <- flextable(df2)
       ft2 <- set_header_labels(ft2, Test1 = "Test", Test2 = "Test", ER = paste0("Enrollment Results ",enroll_date), 
-                               MR_36 = paste0(Epoch2," Results ", fu_date_prev2),
-                               MR_60 = paste0(Epoch1," Results ", fu_date_prev), CR = paste0("Current Results ", fu_date_c), NR = "Normal Range/\nCut-off*" )
+                               MR_p2 = paste0(Epoch2," Results ", fu_date_prev2),
+                               MR_p = paste0(Epoch1," Results ", fu_date_prev), CR = paste0("Current Results ", fu_date_c), NR = "Normal Range/\nCut-off*" )
       ft2 <- bg(ft2, bg="grey",part = "header")
       ft2 <- font(ft2,fontname = "Arial",part = "header")
       ft2 <- font(ft2,fontname = "Arial",part = "body")
@@ -536,14 +634,14 @@ fb_uploader<<- function(epochh,vmac) {
         
         if (df2[3,ii]=="-"){ft2<-bold(ft2, i = 3, j = ii, bold = FALSE, part = "body")}else{if(as.integer(df2[3,ii]) > 100){ft2<-bold(ft2, i = 3, j = ii, bold = TRUE, part = "body")}}
         if (df2[4,ii]=="-"){ft2<-bold(ft2, i = 4, j = ii, bold = FALSE, part = "body")}else{if(as.integer(df2[4,ii]) > 150){ft2<-bold(ft2, i = 4, j = ii, bold = TRUE, part = "body")}}
-        if (df2[5,ii]=="-"){ft2<-bold(ft2, i = 5, j = ii, bold = FALSE, part = "body")}else{if(as.integer(df2[5,ii]) > 5.7){ft2<-bold(ft2, i = 5, j = ii, bold = TRUE, part = "body")}}
+        if (df2[5,ii]=="-"){ft2<-bold(ft2, i = 5, j = ii, bold = FALSE, part = "body")}else{if(as.double(df2[5,ii]) > 5.7){ft2<-bold(ft2, i = 5, j = ii, bold = TRUE, part = "body")}}
         if(class(df2[6,ii])=="character") {df2[6,ii] <- NA} else {
           if (is.na(as.double(df2[6,ii]))) {ft2 <- bold(ft2, i = 6, j = ii, bold = TRUE, part = "body")} else {
-            if (df2[6,ii]=="-"){ft2<-bold(ft2, i = 6, j = ii, bold = FALSE, part = "body")}else{if(as.integer(df2[6,ii]) > 17){ft2<-bold(ft2, i = 6, j = ii, bold = TRUE, part = "body")}}
+            if (df2[6,ii]=="-"){ft2<-bold(ft2, i = 6, j = ii, bold = FALSE, part = "body")}else{if(as.double(df2[6,ii]) > 17){ft2<-bold(ft2, i = 6, j = ii, bold = TRUE, part = "body")}}
           }
         }      
         if (df2[7,ii]=="-"){ft2<-bold(ft2, i = 7, j = ii, bold = FALSE, part = "body")}else{if(as.integer(df2[7,ii]) > 99 | as.integer(df2[7,ii]) < 70){ft2<-bold(ft2, i = 7, j = ii, bold = TRUE, part = "body")}}
-        if (df2[8,ii]=="-"){ft2<-bold(ft2, i = 8, j = ii, bold = FALSE, part = "body")}else{if(as.integer(df2[8,ii]) > 3.6 | as.integer(df2[8,ii]) < 0.35){ft2<-bold(ft2, i = 8, j = ii, bold = TRUE, part = "body")}}
+        if (df2[8,ii]=="-"){ft2<-bold(ft2, i = 8, j = ii, bold = FALSE, part = "body")}else{if(as.double(df2[8,ii]) > 3.6 | as.double(df2[8,ii]) < 0.35){ft2<-bold(ft2, i = 8, j = ii, bold = TRUE, part = "body")}}
         
         if(class(df2[9,ii])=="character") {df2[9,ii] <- NA} else {
           if (is.na(as.double(df2[9,ii]))) {ft2 <- bold(ft2, i = 9, j = ii, bold = TRUE, part = "body")} else {
@@ -565,76 +663,149 @@ fb_uploader<<- function(epochh,vmac) {
       if (nc == "No") {err <<- "Some NP item is missing; Letter generated with Memory Chart; Remove temporary chart that was added."; barr <- ggplot(missing) + geom_bar(stat="identity",position="dodge",aes(x=chart,y=remove))} else {
         
         
+        if (e == 5) {
+          np <- rbind(tme_data[-(1:17)],tm36_data[-(1:17)],tm60_data[-(1:17)],tm7yr_data[-(1:17)][-19])
+          
+          nnp <- list()
+          
+          nnp$np_cvlt1to5_tscore <- np$np_cvlt1to5_tscore
+          nnp$np_cvlt_sdfr_z <- np$np_cvlt_sdfr_zscore
+          nnp$np_cvlt_ldfr_z <- np$np_cvlt_ldfr_zscore  
+          nnp$np_cvltrecog_discrim_z <- np$np_cvltrecog_discrim_zscore
+          nnp$np_biber_t1to5_z <- np$np_biber_t1to5_zscore
+          nnp$np_biber_sd_z <- np$np_biber_sd_zscore
+          nnp$np_biber_ld_z <- np$np_biber_ld_zscore
+          nnp$np_anim_tscore <- np$np_anim_tscore
+          nnp$np_bnt_z <- np$np_bnt_zscore
+          nnp$np_tower_ss <- np$np_tower_sscore
+          nnp$np_inhibit_ss <- np$np_inhibit_sscore
+          nnp$np_fas_tscore <- np$np_fas_tscore
+          nnp$np_tmtb_ss <- np$np_tmtb_sscore
+          nnp$np_hvot_tscore <- np$np_hvot_tscore
+          nnp$np_digsymb_ss <- np$np_digsymb_sscore
+          nnp$np_color_ss <- np$np_color_sscore
+          nnp$np_word_ss <- np$np_word_sscore
+          nnp$np_tmta_ss <- np$np_tmta_sscore
+          
+          # transform variables
+          nnp$np_cvlt1to5_z <- (nnp$np_cvlt1to5_tscore - 50)/10
+          nnp$np_anim_z <- (nnp$np_anim_tscore-50)/10
+          nnp$np_tower_z <- (nnp$np_tower_ss-10)/3
+          nnp$np_inhibit_z <- (nnp$np_inhibit_ss-10)/3
+          nnp$np_fas_z <- (nnp$np_fas_tscore-50)/10
+          nnp$np_tmtb_z <- (nnp$np_tmtb_ss-10)/3
+          nnp$np_hvot_z <- -(nnp$np_hvot_tscore-50)/10
+          nnp$np_digsymb_z <- (nnp$np_digsymb_ss-10)/3
+          nnp$np_color_z <- (nnp$np_color_ss-10)/3
+          nnp$np_word_z <- (nnp$np_word_ss-10)/3
+          nnp$np_tmta_z <- (nnp$np_tmta_ss-10)/3
+          
+          np_cvlt1to5_tscore <- np$np_cvlt1to5_tscore
+          np_cvlt_sdfr_z <- np$np_cvlt_sdfr_zscore
+          np_cvlt_ldfr_z <- np$np_cvlt_ldfr_zscore  
+          np_cvltrecog_discrim_z <- np$np_cvltrecog_discrim_zscore
+          np_biber_t1to5_z <- np$np_biber_t1to5_zscore
+          np_biber_sd_z <- np$np_biber_sd_zscore
+          np_biber_ld_z <- np$np_biber_ld_zscore
+          np_anim_tscore <- np$np_anim_tscore
+          np_bnt_z <- np$np_bnt_zscore
+          np_tower_ss <- np$np_tower_sscore
+          np_inhibit_ss <- np$np_inhibit_sscore
+          np_fas_tscore <- np$np_fas_tscore
+          np_tmtb_ss <- np$np_tmtb_sscore
+          np_hvot_tscore <- np$np_hvot_tscore
+          np_digsymb_ss <- np$np_digsymb_sscore
+          np_color_ss <- np$np_color_sscore
+          np_word_ss <- np$np_word_sscore
+          np_tmta_ss <- np$np_tmta_sscore
+          
+          # transform variables
+          np_cvlt1to5_z <- (nnp$np_cvlt1to5_tscore - 50)/10
+          np_anim_z <- (nnp$np_anim_tscore-50)/10
+          np_tower_z <- (nnp$np_tower_ss-10)/3
+          np_inhibit_z <- (nnp$np_inhibit_ss-10)/3
+          np_fas_z <- (nnp$np_fas_tscore-50)/10
+          np_tmtb_z <- (nnp$np_tmtb_ss-10)/3
+          np_hvot_z <- -(nnp$np_hvot_tscore-50)/10
+          np_digsymb_z <- (nnp$np_digsymb_ss-10)/3
+          np_color_z <- (nnp$np_color_ss-10)/3
+          np_word_z <- (nnp$np_word_ss-10)/3
+          np_tmta_z <- (nnp$np_tmta_ss-10)/3
+          
+          ggfp <- data.frame(nnp)
+        }
         
-        np <- rbind(tme_data[-(1:17)],tm36_data[-(1:17)],tm60_data[-(1:17)],tm7yr_data[-(1:17)][-19])
-        
-        nnp <- list()
-        
-        nnp$np_cvlt1to5_tscore <- np$np_cvlt1to5_tscore
-        nnp$np_cvlt_sdfr_z <- np$np_cvlt_sdfr_zscore
-        nnp$np_cvlt_ldfr_z <- np$np_cvlt_ldfr_zscore  
-        nnp$np_cvltrecog_discrim_z <- np$np_cvltrecog_discrim_zscore
-        nnp$np_biber_t1to5_z <- np$np_biber_t1to5_zscore
-        nnp$np_biber_sd_z <- np$np_biber_sd_zscore
-        nnp$np_biber_ld_z <- np$np_biber_ld_zscore
-        nnp$np_anim_tscore <- np$np_anim_tscore
-        nnp$np_bnt_z <- np$np_bnt_zscore
-        nnp$np_tower_ss <- np$np_tower_sscore
-        nnp$np_inhibit_ss <- np$np_inhibit_sscore
-        nnp$np_fas_tscore <- np$np_fas_tscore
-        nnp$np_tmtb_ss <- np$np_tmtb_sscore
-        nnp$np_hvot_tscore <- np$np_hvot_tscore
-        nnp$np_digsymb_ss <- np$np_digsymb_sscore
-        nnp$np_color_ss <- np$np_color_sscore
-        nnp$np_word_ss <- np$np_word_sscore
-        nnp$np_tmta_ss <- np$np_tmta_sscore
-        
-        # transform variables
-        nnp$np_cvlt1to5_z <- (nnp$np_cvlt1to5_tscore - 50)/10
-        nnp$np_anim_z <- (nnp$np_anim_tscore-50)/10
-        nnp$np_tower_z <- (nnp$np_tower_ss-10)/3
-        nnp$np_inhibit_z <- (nnp$np_inhibit_ss-10)/3
-        nnp$np_fas_z <- (nnp$np_fas_tscore-50)/10
-        nnp$np_tmtb_z <- (nnp$np_tmtb_ss-10)/3
-        nnp$np_hvot_z <- -(nnp$np_hvot_tscore-50)/10
-        nnp$np_digsymb_z <- (nnp$np_digsymb_ss-10)/3
-        nnp$np_color_z <- (nnp$np_color_ss-10)/3
-        nnp$np_word_z <- (nnp$np_word_ss-10)/3
-        nnp$np_tmta_z <- (nnp$np_tmta_ss-10)/3
-        
-        np_cvlt1to5_tscore <- np$np_cvlt1to5_tscore
-        np_cvlt_sdfr_z <- np$np_cvlt_sdfr_zscore
-        np_cvlt_ldfr_z <- np$np_cvlt_ldfr_zscore  
-        np_cvltrecog_discrim_z <- np$np_cvltrecog_discrim_zscore
-        np_biber_t1to5_z <- np$np_biber_t1to5_zscore
-        np_biber_sd_z <- np$np_biber_sd_zscore
-        np_biber_ld_z <- np$np_biber_ld_zscore
-        np_anim_tscore <- np$np_anim_tscore
-        np_bnt_z <- np$np_bnt_zscore
-        np_tower_ss <- np$np_tower_sscore
-        np_inhibit_ss <- np$np_inhibit_sscore
-        np_fas_tscore <- np$np_fas_tscore
-        np_tmtb_ss <- np$np_tmtb_sscore
-        np_hvot_tscore <- np$np_hvot_tscore
-        np_digsymb_ss <- np$np_digsymb_sscore
-        np_color_ss <- np$np_color_sscore
-        np_word_ss <- np$np_word_sscore
-        np_tmta_ss <- np$np_tmta_sscore
-        
-        # transform variables
-        np_cvlt1to5_z <- (nnp$np_cvlt1to5_tscore - 50)/10
-        np_anim_z <- (nnp$np_anim_tscore-50)/10
-        np_tower_z <- (nnp$np_tower_ss-10)/3
-        np_inhibit_z <- (nnp$np_inhibit_ss-10)/3
-        np_fas_z <- (nnp$np_fas_tscore-50)/10
-        np_tmtb_z <- (nnp$np_tmtb_ss-10)/3
-        np_hvot_z <- -(nnp$np_hvot_tscore-50)/10
-        np_digsymb_z <- (nnp$np_digsymb_ss-10)/3
-        np_color_z <- (nnp$np_color_ss-10)/3
-        np_word_z <- (nnp$np_word_ss-10)/3
-        np_tmta_z <- (nnp$np_tmta_ss-10)/3
-        
-        ggfp <- data.frame(nnp)
+        if (e == 6) {
+          np <- rbind(tme_data[-(1:17)],tm60_data[-(1:17)],tm7yr_data[-(1:17)][-19])
+          
+          nnp <- list()
+          
+          nnp$np_cvlt1to5_tscore <- np$np_cvlt1to5_tscore
+          nnp$np_cvlt_sdfr_z <- np$np_cvlt_sdfr_zscore
+          nnp$np_cvlt_ldfr_z <- np$np_cvlt_ldfr_zscore  
+          nnp$np_cvltrecog_discrim_z <- np$np_cvltrecog_discrim_zscore
+          nnp$np_biber_t1to5_z <- np$np_biber_t1to5_zscore
+          nnp$np_biber_sd_z <- np$np_biber_sd_zscore
+          nnp$np_biber_ld_z <- np$np_biber_ld_zscore
+          nnp$np_anim_tscore <- np$np_anim_tscore
+          nnp$np_bnt_z <- np$np_bnt_zscore
+          nnp$np_tower_ss <- np$np_tower_sscore
+          nnp$np_inhibit_ss <- np$np_inhibit_sscore
+          nnp$np_fas_tscore <- np$np_fas_tscore
+          nnp$np_tmtb_ss <- np$np_tmtb_sscore
+          nnp$np_hvot_tscore <- np$np_hvot_tscore
+          nnp$np_digsymb_ss <- np$np_digsymb_sscore
+          nnp$np_color_ss <- np$np_color_sscore
+          nnp$np_word_ss <- np$np_word_sscore
+          nnp$np_tmta_ss <- np$np_tmta_sscore
+          
+          # transform variables
+          nnp$np_cvlt1to5_z <- (nnp$np_cvlt1to5_tscore - 50)/10
+          nnp$np_anim_z <- (nnp$np_anim_tscore-50)/10
+          nnp$np_tower_z <- (nnp$np_tower_ss-10)/3
+          nnp$np_inhibit_z <- (nnp$np_inhibit_ss-10)/3
+          nnp$np_fas_z <- (nnp$np_fas_tscore-50)/10
+          nnp$np_tmtb_z <- (nnp$np_tmtb_ss-10)/3
+          nnp$np_hvot_z <- -(nnp$np_hvot_tscore-50)/10
+          nnp$np_digsymb_z <- (nnp$np_digsymb_ss-10)/3
+          nnp$np_color_z <- (nnp$np_color_ss-10)/3
+          nnp$np_word_z <- (nnp$np_word_ss-10)/3
+          nnp$np_tmta_z <- (nnp$np_tmta_ss-10)/3
+          
+          np_cvlt1to5_tscore <- np$np_cvlt1to5_tscore
+          np_cvlt_sdfr_z <- np$np_cvlt_sdfr_zscore
+          np_cvlt_ldfr_z <- np$np_cvlt_ldfr_zscore  
+          np_cvltrecog_discrim_z <- np$np_cvltrecog_discrim_zscore
+          np_biber_t1to5_z <- np$np_biber_t1to5_zscore
+          np_biber_sd_z <- np$np_biber_sd_zscore
+          np_biber_ld_z <- np$np_biber_ld_zscore
+          np_anim_tscore <- np$np_anim_tscore
+          np_bnt_z <- np$np_bnt_zscore
+          np_tower_ss <- np$np_tower_sscore
+          np_inhibit_ss <- np$np_inhibit_sscore
+          np_fas_tscore <- np$np_fas_tscore
+          np_tmtb_ss <- np$np_tmtb_sscore
+          np_hvot_tscore <- np$np_hvot_tscore
+          np_digsymb_ss <- np$np_digsymb_sscore
+          np_color_ss <- np$np_color_sscore
+          np_word_ss <- np$np_word_sscore
+          np_tmta_ss <- np$np_tmta_sscore
+          
+          # transform variables
+          np_cvlt1to5_z <- (nnp$np_cvlt1to5_tscore - 50)/10
+          np_anim_z <- (nnp$np_anim_tscore-50)/10
+          np_tower_z <- (nnp$np_tower_ss-10)/3
+          np_inhibit_z <- (nnp$np_inhibit_ss-10)/3
+          np_fas_z <- (nnp$np_fas_tscore-50)/10
+          np_tmtb_z <- (nnp$np_tmtb_ss-10)/3
+          np_hvot_z <- -(nnp$np_hvot_tscore-50)/10
+          np_digsymb_z <- (nnp$np_digsymb_ss-10)/3
+          np_color_z <- (nnp$np_color_ss-10)/3
+          np_word_z <- (nnp$np_word_ss-10)/3
+          np_tmta_z <- (nnp$np_tmta_ss-10)/3
+          
+          ggfp <- NA
+        }
         
         if (any(is.na(ggfp))) {
           
@@ -647,6 +818,7 @@ fb_uploader<<- function(epochh,vmac) {
             age <- pdb_data$age
             edu <- pdb_data$education
             race <- pdb_data$np_norm_race
+            if (is.na(race)) {race <- pdb_data$race}
             
             if (age < 55) {age_r <- "50-54"}; if (age < 60 & age >= 55) {age_r <- "55-59"}; if (age < 65 & age >= 60) {age_r <- "60-64"}
             if (age < 70 & age >= 65) {age_r <- "65-69"}; if (age < 75 & age >= 70) {age_r <- "70-74"} 
@@ -781,8 +953,14 @@ fb_uploader<<- function(epochh,vmac) {
             }
             
             # composite scores
-            mem_w<<- cbind(as.numeric(np_cvlt1to5_z),as.numeric(np_cvlt_sdfr_z),as.numeric(np_cvlt_ldfr_z),as.numeric(np_cvltrecog_discrim_z))
-            memory_words<<- rowMeans(mem_w)
+            mem_w <- cbind(as.numeric(np_cvlt1to5_z),as.numeric(np_cvlt_sdfr_z),as.numeric(np_cvlt_ldfr_z),as.numeric(np_cvltrecog_discrim_z))
+            
+            
+            ### REMOVE THIS BEFORE FINAL VERSION #########
+            memory_words <- rowMeans(mem_w); if (is.na(memory_words[4])) {memory_words[4] <- mean(memory_words[1:3])}
+            ### REMOVE THIS BEFORE FINAL VERSION #########
+            
+            
             mem_s<<- cbind(np_biber_t1to5_z, np_biber_sd_z, np_biber_ld_z)
             memory_shapes<<- rowMeans(mem_s)
             lang<<- cbind(np_anim_z,np_bnt_z)
@@ -862,21 +1040,21 @@ fb_uploader<<- function(epochh,vmac) {
         }
       } # End of memory testing
       
-      print("Compiling Epoch 5 Heart Results")
+      print("Compiling Heart Results")
       
-      echo_p2 <- echo_datas[which(echo_datas[,"redcap_event_name"]== events[epochh-1]),]
-      echo_p1 <- echo_datas[which(echo_datas[,"redcap_event_name"]== events[epochh]),]
+      echo_p2 <- echo_datas[which(echo_datas[,"redcap_event_name"]== events[e-1]),]
+      echo_p1 <- echo_datas[which(echo_datas[,"redcap_event_name"]== events[e]),]
       echo_c <- echo_data
       
       lv_p2 <<- paste0("     1.  ",as.character(echo_p2$echo_find1_lv_dys_fx))
       val_p2<<- as.character(echo_p2$echo_find2_valve_fx)
-      if (val_p2=="Normal"){val_p2<<-"     3.  No significant"} else {val_p2<<-"     3.  Significant"}
+      tryCatch( {if (val_p2=="Normal"){val_p2<<-"     3.  No significant"} else {val_p2<<-"     3.  Significant"}} , error = function(e) {print("Missing Value")})
       lv_p<<- paste0("     1.  ",as.character(echo_p1$echo_find1_lv_dys_fx))
       val_p<<- as.character(echo_p1$echo_find2_valve_fx)
-      if (val_p=="Normal"){val_p<<-"     2.  No significant"} else {val_p<<-"     2.  Significant"}
+      tryCatch( if (val_p=="Normal"){val_p<<-"     2.  No significant"} else {val_p<<-"     2.  Significant"} , error = function(e) {print("Missing Value")})
       lv_c <<- paste0("     1.  ",as.character(echo_c$echo_find1_lv_dys_fx))
       val_c<<- as.character(echo_c$echo_find2_valve_fx)
-      if (val_c=="Normal"){val_c<<-"     2.  No significant"} else {val_c<<-"     2.  Significant"}
+      tryCatch( if (val_c=="Normal"){val_c<<-"     2.  No significant"} else {val_c<<-"     2.  Significant"} , error = function(e) {print("Missing Value")})
       
       # Depression Statement
       
@@ -916,11 +1094,11 @@ fb_uploader<<- function(epochh,vmac) {
         brain_intro2<<-"You underwent brain testing, which was read by board-certified neuroradiologists."
       } else {brain_intro1<<-""; brain_intro2<<-""}
       
-      if (bi_p2=="Yes") {brain_ip2 <<-paste0("Your _ results on ",fu_date_prev2," were as follows:"); brain_p2 <<-echo_p2$brain_incidental_davis} else {brain_ip2 <<-""; brain_p2 <<-""}
+      if (bi_p2=="Yes") {brain_ip2 <<-paste0("Your ",Epoch_conv[e-2]," results on ",fu_date_prev2," were as follows:"); brain_p2 <<-echo_p2$brain_incidental_davis} else {brain_ip2 <<-""; brain_p2 <<-""}
       
-      if (bi_p1=="Yes") {brain_ip <<-paste0("Your _ results on ",fu_date_prev," were as follows:"); brain_p <<-echo_p1$brain_incidental_davis} else {brain_ip <<-""; brain_p <<-""}
+      if (bi_p1=="Yes") {brain_ip <<-paste0("Your ",Epoch_conv[e-1]," results on ",fu_date_prev," were as follows:"); brain_p <<-echo_p1$brain_incidental_davis} else {brain_ip <<-""; brain_p <<-""}
       
-      if (bi_c=="Yes") {brain_ic <<-paste0("Your _ results on ",fu_date_c," were as follows:"); brain_c <<-echo_c$brain_incidental_davis} else {brain_ic <<-""; brain_c <<-""}
+      if (bi_c=="Yes") {brain_ic <<-paste0("Your ",Epoch_conv[e]," results on ",fu_date_c," were as follows:"); brain_c <<-echo_c$brain_incidental_davis} else {brain_ic <<-""; brain_c <<-""}
       
       ptp_path<<- paste0(main_path,"resources/Templates/Feedback/MAP2_fb_temp.docx")
       phys_path<<- paste0(main_path,"resources/Templates/Feedback/MAP2_phys_temp.docx")
@@ -940,7 +1118,7 @@ fb_uploader<<- function(epochh,vmac) {
       date_next <<- paste0("visit_estimate_",ep_next,"date")
       date_ty <<- format(as.Date(pdb_data[, date_next]), "%B %Y")
       
-      enroll_date <<- format(as.Date(pdb_data$visit1_date), "%m/%d/%Y")
+      enroll_date <<- format(as.Date(echo_data$vf_arrival_date_time), "%m/%d/%Y")
       if (is.na(enroll_date)) {enroll_date <<- format(as.Date(map_data[1, "visit1_date"]), "%m/%d/%Y")}
       
       age <- pdb_data$age

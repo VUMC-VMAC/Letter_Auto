@@ -1118,7 +1118,7 @@ fb_uploader<<- function(epochh,vmac) {
       date_next <<- paste0("visit_estimate_",ep_next,"date")
       date_ty <<- format(as.Date(pdb_data[, date_next]), "%B %Y")
       
-      enroll_date <<- format(as.Date(pdb_data$visit1_date), "%m/%d/%Y")
+      enroll_date <<- format(as.Date(echo_data$vf_arrival_date_time), "%m/%d/%Y")
       if (is.na(enroll_date)) {enroll_date <<- format(as.Date(map_data[1, "visit1_date"]), "%m/%d/%Y")}
       
       age <- pdb_data$age
