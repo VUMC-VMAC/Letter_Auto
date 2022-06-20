@@ -3,7 +3,7 @@
     "path": "~/Letter_Auto/Online/MAP2_Uploader/Uploader/fb_uploader.R",
     "project_path": "Online/MAP2_Uploader/Uploader/fb_uploader.R",
     "type": "r_source",
-    "hash": "3301790414",
+    "hash": "0",
     "contents": "",
     "dirty": false,
     "created": 1654292276804.0,
@@ -12,8 +12,8 @@
     "properties": {
         "source_window_id": "",
         "Source": "Source",
-        "cursorPosition": "1457,4",
-        "scrollLine": "1457"
+        "cursorPosition": "7,16",
+        "scrollLine": "0"
     },
     "folds": "",
     "lastKnownWriteTime": 1654539280,
