@@ -401,13 +401,13 @@ fb_uploader<<- function(epochh,vmac) {
       
       # Follow up dates
       le <- length(echo_datas$consent_date)
-      enroll_date <<- format(as.Date(echo_datas[1, "consent_date"]), "%m/%d/%Y")
+      enroll_date <<- format(as.Date(echo_datas[1, "consent_date_time"]), "%m/%d/%Y")
       if (is.na(enroll_date)) {enroll_date <<- format(as.Date(map_data[1, "visit1_date"]), "%m/%d/%Y")}
-      fu_date_prev2 <<- format(as.Date(echo_datas[which(echo_datas$redcap_event_name == events[e-1]), "consent_date"]), "%m/%d/%Y")
+      fu_date_prev2 <<- format(as.Date(echo_datas[which(echo_datas$redcap_event_name == events[e-1]), "consent_date_time"]), "%m/%d/%Y")
       if (is.na(fu_date_prev2)) {fu_date_prev2 <<- format(as.Date(map_data[which(map_data$redcap_event_name == events[e-1]), "visit1_date"]), "%m/%d/%Y")}
-      fu_date_prev <<- format(as.Date(echo_datas[which(echo_datas$redcap_event_name == events[e]), "consent_date"]), "%m/%d/%Y")
+      fu_date_prev <<- format(as.Date(echo_datas[which(echo_datas$redcap_event_name == events[e]), "consent_date_time"]), "%m/%d/%Y")
       if (is.na(fu_date_prev)) {fu_date_prev <<- format(as.Date(map_data[which(map_data$redcap_event_name == events[e]), "visit1_date"]), "%m/%d/%Y")}
-      fu_date_c <<- format(as.Date(echo_data$consent_date), "%m/%d/%Y")
+      fu_date_c <<- format(as.Date(echo_data$consent_date_time), "%m/%d/%Y")
       if (is.na(fu_date_c)) {fu_date_c <<- format(as.Date(map_data[which(map_data$redcap_event_name == events[e+1]), "visit1_date"]), "%m/%d/%Y")}
       
       # Echo Data
