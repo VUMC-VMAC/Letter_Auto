@@ -36,14 +36,14 @@ ui <- fluidPage(
                  selectInput(inputId = "l", "Type of Letter", choices = c("Feedback Letter" = "fb", "LP Previsit Letter" = "LP","Thank You"="ty","Previsit"="pv", "Condolence"= "cond","Bloodwork Incidental"="blood","Brain Incidental"="brain","Echo Incidental"="echo")),
                  actionButton(inputId = "submit",label = "Submit"),
                  textOutput(outputId = "d"),
-                 #textOutput(outputId = "error")
+                 textOutput(outputId = "error")
         ),
         tabPanel("Tables", fluid = TRUE,
                  textInput(inputId = "vmac", "Record ID", ""),
                  numericInput(inputId = "epoch", "Epoch", value=1),
                  selectInput(inputId = "type", "Type of Table", choices = c("Neuropsych"="np")),
                  actionButton(inputId = "submit2",label = "Submit"),
-                 dataTableOutput(outputId = "ses"),
+                 dataTableOutput(outputId = "ses")
                  #textOutput("exp1")
         )
     )
@@ -62,11 +62,13 @@ server <- function(input, output) {
             print(vmac_int)
             command <- paste0(letter,"_uploader(",epoch,",",vmac_int,")")
             print(command)
-            eval(parse(text = command))
+            err <- eval(parse(text = command))
             letter_conv <- c("fb"="Feedback", "LP"="LP Previsit","ty"="Thank You","pv"="Previsit","cond"="Condolence","blood"="Blood Incidental","brain"="Brain Incidental","echo"="Echo Incidental")
             lett <- letter_conv[letter]
+            conf <- ""
+            if (err=="") {conf <- paste0(lett," Letter for VMAC ID: ",input$n," has been generated!")} else {conf <- "An error has occurred."}
         }
-        rea <<- list(confirm = paste0(lett," Letter for Record ID: ",input$n," has been generated!"),error = "Error here")
+        rea <<- list(confirm = conf,error = err)
         
     }
     )
@@ -91,7 +93,7 @@ server <- function(input, output) {
         dat <- eval(parse(text = command))
         
         results <- data.frame(
-            "Epoch" = c("Baseline"),
+            "Epoch" = c("Baseline","RAW Baseline"),
             dat
         )
         

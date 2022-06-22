@@ -33,7 +33,10 @@ ty_uploader <- function(epoch,vmac) {
   i <- which(pdb_datas["vmac_id"]==as.integer(vmac))
   
   pdb_data <- pdb_datas[i,]
-  edc_data <- edc_datas[which(edc_datas["vmac_id"]==as.integer(vmac)),]
+  edc_datas <- edc_datas[which(edc_datas["vmac_id"]==as.integer(vmac)),]
+  
+  edc_data_brain <- edc_datas[which(edc_datas["redcap_repeat_instrument"]=="brain_mri"),]
+  edc_data <- edc_datas[which(is.na(edc_datas["redcap_repeat_instrument"])),]
   
   events <- c("enrollmentbaseline_arm_1","18month_followup_arm_1","3year_followup_arm_1","5year_followup_arm_1","7year_followup_arm_1")
   

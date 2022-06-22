@@ -311,8 +311,8 @@ blood_uploader <- function(epochh,vmac) {
         output <- paste0(out_path,"TAP_",input,"_",ep,"_blood_phys3_incidental.docx")
         renderInlineCode(phys_temp, output)
         
-        importFiles(rcon = pdb, file = output, record = record, field = "feedback_incidental_stat_blood_physician3_letter",event = events[e],
-                    overwrite = TRUE, repeat_instance = 1)
+        #importFiles(rcon = pdb, file = output, record = record, field = "feedback_incidental_stat_blood_physician3_letter",event = events[e],
+        #            overwrite = TRUE, repeat_instance = 1)
         
         if (num_phys > 3) {
           first_name_physician<<-first_name_physician4
@@ -326,8 +326,8 @@ blood_uploader <- function(epochh,vmac) {
           output <- paste0(out_path,"TAP_",input,"_",ep,"_blood_phys4_incidental.docx")
           renderInlineCode(phys_temp, output)
           
-          importFiles(rcon = pdb, file = output, record = record, field = "feedback_incidental_stat_blood_physician4_letter",event = events[e],
-                      overwrite = TRUE, repeat_instance = 1)
+          #importFiles(rcon = pdb, file = output, record = record, field = "feedback_incidental_stat_blood_physician4_letter",event = events[e],
+          #            overwrite = TRUE, repeat_instance = 1)
           
           if (is.na(first_name_physician5)==FALSE) {
             first_name_physician<<-first_name_physician5
@@ -341,8 +341,8 @@ blood_uploader <- function(epochh,vmac) {
             output <- paste0(out_path,"TAP_",input,"_",ep,"_blood_phys5_incidental.docx")
             renderInlineCode(phys_temp, output)
             
-            importFiles(rcon = pdb, file = output, record = record, field = "feedback_incidental_stat_blood_physician5_letter",event = events[e],
-                        overwrite = TRUE, repeat_instance = 1)
+            #importFiles(rcon = pdb, file = output, record = record, field = "feedback_incidental_stat_blood_physician5_letter",event = events[e],
+            #            overwrite = TRUE, repeat_instance = 1)
           }}}}}
   
   return(err)

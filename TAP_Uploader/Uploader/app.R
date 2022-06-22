@@ -93,7 +93,7 @@ server <- function(input, output) {
         dat <- eval(parse(text = command))
         
         results <- data.frame(
-            "Epoch" = c("Baseline"),
+            "Epoch" = c("Baseline","RAW Baseline"),
             dat
         )
         

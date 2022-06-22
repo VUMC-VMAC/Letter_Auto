@@ -60,8 +60,8 @@ cond_uploader <- function(epoch,vmac) {
   output <- paste0("~/output/TAP_",input,"_condolence_letter.docx")
   renderInlineCode(path_in, output)
   
-  importFiles(rcon = pdb, file = output, record = record, field = "card_cond_letter", event = events[e],
-              overwrite = TRUE, repeat_instance = 1)
+  #importFiles(rcon = pdb, file = output, record = record, field = "card_cond_letter", event = events[e],
+  #            overwrite = TRUE, repeat_instance = 1)
   }
   
 #}

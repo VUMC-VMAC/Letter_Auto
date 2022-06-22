@@ -23,14 +23,14 @@ pv_uploader <- function(epoch,vmac) {
   }
   
   loc_func <- function(X,loc_day) {
-      loc <- c(paste0("Day ",X," of your visit will be held at the Vanderbilt Memory and Alzheimer\'s Center, located on 1207 17th Avenue S., Suite 302. Upon arriving at the Vanderbilt Memory & Alzheimer\'s Center, please park in lot 128, to the right of the building, in a spot labeled \"VMAC Participant Parking\". Please proceed to suite 302. If you require any assistance, please call 615-336-3388 and a team member will come down to escort you."),
-               paste0("Day ",X," of your visit will be held at the Vanderbilt University Medical Center, located on 1210 Medical Center Drive (noted with stars on the enclosed maps). Please valet park at the hospital entrance on 1210 Medical Center Drive - valet parking is free. A team member will meet you inside the hospital lobby."),
-               paste0("Day ",X," of your visit will occur at your house."),
-               paste0("Day ",X," of your visit will start at the Vanderbilt Memory and Alzheimer\'s Center and end at the Vanderbilt University Medical Center. Arrive at Vanderbilt Memory & Alzheimer\'s Center, 1207 17th Avenue S., Suite 302, park in lot 128, to the right of the building, in a spot labeled \"VMAC Participant Parking\". Please proceed to suite 302. If you require any assistance, please call 615-336-3388 and a team member will come down to escort you."))
-      loc_proxy <- c(paste0("Day ",X," of ",pronoun_poss," visit will be held at the Vanderbilt Memory and Alzheimer\'s Center, located on 1207 17th Avenue S., Suite 302. Upon arriving at the Vanderbilt Memory & Alzheimer\'s Center, please park in lot 128, to the right of the building, in a spot labeled \"VMAC Participant Parking\". Please proceed to suite 302. If you require any assistance, please call 615-336-3388 and a team member will come down to escort you."),
-                     paste0("Day ",X," of ",pronoun_poss," visit will be held at the Vanderbilt University Medical Center, located on 1210 Medical Center Drive (noted with stars on the enclosed maps). Please valet park at the hospital entrance on 1210 Medical Center Drive - valet parking is free. A team member will meet you inside the hospital lobby."),
-                     paste0("Day ",X," of ",pronoun_poss," visit will occur at ",pronoun_poss," house."),
-                     paste0("Day ",X," of ",pronoun_poss," visit will start at the Vanderbilt Memory and Alzheimer\'s Center and end at the Vanderbilt University Medical Center. Arrive at Vanderbilt Memory & Alzheimer\'s Center, 1207 17th Avenue S., Suite 302, park in lot 128, to the right of the building, in a spot labeled \"VMAC Participant Parking\". Please proceed to suite 302. If you require any assistance, please call 615-336-3388 and a team member will come down to escort you."))
+    loc <- c(paste0("Day ",X," of your visit will be held at the Vanderbilt Memory and Alzheimer\'s Center, located on 1207 17th Avenue S., Suite 302. Upon arriving at the Vanderbilt Memory & Alzheimer\'s Center, please park in lot 128, to the right of the building, in a spot labeled \"VMAC Participant Parking\". Please proceed to suite 302. If you require any assistance, please call 615-336-3388 and a team member will come down to escort you."),
+             paste0("Day ",X," of your visit will be held at the Vanderbilt University Medical Center, located on 1210 Medical Center Drive (noted with stars on the enclosed maps). Please valet park at the hospital entrance on 1210 Medical Center Drive - valet parking is free. A team member will meet you inside the hospital lobby."),
+             paste0("Day ",X," of your visit will occur at your house."),
+             paste0("Day ",X," of your visit will start at the Vanderbilt Memory and Alzheimer\'s Center and end at the Vanderbilt University Medical Center. Arrive at Vanderbilt Memory & Alzheimer\'s Center, 1207 17th Avenue S., Suite 302, park in lot 128, to the right of the building, in a spot labeled \"VMAC Participant Parking\". Please proceed to suite 302. If you require any assistance, please call 615-336-3388 and a team member will come down to escort you."))
+    loc_proxy <- c(paste0("Day ",X," of ",pronoun_poss," visit will be held at the Vanderbilt Memory and Alzheimer\'s Center, located on 1207 17th Avenue S., Suite 302. Upon arriving at the Vanderbilt Memory & Alzheimer\'s Center, please park in lot 128, to the right of the building, in a spot labeled \"VMAC Participant Parking\". Please proceed to suite 302. If you require any assistance, please call 615-336-3388 and a team member will come down to escort you."),
+                   paste0("Day ",X," of ",pronoun_poss," visit will be held at the Vanderbilt University Medical Center, located on 1210 Medical Center Drive (noted with stars on the enclosed maps). Please valet park at the hospital entrance on 1210 Medical Center Drive - valet parking is free. A team member will meet you inside the hospital lobby."),
+                   paste0("Day ",X," of ",pronoun_poss," visit will occur at ",pronoun_poss," house."),
+                   paste0("Day ",X," of ",pronoun_poss," visit will start at the Vanderbilt Memory and Alzheimer\'s Center and end at the Vanderbilt University Medical Center. Arrive at Vanderbilt Memory & Alzheimer\'s Center, 1207 17th Avenue S., Suite 302, park in lot 128, to the right of the building, in a spot labeled \"VMAC Participant Parking\". Please proceed to suite 302. If you require any assistance, please call 615-336-3388 and a team member will come down to escort you."))
     location <- list("ptp" = loc[loc_day], "proxy" = loc_proxy[loc_day])
     return(location)
   }
@@ -128,8 +128,10 @@ pv_uploader <- function(epoch,vmac) {
     
     locat <- c("VMAC","Vanderbilt Hospital Valet","your home","VMAC")
     visit1_date <<- format(pdb_data[,"visit1_date"], "%A, %B %d, %Y")
-    visit1_time <- as.character(pdb_data[,"visit1_time"])
-    visit1_time <<- paste0(gsub(":00$","",visit1_time), "am")
+    visit_time <- as.character(pdb_data[,"visit1_time"])
+    merid <- "am"
+    if (visit_time != "NA") {hourr <- as.integer(substr(visit_time, 1, 2)); if (hourr > 11) {merid <- "pm"}}
+    visit1_time <<- gsub(":00$",merid,visit_time)
     visit1_hours <<- as.character(pdb_data["visit1_hours"])
     loc_day1 <<- as.integer(pdb_data["visit1_location"]); X <<- 1
     location <- loc_func(X,loc_day1)
@@ -138,8 +140,10 @@ pv_uploader <- function(epoch,vmac) {
     location_day1_extra <<- ""; if (loc_day1 == 4) {location_day1_extra <<- paste0("After completing the scheduled study assessments at the Vanderbilt Memory & Alzheimer\'s Center, you will travel to the Vanderbilt University Medical Center, 1210 Medical Center Drive, and arrive at the valet park station at the hospital entrance- valet parking is free. A VMAP team member will meet you inside the hospital lobby.")}
     #fu_time_7yr <- sub("0","",fu_time_7yr)
     visit2_date <<- format(pdb_data[,"visit2_date"], "%A, %B %d, %Y")
-    visit2_time <- as.character(pdb_data[,"visit2_time"])
-    visit2_time <<- paste0(gsub(":00$","",visit2_time),"am")
+    visit_time <- as.character(pdb_data[,"visit2_time"])
+    merid <- "am"
+    if (visit_time != "NA") {hourr <- as.integer(substr(visit_time, 1, 2)); if (hourr > 11) {merid <- "pm"}}
+    visit2_time <<- gsub(":00$",merid,visit_time)
     visit2_hours <<- as.character(pdb_data[,"visit2_hours"])
     loc_day2 <<- as.integer(pdb_data["visit2_location"]); X <<- 2
     location <- loc_func(X,loc_day2)
@@ -183,8 +187,8 @@ pv_uploader <- function(epoch,vmac) {
     }
     
     ft1 <- set_header_labels(ft1, Day1 = "Day 1 Itinerary")
-    ft1 <- bg(ft1, bg="grey",part = "header")
-    ft1 <- bg(ft1, i=c(2,4,6,8,10),bg="grey",part = "body")
+    #ft1 <- bg(ft1, bg="grey",part = "header")
+    #ft1 <- bg(ft1, i=c(2,4,6,8,10),bg="grey",part = "body")
     ft1 <- font(ft1,fontname = 'Arial')
     ft1 <- font(ft1,fontname = 'Arial',part = "header")
     ft1 <- fontsize(ft1,size = 13)
@@ -205,8 +209,8 @@ pv_uploader <- function(epoch,vmac) {
                paste0("Study Wrap-up at ",visit2_time," plus ",visit2_hours)))
     ft2 <- flextable(df2) # Day 2 of 2-Day
     ft2 <- set_header_labels(ft2, Day2 = "Day 2 Itinerary")
-    ft2 <- bg(ft2, bg="grey",part = "header")
-    ft2 <- bg(ft2, i=c(2,4,6,8),bg="grey",part = "body")
+    #ft2 <- bg(ft2, bg="grey",part = "header")
+    #ft2 <- bg(ft2, i=c(2,4,6,8),bg="grey",part = "body")
     ft2 <- font(ft2,fontname = 'Arial')
     ft2 <- font(ft2,fontname = 'Arial',part = "header")
     ft2 <- fontsize(ft2,size = 13)
@@ -220,8 +224,10 @@ pv_uploader <- function(epoch,vmac) {
     
     if (visit_type==3) {
       visit3_date <<- format(pdb_data[,"visit3_date"], "%A, %B %d, %Y")
-      visit3_time <- as.character(pdb_data[,"visit3_time"])
-      visit3_time <<- paste0(gsub(":00$","",visit3_time),"am")
+      visit_time <- as.character(pdb_data[,"visit3_time"])
+      merid <- "am"
+      if (visit_time != "NA") {hourr <- as.integer(substr(visit_time, 1, 2)); if (hourr > 11) {merid <- "pm"}}
+      visit3_time <<- gsub(":00$",merid,visit_time)
       visit3_hours <<- as.character(pdb_data["visit3_hours"])
       loc_day3 <<- as.integer(pdb_data["visit3_location"]); X <- 3
       location <- loc_func2(loc_day3)
@@ -265,8 +271,8 @@ pv_uploader <- function(epoch,vmac) {
       }
       
       ft1 <- set_header_labels(ft1, Day1 = "Day 1 Itinerary")
-      ft1 <- bg(ft1, bg="grey",part = "header")
-      ft1 <- bg(ft1, i=c(2,4,6),bg="grey",part = "body")
+      #ft1 <- bg(ft1, bg="grey",part = "header")
+      #ft1 <- bg(ft1, i=c(2,4,6),bg="grey",part = "body")
       ft1 <- font(ft1,fontname = 'Arial')
       ft1 <- font(ft1,fontname = 'Arial',part = "header")
       ft1 <- fontsize(ft1,size = 13)
@@ -283,8 +289,8 @@ pv_uploader <- function(epoch,vmac) {
                  paste0("Study Wrap-up at ",visit2_time," plus ",visit2_hours)))
       ft2 <- flextable(df2) # Day 2 of 2-Day
       ft2 <- set_header_labels(ft2, Day2 = "Day 2 Itinerary")
-      ft2 <- bg(ft2, bg="grey",part = "header")
-      ft2 <- bg(ft2, i=c(2,4),bg="grey",part = "body")
+      #ft2 <- bg(ft2, bg="grey",part = "header")
+      #ft2 <- bg(ft2, i=c(2,4),bg="grey",part = "body")
       ft2 <- font(ft2,fontname = 'Arial')
       ft2 <- font(ft2,fontname = 'Arial',part = "header")
       ft2 <- fontsize(ft2,size = 13)
@@ -304,8 +310,8 @@ pv_uploader <- function(epoch,vmac) {
                  paste0("Return to Valet; Depart at ",visit3_time," plus ",visit3_hours)))
       ft3 <- flextable(df3) # Day 2 of 2-Day
       ft3 <- set_header_labels(ft3, Day3 = "Day 3 Itinerary")
-      ft3 <- bg(ft3, bg="grey",part = "header")
-      ft3 <- bg(ft3, i=c(2,4,6),bg="grey",part = "body")
+      #ft3 <- bg(ft3, bg="grey",part = "header")
+      #ft3 <- bg(ft3, i=c(2,4,6),bg="grey",part = "body")
       ft3 <- font(ft3,fontname = 'Arial')
       ft3 <- font(ft3,fontname = 'Arial',part = "header")
       ft3 <- fontsize(ft3,size = 13)
@@ -354,8 +360,6 @@ pv_uploader <- function(epoch,vmac) {
     
     field <- "visit_letter"
     field_proxy <- "visit_letter_proxy"
-      
-    
     
     temp <- paste0(out_path,"previsit_temp.docx")
     temp_proxy <- paste0(out_path,"previsit_temp_prox.docx")

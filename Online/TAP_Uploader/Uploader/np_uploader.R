@@ -11,8 +11,23 @@ np_uploader<<- function(epochh,vmac) {
   library(png)
   library(readxl)
   
-  ex_path <- paste0("~/Letter_Automation - Copy/epoch5dde_lookup.xlsx")
+  # Global Pathing
+  local <- 0
+  online <- 1
+  if (local) {
+    # Add Local Paths Here
+    out_path <- "C:/Users/sweelyb/Documents/output/"
+    main_path <- "C:/Users/sweelyb/Documents/Letter_Auto/"
+    
+  } else if (online) {
+    # Add Global Paths Here
+    out_path <- "/app/"
+    main_path <- "/srv/shiny-server/"
+    
+  }
   
+  ex_path <- paste0(main_path,"epoch5dde_lookup.xlsx")
+  np_path <- paste0(main_path,"TAP_np_lookup.xlsx")
   
   np <- redcapConnection(url = "https://redcap.vanderbilt.edu/api/",
                          token = "79321D56C26DD34A7F03A318096D77F4", conn, project = 136221)
@@ -37,7 +52,7 @@ np_uploader<<- function(epochh,vmac) {
   edc_datas <- edc_datas[which(edc_datas["vmac_id"]==as.integer(vmac)),]
   
   edc_data <- edc_datas[which(is.na(edc_datas$redcap_repeat_instrument)),]
- 
+  
   print("Compiling Memory results")
   
   age <- pdb_data$age
@@ -51,7 +66,7 @@ np_uploader<<- function(epochh,vmac) {
   race <- as.character(pdb_data$race)
   label(race) <- "race"
   
-  np_moca_total <<- np_data$np_moca_total
+  #np_moca_total <<- np_data$np_moca_total
   craftvrs <<- as.character(np_data$craftvrs)
   crafturs <<- as.character(np_data$crafturs)
   craftdvr <<- as.character(np_data$craftdvr)
@@ -72,84 +87,84 @@ np_uploader<<- function(epochh,vmac) {
   trailb <<- as.character(np_data$trailb)
   
   # GET MEAN and SD
-  moca_ex <- read_excel("~/Letter_Automation - Copy/TAP_np_lookup.xlsx", sheet = "moca")
-  moca_mean <- moca_ex[ind,1+sex_r]
-  moca_sd <- moca_ex[ind,2+sex_r]
+  #moca_ex <- read_excel(np_path, sheet = "moca")
+  #moca_mean <- moca_ex[ind,1+sex_r]
+  #moca_sd <- moca_ex[ind,2+sex_r]
   
-  craftvrs_ex <- read_excel("~/Letter_Automation - Copy/TAP_np_lookup.xlsx", sheet = "craftvrs")
+  craftvrs_ex <- read_excel(np_path, sheet = "craftvrs")
   craftvrs_mean <- craftvrs_ex[ind,1+sex_r]
   craftvrs_sd <- craftvrs_ex[ind,2+sex_r]
   
-  crafturs_ex <- read_excel("~/Letter_Automation - Copy/TAP_np_lookup.xlsx", sheet = "crafturs")
+  crafturs_ex <- read_excel(np_path, sheet = "crafturs")
   crafturs_mean <- crafturs_ex[ind,1+sex_r]
   crafturs_sd <- crafturs_ex[ind,2+sex_r]
   
-  craftdvr_ex <- read_excel("~/Letter_Automation - Copy/TAP_np_lookup.xlsx", sheet = "craftdvr")
+  craftdvr_ex <- read_excel(np_path, sheet = "craftdvr")
   craftdvr_mean <- craftdvr_ex[ind,1+sex_r]
   craftdvr_sd <- craftdvr_ex[ind,2+sex_r]
   
-  craftdre_ex <- read_excel("~/Letter_Automation - Copy/TAP_np_lookup.xlsx", sheet = "craftdre")
+  craftdre_ex <- read_excel(np_path, sheet = "craftdre")
   craftdre_mean <- craftdre_ex[ind,1+sex_r]
   craftdre_sd <- craftdre_ex[ind,2+sex_r]
   
-  udsbentc_ex <- read_excel("~/Letter_Automation - Copy/TAP_np_lookup.xlsx", sheet = "udsbentc")
+  udsbentc_ex <- read_excel(np_path, sheet = "udsbentc")
   udsbentc_mean <- udsbentc_ex[ind,1+sex_r]
   udsbentc_sd <- udsbentc_ex[ind,2+sex_r]
   
-  udsbentd_ex <- read_excel("~/Letter_Automation - Copy/TAP_np_lookup.xlsx", sheet = "udsbentd")
+  udsbentd_ex <- read_excel(np_path, sheet = "udsbentd")
   udsbentd_mean <- udsbentd_ex[ind,1+sex_r]
   udsbentd_sd <- udsbentd_ex[ind,2+sex_r]
   
-  digforct_ex <- read_excel("~/Letter_Automation - Copy/TAP_np_lookup.xlsx", sheet = "digforct")
+  digforct_ex <- read_excel(np_path, sheet = "digforct")
   digforct_mean <- digforct_ex[ind,1+sex_r]
   digforct_sd <- digforct_ex[ind,2+sex_r]
   
-  digforsl_ex <- read_excel("~/Letter_Automation - Copy/TAP_np_lookup.xlsx", sheet = "digforsl")
+  digforsl_ex <- read_excel(np_path, sheet = "digforsl")
   digforsl_mean <- digforsl_ex[ind,1+sex_r]
   digforsl_sd <- digforsl_ex[ind,2+sex_r]
   
-  digbacct_ex <- read_excel("~/Letter_Automation - Copy/TAP_np_lookup.xlsx", sheet = "digbacct")
+  digbacct_ex <- read_excel(np_path, sheet = "digbacct")
   digbacct_mean <- digbacct_ex[ind,1+sex_r]
   digbacct_sd <- digbacct_ex[ind,2+sex_r]
   
-  digbacls_ex <- read_excel("~/Letter_Automation - Copy/TAP_np_lookup.xlsx", sheet = "digbacls")
+  digbacls_ex <- read_excel(np_path, sheet = "digbacls")
   digbacls_mean <- digbacls_ex[ind,1+sex_r]
   digbacls_sd <- digbacls_ex[ind,2+sex_r]
   
-  minttots_ex <- read_excel("~/Letter_Automation - Copy/TAP_np_lookup.xlsx", sheet = "minttots")
+  minttots_ex <- read_excel(np_path, sheet = "minttots")
   minttots_mean <- minttots_ex[ind,1+sex_r]
   minttots_sd <- minttots_ex[ind,2+sex_r]
   
-  udsverfc_ex <- read_excel("~/Letter_Automation - Copy/TAP_np_lookup.xlsx", sheet = "udsverfc")
+  udsverfc_ex <- read_excel(np_path, sheet = "udsverfc")
   udsverfc_mean <- udsverfc_ex[ind,1+sex_r]
   udsverfc_sd <- udsverfc_ex[ind,2+sex_r]
   
-  udsverlc_ex <- read_excel("~/Letter_Automation - Copy/TAP_np_lookup.xlsx", sheet = "udsverlc")
+  udsverlc_ex <- read_excel(np_path, sheet = "udsverlc")
   udsverlc_mean <- udsverlc_ex[ind,1+sex_r]
   udsverlc_sd <- udsverlc_ex[ind,2+sex_r]
   
-  udsvertn_ex <- read_excel("~/Letter_Automation - Copy/TAP_np_lookup.xlsx", sheet = "udsvertn")
+  udsvertn_ex <- read_excel(np_path, sheet = "udsvertn")
   udsvertn_mean <- udsvertn_ex[ind,1+sex_r]
   udsvertn_sd <- udsvertn_ex[ind,2+sex_r]
   
-  animals_ex <- read_excel("~/Letter_Automation - Copy/TAP_np_lookup.xlsx", sheet = "animals")
+  animals_ex <- read_excel(np_path, sheet = "animals")
   animals_mean <- animals_ex[ind,1+sex_r]
   animals_sd <- animals_ex[ind,2+sex_r]
   
-  veg_ex <- read_excel("~/Letter_Automation - Copy/TAP_np_lookup.xlsx", sheet = "veg")
+  veg_ex <- read_excel(np_path, sheet = "veg")
   veg_mean <- veg_ex[ind,1+sex_r]
   veg_sd <- veg_ex[ind,2+sex_r]
   
-  traila_ex <- read_excel("~/Letter_Automation - Copy/TAP_np_lookup.xlsx", sheet = "traila")
+  traila_ex <- read_excel(np_path, sheet = "traila")
   traila_mean <- traila_ex[ind,1+sex_r]
   traila_sd <- traila_ex[ind,2+sex_r]
   
-  trailb_ex <- read_excel("~/Letter_Automation - Copy/TAP_np_lookup.xlsx", sheet = "trailb")
+  trailb_ex <- read_excel(np_path, sheet = "trailb")
   trailb_mean <- trailb_ex[ind,1+sex_r]
   trailb_sd <- trailb_ex[ind,2+sex_r]
   
   # transform variables
-  moca_z <- as.double((as.integer(np_moca_total)-moca_mean)/moca_sd)
+  #moca_z <- as.double((as.integer(np_moca_total)-moca_mean)/moca_sd)
   craftvrs_z <- as.double((as.integer(craftvrs)-craftvrs_mean)/craftvrs_sd)
   crafturs_z <- as.double((as.integer(crafturs)-crafturs_mean)/crafturs_sd)
   craftdvr_z <- as.double((as.integer(craftdvr)-craftdvr_mean)/craftdvr_sd)
@@ -222,8 +237,8 @@ np_uploader<<- function(epochh,vmac) {
   dat1 <<- cbind(race,gds,mem_ver,mem_vis,lang,ex_func,attention,np_cvlt1to5_z,np_cvlt_ldfr_z,np_cvlt_sdfr_z,np_word_z,np_color_z,np_digsymb_z,np_inhibit_z,np_tower_z)
   dat2 <<- cbind("NA","NA",craftvrs,crafturs,craftdvr,craftdre,udsbentc, udsbentd,minttots,animals,veg,digbacct, digbacls, udsverfc, udsverlc, udsvertn, trailb,digforct, digforsl, traila,"np_cvlt1to5","np_cvlt_ldfr","np_cvlt_sdfr",np_word,np_color,np_digsymb,np_inhibit,np_tower)
   dat <<- rbind(dat1,dat2)
-
+  
   return(dat)
- 
+  
 }
 

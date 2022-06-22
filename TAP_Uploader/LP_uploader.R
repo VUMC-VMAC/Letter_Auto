@@ -56,8 +56,10 @@ LP_uploader <- function(epoch,vmac) {
     zipp <<- pdb_data[i, "zip"]
     salutation <<- as.character(pdb_data[i,"salutation"])
     lp_date <<- format(as.Date(pdb_data[i,"lp_date"]), "%A, %B %d, %Y")
-    lp_time <<- as.character(pdb_data[i,"lp_time"])
-    lp_time <<- paste0(lp_time,"am")
+    lp_time <<- as.character(pdb_data$lp_time)
+    merid <- "am"
+    if (lp_time != "NA") {hourr <- as.integer(substr(lp_time, 1, 2)); if (hourr > 11) {merid <- "pm"}}
+    lp_time <<- paste0(lp_time,merid)
     
     df <- data.frame(
       Day1 = c(paste0("Arrival at Vanderbilt Hospital Valet at ",lp_time),

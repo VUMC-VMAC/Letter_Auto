@@ -233,8 +233,8 @@ brain_uploader <- function(epoch,vmac) {
           output <- paste0(out_path,"TAP_",input,"_",ep,"_brain_phys4_incidental.docx")
           renderInlineCode(phys_path, output)
           
-          importFiles(rcon = pdb, file = output, record = record, field = "feedback_incidental_stat_brain_physician4_letter",event = events[e+1],
-                      overwrite = TRUE, repeat_instance = 1)
+          #importFiles(rcon = pdb, file = output, record = record, field = "feedback_incidental_stat_brain_physician4_letter",event = events[e+1],
+          #            overwrite = TRUE, repeat_instance = 1)
           
           if (is.na(first_name_physician5)==FALSE) {
             first_name_physician<<-first_name_physician5
@@ -248,8 +248,8 @@ brain_uploader <- function(epoch,vmac) {
             output <- paste0(out_path,"TAP_",input,"_",ep,"_brain_phys5_incidental.docx")
             renderInlineCode(phys_path, output)
             
-            importFiles(rcon = pdb, file = output, record = record, field = "feedback_incidental_stat_brain_physician5_letter",event = events[e+1],
-                        overwrite = TRUE, repeat_instance = 1)
+            #importFiles(rcon = pdb, file = output, record = record, field = "feedback_incidental_stat_brain_physician5_letter",event = events[e+1],
+            #            overwrite = TRUE, repeat_instance = 1)
           }}}}}
   
   
