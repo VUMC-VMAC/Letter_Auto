@@ -126,6 +126,7 @@ fb_uploader<<- function(epochh,vmac) {
     # Participant Data
     first_name <<- pdb_data[i,"preferred_name"]
     if (is.na(first_name)) {first_name<<-pdb_data[i,"first_name"]}
+    birth_name <<- pdb_data[i,"first_name"]
     last_name <<- pdb_data[i, "last_name"]
     street_address <<- pdb_data[i, "street_address"]
     city <<- pdb_data[i, "city"]

@@ -127,6 +127,7 @@ fb_uploader<<- function(epochh,vmac) {
     # Participant Data
     first_name <<- pdb_data[i,"preferred_name"]
     if (is.na(first_name)) {first_name<<-pdb_data[i,"first_name"]}
+    birth_name <<- pdb_data[i,"first_name"]
     last_name <<- pdb_data[i, "last_name"]
     street_address <<- pdb_data[i, "street_address"]
     city <<- pdb_data[i, "city"]
@@ -229,6 +230,7 @@ fb_uploader<<- function(epochh,vmac) {
     if (is.na(zip_physician5)) {zip_physician5<<- ""}
     
     if (e > 3) {
+      
       # These are needed for np data, still used for bloodwork but can use echo_data instead
       if (e == 5) {
         # 7 Year Data
@@ -420,19 +422,20 @@ fb_uploader<<- function(epochh,vmac) {
       i <- 1
       
       if (e == 5) {
-      df <- data.frame(
-        Test = c("Heart rate", "Blood pressure", "Height", "Weight", "Body Mass Index"),
-        Test.1 = c("Heart rate", "Blood pressure", "Height", "Weight", "Body Mass Index"),
-        ER = c(tme_data[i, 2], tme_data[i, 3], paste0(round(tme_data[i, "height"]*0.393701)," inches"), paste0(round(tme_data[i, "weight"]*2.205)," lbs"), round(((tme_data[i, "weight"])/((tme_data[i, "height"])/100)^2), digits=1)),
-        ER = c(tme_data[i, 2], tme_data[i, 4], paste0(round(tme_data[i, "height"]*0.393701)," inches"), paste0(round(tme_data[i, "weight"]*2.205)," lbs"), round(((tme_data[i, "weight"])/((tme_data[i, "height"])/100)^2), digits=1)),
-        MR_p2 = c(tm36_data[i, 2], fii36[i, 4], paste0(round(tm36_data[i, "height"]*0.393701), " inches"), paste0(round(tm36_data[i, "weight"]*2.205), " lbs"), round((tm36_data[i, "weight"]/(tm36_data[i, "height"]/100)^2), digits=1)),
-        MR_p2 = c(tm36_data[i, 2], fii36[i, 5], paste0(round(tm36_data[i, "height"]*0.393701), " inches"), paste0(round(tm36_data[i, "weight"]*2.205), " lbs"), round((tm36_data[i, "weight"]/(tm36_data[i, "height"]/100)^2), digits=1)),
-        MR_p = c(tm60_data[i, 2], fii60[i, 4], paste0(round(as.integer(tm60_data[i, "height"])*0.393701), " inches"), paste0(round(as.integer(tm60_data[i, "weight"])*2.205), " lbs"), round((as.integer(tm60_data[i, "weight"])/(as.integer(tm60_data[i, "height"])/100)^2), digits=1)),
-        MR_p = c(tm60_data[i, 2], fii60[i, 5], paste0(round(as.integer(tm60_data[i, "height"])*0.393701), " inches"), paste0(round(as.integer(tm60_data[i, "weight"])*2.205), " lbs"), round((as.integer(tm60_data[i, "weight"])/(as.integer(tm60_data[i, "height"])/100)^2), digits=1)),
-        CR = c(echo_data$echo_hrate, echo_data$echo_read_sbp, paste0(round(echo_data$height*0.393701)," inches"), paste0(round(echo_data$weight*2.205)," lbs"), round((echo_data$weight/(echo_data$height/100)^2), digits = 1)),
-        CR = c(echo_data$echo_hrate, echo_data$echo_read_dbp, paste0(round(echo_data$height*0.393701)," inches"), paste0(round(echo_data$weight*2.205)," lbs"), round((echo_data$weight/(echo_data$height/100)^2), digits = 1)),
-        NR=c("60-100", "<120 / <80", "-", "-", "18.5-24.9")
-      )}
+        df <- data.frame(
+          Test = c("Heart rate", "Blood pressure", "Height", "Weight", "Body Mass Index"),
+          Test.1 = c("Heart rate", "Blood pressure", "Height", "Weight", "Body Mass Index"),
+          ER = c(tme_data[i, 2], tme_data[i, 3], paste0(round(tme_data[i, "height"]*0.393701)," inches"), paste0(round(tme_data[i, "weight"]*2.205)," lbs"), round(((tme_data[i, "weight"])/((tme_data[i, "height"])/100)^2), digits=1)),
+          ER = c(tme_data[i, 2], tme_data[i, 4], paste0(round(tme_data[i, "height"]*0.393701)," inches"), paste0(round(tme_data[i, "weight"]*2.205)," lbs"), round(((tme_data[i, "weight"])/((tme_data[i, "height"])/100)^2), digits=1)),
+          MR_p2 = c(tm36_data[i, 2], fii36[i, 4], paste0(round(tm36_data[i, "height"]*0.393701), " inches"), paste0(round(tm36_data[i, "weight"]*2.205), " lbs"), round((tm36_data[i, "weight"]/(tm36_data[i, "height"]/100)^2), digits=1)),
+          MR_p2 = c(tm36_data[i, 2], fii36[i, 5], paste0(round(tm36_data[i, "height"]*0.393701), " inches"), paste0(round(tm36_data[i, "weight"]*2.205), " lbs"), round((tm36_data[i, "weight"]/(tm36_data[i, "height"]/100)^2), digits=1)),
+          MR_p = c(tm60_data[i, 2], fii60[i, 4], paste0(round(as.integer(tm60_data[i, "height"])*0.393701), " inches"), paste0(round(as.integer(tm60_data[i, "weight"])*2.205), " lbs"), round((as.integer(tm60_data[i, "weight"])/(as.integer(tm60_data[i, "height"])/100)^2), digits=1)),
+          MR_p = c(tm60_data[i, 2], fii60[i, 5], paste0(round(as.integer(tm60_data[i, "height"])*0.393701), " inches"), paste0(round(as.integer(tm60_data[i, "weight"])*2.205), " lbs"), round((as.integer(tm60_data[i, "weight"])/(as.integer(tm60_data[i, "height"])/100)^2), digits=1)),
+          CR = c(echo_data$echo_hrate, echo_data$echo_read_sbp, paste0(round(echo_data$height*0.393701)," inches"), paste0(round(echo_data$weight*2.205)," lbs"), round((echo_data$weight/(echo_data$height/100)^2), digits = 1)),
+          CR = c(echo_data$echo_hrate, echo_data$echo_read_dbp, paste0(round(echo_data$height*0.393701)," inches"), paste0(round(echo_data$weight*2.205)," lbs"), round((echo_data$weight/(echo_data$height/100)^2), digits = 1)),
+          NR=c("60-100", "<120 / <80", "-", "-", "18.5-24.9")
+        )
+      }
       
       if (e == 6) {
         # Need to change this so that it doesnt use tm## so it is more flexable
