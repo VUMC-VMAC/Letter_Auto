@@ -1,16 +1,10 @@
 np_uploader<<- function(epochh,vmac) {
   
   library(ggplot2)
-  library(plotly)
   library(redcapAPI)
-  library(WordR)
-  library(officer)
   library(Hmisc)
   library(tidyverse)
   library(flextable)
-  #library(ggpattern)
-  #library(patternplot)
-  library(png)
   library(readxl)
   
   # Global Pathing
@@ -30,33 +24,17 @@ np_uploader<<- function(epochh,vmac) {
   
   ex_path <- paste0(main_path,"epoch5dde_lookup.xlsx")
   
-  
-  tm7yr <- redcapConnection(url = "https://redcap.vanderbilt.edu/api/",
-                            token = "1769F48432D599795BAA88493EFFCF3F",conn,project = 117460)
-  
-  tm60 <- redcapConnection(url = "https://redcap.vanderbilt.edu/api/",
-                           token = "54A5137E46FFC775D9BC1117DA32B30A",conn,project = 80145)
-  
-  tm36 <- redcapConnection(url = "https://redcap.vanderbilt.edu/api/",
-                           token = "3CCD5E3C8A09BE5F6E940B291A9BC6B4",conn,project = 73222)
-  
-  tm18 <- redcapConnection(url = "https://redcap.vanderbilt.edu/api/",
-                           token = "04661B3930D4F892AB1F194C287EE98B",conn,project = 56822)
-  
-  tme <- redcapConnection(url = "https://redcap.vanderbilt.edu/api/",
-                          token = "1A5DACDD0A80C92D60FCCC27A501286E",conn,project = 39332)
-  
   pdb <- redcapConnection(url = "https://redcap.vanderbilt.edu/api/",
                           token = "496ED1BD518B29CB96B5CFD9C48844FE", conn, project = 136242)
   
   pdb_datas <- exportReports(pdb, 267451)
-   
+  
   
   # NP Norm Scores
   dde <- redcapConnection(url = "https://redcap.vanderbilt.edu/api/",
                           token = "0676EDF59CA88377654227BB56028EEE", conn, project = 124389)
   dde2 <- redcapConnection(url = "https://redcap.vanderbilt.edu/api/",
-                          token = "F009A86ED43B42332AC26C21411F37BC", conn, project = 140071)
+                           token = "F009A86ED43B42332AC26C21411F37BC", conn, project = 140071)
   
   EDC <- redcapConnection(url = "https://redcap.vanderbilt.edu/api/",
                           token = "09B0A6B7F207F51C6F656BAE567FA390", conn, project = 119047)
@@ -86,7 +64,7 @@ np_uploader<<- function(epochh,vmac) {
   
   edc_datas <- edc_datas[which(edc_datas$map_id==as.integer(map_id)),]
   
-  map_data[,which(is.na(map_data[,"feedback_location"]))]<-"other"
+  #map_data[,which(is.na(map_data[,"feedback_location"]))]<-"other"
   
   edc_data <- edc_datas[which(edc_datas$redcap_event_name == events[epochh+1]),]
   
@@ -112,7 +90,7 @@ np_uploader<<- function(epochh,vmac) {
   
   i<-1
   
- 
+  
   print("Compiling Memory results")
   
   age <- pdb_data$age
@@ -181,7 +159,7 @@ np_uploader<<- function(epochh,vmac) {
     var_anim <- paste0(sex_r,"/",edu_r,"/",age_r,"/",race)
     np_anim_tscore <- anim_ex[as.integer(ceiling(20-np_anim_sscore)),var_anim]
     np_anim_z <- (as.integer(np_anim_tscore) - 50) / 10
-  
+    
     np_bnt <- dde_data[ij,"np_bnt"]
     np_bnt_z <- (np_bnt - 26) / 3.4
     
@@ -198,20 +176,20 @@ np_uploader<<- function(epochh,vmac) {
     var_fas <- paste0(sex_r,"/",edu_r,"/",age_r,"/",race)
     np_fas_tscore <- fas_ex[as.integer(ceiling(20-np_fas_sscore)),var_fas]
     np_fas_z <- (as.integer(np_fas_tscore) - 50) / 10 
-  
-  
+    
+    
     np_tmtb <- dde_data[ij,"np_tmtb"]
     tmtb_ex <- read_excel(ex_path, sheet = 6)
     np_tmtb_ss <- tmtb_ex[as.integer(ceiling(np_tmtb))+1,as.character(age)]
     np_tmtb_z <- (as.integer(np_tmtb_ss) - 10)/3
-  
-  
+    
+    
     np_tmta <- dde_data[ij,"np_tmta"]
     tmta_ex <- read_excel(ex_path, sheet = 3)
     np_tmta_ss <- tmta_ex[as.integer(ceiling(np_tmta))+1,as.character(age)]
     np_tmta_z <- (as.integer(np_tmta_ss) - 10)/3
-  
-  
+    
+    
     
     np_hvot <- dde_data[ij,"np_hvot"]
     if (age < 55) {hvot_ex <- read_excel(ex_path, sheet = 22)}
@@ -232,7 +210,7 @@ np_uploader<<- function(epochh,vmac) {
     color_ex <- read_excel(ex_path, sheet = 10)
     np_color_ss <- color_ex[as.integer(ceiling(np_color))+1,as.character(age)]
     np_color_z <- (as.integer(np_color_ss)-10)/3
-  
+    
     np_word <- dde_data[ij,"np_word"]
     word_ex <- read_excel(ex_path, sheet = 11)
     np_word_ss <- word_ex[as.integer(ceiling(np_word))+1,as.character(age)]
@@ -246,104 +224,51 @@ np_uploader<<- function(epochh,vmac) {
   
   if (e > 1) {
     
-    # 7 Year Data
-    tm7yr_datas <- exportReports(tm7yr, 248514)
+    e1 <- which(echo_datas$redcap_event_name == events[2]); e3 <- which(map_data$redcap_event_name == events[2])
+    p21 <- which(echo_datas$redcap_event_name == events[e-1]); p23 <- which(map_data$redcap_event_name == events[e-1])
+    p1 <- which(echo_datas$redcap_event_name == events[e]); p3 <- which(map_data$redcap_event_name == events[e])
     
-    ind <- as.integer(map_id)
-    inddd <- c()
-    if (exists("indd")==TRUE) remove("indd")
-    try(indd <- find.matches(tm7yr_datas[, "map_id"],ind),silent = TRUE)
-    if (exists("indd")==FALSE) stop("Not Enough Data")
-    for (i in (1:length(indd$matches))){if (indd$matches[i]>0){inddd<-c(inddd,i)}}
-    tm7yr_datas[inddd,which(is.na(tm7yr_datas[inddd,1:17]))]<- "Missing"
-    tm7yr_data <- tm7yr_datas[inddd,]
-    if (nrow(tm7yr_data)==FALSE) {tm7yr_data <- c(rep(NA,38))}
-    
-    
-    if (e > 3) {
-      # 5 Year Data 
-      
-      tm60_datas <- exportReports(tm60, 248512)
-      
-      inddd <- c()
-      if (exists("indd")==TRUE) remove("indd")
-      try(indd <- find.matches(tm60_datas[, "map_id"],ind),silent = TRUE)
-      if (exists("indd")==FALSE) stop("Not Enough Data")
-      for (i in (1:length(indd$matches))){if (indd$matches[i]>0){inddd<-c(inddd,i)}}
-      tm60_datas[inddd,which(is.na(tm60_datas[inddd,]))]<- "Missing"
-      tm60_data <- tm60_datas[inddd,]
-      #if (nrow(tm60_data)==FALSE) {stop("Not Enough Data")}
-      if (nrow(tm60_data)==FALSE) {tm60_data <- c(rep(NA,38))}
-    }
-    
-    if (e > 2) {
-      #3 Year Data
-      
-      tm36_datas <- exportReports(tm36, 248500)
-      
-      inddd <- c()
-      if (exists("indd")==TRUE) remove("indd")
-      try(indd <- find.matches(tm36_datas[, "map_id"],ind),silent = TRUE)
-      if (exists("indd")==FALSE) stop("Not Enough Data")
-      for (i in (1:length(indd$matches))){if (indd$matches[i]>0){inddd<-c(inddd,i)}}
-      tm36_datas[inddd,which(is.na(tm36_datas[inddd,]))]<- "Missing"
-      tm36_data <- tm36_datas[inddd,]
-      #if (nrow(tm36_data)==FALSE) {stop("Not Enough Data")}
-      if (nrow(tm36_data)==FALSE) {tm36_data <- c(rep(NA,38))}
-    }
-    
-    # Enrollment Data
-    tme_datas <- exportReports(tme, 248431)
-    inddd <- c()
-    if (exists("indd")==TRUE) remove("indd")
-    try(indd <- find.matches(tme_datas[, "map_id"],ind),silent = TRUE)
-    if (exists("indd")==FALSE) stop("Not Enough Data")
-    for (i in (1:length(indd$matches))){if (indd$matches[i]>0){inddd<-c(inddd,i)}}
-    tme_datas[inddd,which(is.na(tme_datas[inddd,]))]<- "Missing"
-    tme_data <- tme_datas[inddd,]
-    #if (nrow(tme_data)==FALSE) {stop("Not Enough Data")}
-    if (nrow(tme_data)==FALSE) {tme_data <- c(rep(NA,38))}
+    dog <- cbind(pdb_data,edc_data)
+    dog_e <- cbind(map_data[e3,],edc_datas[e2,])
+    dog_p2 <- cbind(map_data[p23,],edc_datas[p22,])
+    dog_p <- cbind(map_data[p3,],edc_datas[p2,])
+    dog_m <- rbind(dog_e,dog_p2,dog_p,dog)
     
     i<-1
     
-    
     print("Compiling Memory results")
     
-    #if (nrow(tm7yr_data)==FALSE) {tm7yr_data <- c(rep(NA,38))}
-    
-    np <- rbind(tme_data[-(1:17)],tm36_data[-(1:17)],tm60_data[-(1:17)],tm7yr_data[-(1:17)][-19])
-    
-    np_cvlt1to5_tscore <- np$np_cvlt1to5_tscore
-    np_cvlt_sdfr_z <<- np$np_cvlt_sdfr_zscore
-    np_cvlt_ldfr_z <<- np$np_cvlt_ldfr_zscore  
-    np_cvltrecog_discrim_z <<- np$np_cvltrecog_discrim_zscore
-    np_biber_t1to5_z <<- np$np_biber_t1to5_zscore
-    np_biber_sd_z <<- np$np_biber_sd_zscore
-    np_biber_ld_z <<- np$np_biber_ld_zscore
-    np_anim_tscore <- np$np_anim_tscore
-    np_bnt_z <<- np$np_bnt_zscore
-    np_tower_ss <- np$np_tower_sscore
-    np_inhibit_ss <- np$np_inhibit_sscore
-    np_fas_tscore <- np$np_fas_tscore
-    np_tmtb_ss <- np$np_tmtb_sscore
-    np_hvot_tscore <- np$np_hvot_tscore
-    np_digsymb_ss <- np$np_digsymb_sscore
-    np_color_ss <- np$np_color_sscore
-    np_word_ss <- np$np_word_sscore
-    np_tmta_ss <- np$np_tmta_sscore
+    np_cvlt1to5_tscore <- dog_m$np_cvlt1to5_tscore
+    np_cvlt_sdfr_z <- dog_m$np_cvlt_sdfr_zscore
+    np_cvlt_ldfr_z <- dog_m$np_cvlt_ldfr_zscore  
+    np_cvltrecog_discrim_z <- dog_m$np_cvltrecog_discrim_zscore
+    np_biber_t1to5_z <- dog_m$np_biber_t1to5_zscore
+    np_biber_sd_z <- dog_m$np_biber_sd_zscore
+    np_biber_ld_z <- dog_m$np_biber_ld_zscore
+    np_anim_tscore <- dog_m$np_anim_tscore
+    np_bnt_z <- dog_m$np_bnt_zscore
+    np_tower_ss <- dog_m$np_tower_sscore
+    np_inhibit_ss <- dog_m$np_inhibit_sscore
+    np_fas_tscore <- dog_m$np_fas_tscore
+    np_tmtb_ss <- dog_m$np_tmtb_sscore
+    np_hvot_tscore <- dog_m$np_hvot_tscore
+    np_digsymb_ss <- dog_m$np_digsymb_sscore
+    np_color_ss <- dog_m$np_color_sscore
+    np_word_ss <- dog_m$np_word_sscore
+    np_tmta_ss <- dog_m$np_tmta_sscore
     
     # transform variables
-    np_cvlt1to5_z <<- (np_cvlt1to5_tscore - 50)/10
-    np_anim_z <<- (np_anim_tscore-50)/10
-    np_tower_z <<- (np_tower_ss-10)/3
-    np_inhibit_z <<- (np_inhibit_ss-10)/3
-    np_fas_z <<- (np_fas_tscore-50)/10
-    np_tmtb_z <<- (np_tmtb_ss-10)/3
-    np_hvot_z <<- -(np_hvot_tscore-50)/10
-    np_digsymb_z <<- (np_digsymb_ss-10)/3
-    np_color_z <<- (np_color_ss-10)/3
-    np_word_z <<- (np_word_ss-10)/3
-    np_tmta_z <<- (np_tmta_ss-10)/3
+    np_cvlt1to5_z <- (nnp$np_cvlt1to5_tscore - 50)/10
+    np_anim_z <- (nnp$np_anim_tscore-50)/10
+    np_tower_z <- (nnp$np_tower_ss-10)/3
+    np_inhibit_z <- (nnp$np_inhibit_ss-10)/3
+    np_fas_z <- (nnp$np_fas_tscore-50)/10
+    np_tmtb_z <- (nnp$np_tmtb_ss-10)/3
+    np_hvot_z <- -(nnp$np_hvot_tscore-50)/10
+    np_digsymb_z <- (nnp$np_digsymb_ss-10)/3
+    np_color_z <- (nnp$np_color_ss-10)/3
+    np_word_z <- (nnp$np_word_ss-10)/3
+    np_tmta_z <- (nnp$np_tmta_ss-10)/3
     
     #### If Norm Scores are not available ####
     
@@ -444,7 +369,7 @@ np_uploader<<- function(epochh,vmac) {
       np_hvot_tscore <- hvot_t_ex[as.integer(np_hvot_corrected)+1,2]
       np_hvot_z[4] <- -(as.integer(np_hvot_tscore) - 50) / 10
     }
-     
+    
     np_digsymb <- dde_data[ij,"np_digsymb"]
     if (any(is.na(np_digsymb_z))) {
       digsymb_ex <- read_excel(ex_path, sheet = 21)
@@ -467,12 +392,14 @@ np_uploader<<- function(epochh,vmac) {
     }
     
     
-    dat1 <<- cbind(ra,gds,np_anim_z,np_biber_ld_z,np_biber_sd_z,np_biber_t1to5_z,np_bnt_z,np_color_z,np_cvlt1to5_z,np_cvlt_ldfr_z,np_cvlt_sdfr_z,np_cvltrecog_discrim_z,np_digsymb_z,np_fas_z,np_hvot_z,np_inhibit_z,np_tmta_z,np_tmtb_z,np_tower_z,np_word_z)
+    dat1 <<- cbind(ra,dog_m$gds_total_score,np_anim_z,np_biber_ld_z,np_biber_sd_z,np_biber_t1to5_z,np_bnt_z,np_color_z,np_cvlt1to5_z,np_cvlt_ldfr_z,np_cvlt_sdfr_z,np_cvltrecog_discrim_z,np_digsymb_z,np_fas_z,np_hvot_z,np_inhibit_z,np_tmta_z,np_tmtb_z,np_tower_z,np_word_z)
     dat2 <<- cbind("NA","NA",np_anim,np_biber_ld,np_biber_sd,np_biber_t1to5,np_bnt,np_color,"np_cvlt1to5","np_cvlt_ldfr","np_cvlt_sdfr","np_cvltrecog_discrim",np_digsymb,np_fas,np_hvot,np_inhibit,np_tmta,np_tmtb,np_tower,np_word)
     dat <<- rbind(dat1,dat2)
+    colnames(dat)[1:2] <- c("Race","GDS")
+    
   }
   
   return(dat)
- 
+  
 }
 
