@@ -195,7 +195,7 @@ blood_uploader <- function(epochh,vmac) {
     Test1 = c("Cholesterol", "Cholesterol", "Cholesterol", "Cholesterol", "Blood Sugar", "Blood Sugar", "Blood Sugar", "Thyroid", "Inflammation"),
     Test2 = c("Total","HDL", "LDL", "Triglycerides", "Hemoglobin A1C", "Fasting Insulin", "Fasting Glucose", "Thyroid Stimulating Hormone (TSH)", "High Sensitivity C-Reactive Protein"),
     CR = as.character(c(edc_data$bld_c_chol, edc_data$bld_c_hdlc, edc_data$bld_c_ldlc, edc_data$bld_c_trig,edc_data$bld_c_hgba1c, edc_data$bld_c_insulin, edc_data$bld_c_glucose, edc_data$bld_c_tsh, edc_data$bld_c_crp)),
-    NR = c("<200", "men >40, women >50", "<100", "<150", "4-6.5", "<17.2", "70-110", "0.3-5.0", "0.1-3.0")
+    NR = c("<200", "men >40, women >50", "<100", "<150", "<5.7", "<17", "70-99", "0.35-3.6", "0-2.9")
   )
   
   #################################################################  
@@ -207,16 +207,16 @@ blood_uploader <- function(epochh,vmac) {
   #if(any(which(df2=="-")==28)) {df2 <- df2[-c(4)]}
   
   ii <- 3; r <- list()
-  if(as.double(df2[1,ii]) > 200) {r <- c(r,1)}
-  if (sex == "Female" & as.double(df2[2,ii]) < 50) {r <- c(r,2)}
-  if (sex == "Male" & as.double(df2[2,ii]) < 40) {r <- c(r,2)}
-  if(as.double(df2[3,ii]) > 100){r <- c(r,3)}
-  if(as.double(df2[4,ii]) > 150){r <- c(r,4)}
-  if(as.double(df2[5,ii]) > 6.5 | as.double(df2[5,ii]) < 4) {r <- c(r,5)}
-  if(as.double(df2[6,ii]) > 17.2){r <- c(r,6)}
-  if(as.double(df2[7,ii]) > 110 | as.double(df2[7,ii]) < 70){r <- c(r,7)}
-  if(as.double(df2[8,ii]) > 5 | as.double(df2[8,ii]) < 0.3){r <- c(r,8)}
-  if ((as.double(df2[9,ii]) > 3) | (as.double(df2[9,ii]) < 0.1)) {r <- c(r,9)}
+  if(as.double(df2[1,ii]) > 200 & !is.na(df2[1,ii])) {r <- c(r,1)}
+  if (sex == "Female" & as.double(df2[2,ii]) < 50 & !is.na(df2[4,ii])) {r <- c(r,2)}
+  if (sex == "Male" & as.double(df2[2,ii]) < 40 & !is.na(df2[2,ii])) {r <- c(r,2)}
+  if(as.double(df2[3,ii]) > 100 & !is.na(df2[3,ii])){r <- c(r,3)}
+  if(as.double(df2[4,ii]) > 150 & !is.na(df2[4,ii])){r <- c(r,4)}
+  if(as.double(df2[5,ii]) > 5.7 & !is.na(df2[5,ii])) {r <- c(r,5)}
+  if(as.double(df2[6,ii]) > 17 & !is.na(df2[6,ii])){r <- c(r,6)}
+  if(as.double(df2[7,ii]) > 99 | as.double(df2[7,ii]) < 70 & !is.na(df2[7,ii])){r <- c(r,7)}
+  if(as.double(df2[8,ii]) > 3.6 | as.double(df2[8,ii]) < 0.35 & !is.na(df2[8,ii])){r <- c(r,8)}
+  if (as.double(df2[9,ii]) > 2.9 | as.double(df2[9,ii]) < 0 & !is.na(df2[9,ii])) {r <- c(r,9)}
   ir <- as.double(r)
   ft2 <- flextable(df2[ir,])
   

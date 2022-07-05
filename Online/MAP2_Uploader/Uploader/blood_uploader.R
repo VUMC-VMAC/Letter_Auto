@@ -1,4 +1,4 @@
-blood_uploader <- function(epoch,vmac) {
+blood_uploader <- function(epochh,vmac) {
   
   library(redcapAPI)
   library(WordR)
@@ -83,7 +83,7 @@ blood_uploader <- function(epoch,vmac) {
   dep_data <- dep_data[which(dep_data[,"redcap_event_name"]== events[epochh]),]
   
   echo_datas <- echo_datas[which(echo_datas$map_id==as.integer(map_id)),]
-  echo_datas <- echo_datas[which(echo_datas[,"redcap_event_name"]== events[epoch+1]),]
+  echo_datas <- echo_datas[which(echo_datas[,"redcap_event_name"]== events[epochh+1]),]
   echo_data <- echo_datas[which(is.na(echo_datas$redcap_repeat_instrument)),]
   brain_data <- echo_datas[which(is.na(echo_datas$redcap_repeat_instrument)==FALSE),]
   
@@ -376,7 +376,7 @@ blood_uploader <- function(epoch,vmac) {
   
   if (e == 1) {
     # Follow up dates
-    enroll_date <<- format(as.Date(echo_datas[1, "consent_date"]), "%m/%d/%Y")
+    enroll_date <<- format(as.Date(echo_data$vf_arrival_date_time), "%m/%d/%Y")
     if (is.na(enroll_date)) {enroll_date <<- format(as.Date(map_data[1, "visit1_date"]), "%m/%d/%Y")}
     
     df2 <- data.frame(

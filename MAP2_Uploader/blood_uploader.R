@@ -83,7 +83,7 @@ blood_uploader <- function(epochh,vmac) {
   dep_data <- dep_data[which(dep_data[,"redcap_event_name"]== events[epochh]),]
   
   echo_datas <- echo_datas[which(echo_datas$map_id==as.integer(map_id)),]
-  echo_datas <- echo_datas[which(echo_datas[,"redcap_event_name"]== events[epoch+1]),]
+  echo_datas <- echo_datas[which(echo_datas[,"redcap_event_name"]== events[epochh+1]),]
   echo_data <- echo_datas[which(is.na(echo_datas$redcap_repeat_instrument)),]
   brain_data <- echo_datas[which(is.na(echo_datas$redcap_repeat_instrument)==FALSE),]
   
@@ -376,7 +376,7 @@ blood_uploader <- function(epochh,vmac) {
   
   if (e == 1) {
     # Follow up dates
-    enroll_date <<- format(as.Date(echo_datas[1, "consent_date"]), "%m/%d/%Y")
+    enroll_date <<- format(as.Date(echo_data$vf_arrival_date_time), "%m/%d/%Y")
     if (is.na(enroll_date)) {enroll_date <<- format(as.Date(map_data[1, "visit1_date"]), "%m/%d/%Y")}
     
     df2 <- data.frame(
@@ -447,8 +447,8 @@ blood_uploader <- function(epochh,vmac) {
   output <- paste0(out_path,"MAP_",input,"_",ep,"_blood_incidental.docx")
   renderInlineCode(ptp_temp, output)
   
-  importFiles(rcon = pdb, file = output, record = record, field = "feedback_incidental_stat_blood_letter", event = pdb_data[,"redcap_event_name"],
-              overwrite = TRUE, repeat_instance = 1)
+  #importFiles(rcon = pdb, file = output, record = record, field = "feedback_incidental_stat_blood_letter", event = pdb_data[,"redcap_event_name"],
+  #            overwrite = TRUE, repeat_instance = 1)
   
   num_phys <- pdb_data$feedback_incidental_stat_blood_number_letter; if (is.na(num_phys)) {num_phys <- 0}
   
@@ -464,8 +464,8 @@ blood_uploader <- function(epochh,vmac) {
     output <- paste0(out_path,"MAP_",input,"_",ep,"_blood_phys_incidental.docx")
     renderInlineCode(phys_temp, output)
     
-    importFiles(rcon = pdb, file = output, record = record, field = "feedback_incidental_stat_blood_physician1_letter", event = events[e+1],
-                overwrite = TRUE, repeat_instance = 1)
+    #importFiles(rcon = pdb, file = output, record = record, field = "feedback_incidental_stat_blood_physician1_letter", event = events[e+1],
+    #            overwrite = TRUE, repeat_instance = 1)
     
     if (num_phys > 1) {
       first_name_physician<<-first_name_physician2
@@ -479,8 +479,8 @@ blood_uploader <- function(epochh,vmac) {
       output <- paste0(out_path,"MAP_",input,"_",ep,"_blood_phys2_incidental.docx")
       renderInlineCode(phys_temp, output)
       
-      importFiles(rcon = pdb, file = output, record = record, field = "feedback_incidental_stat_blood_physician2_letter", event = events[e+1],
-                  overwrite = TRUE, repeat_instance = 1)
+      #importFiles(rcon = pdb, file = output, record = record, field = "feedback_incidental_stat_blood_physician2_letter", event = events[e+1],
+      #            overwrite = TRUE, repeat_instance = 1)
       
       if (num_phys > 2) {
         first_name_physician<<-first_name_physician3
@@ -494,8 +494,8 @@ blood_uploader <- function(epochh,vmac) {
         output <- paste0(out_path,"MAP_",input,"_",ep,"_blood_phys3_incidental.docx")
         renderInlineCode(phys_temp, output)
         
-        importFiles(rcon = pdb, file = output, record = record, field = "feedback_incidental_stat_blood_physician3_letter",event = events[e+1],
-                    overwrite = TRUE, repeat_instance = 1)
+        #importFiles(rcon = pdb, file = output, record = record, field = "feedback_incidental_stat_blood_physician3_letter",event = events[e+1],
+        #            overwrite = TRUE, repeat_instance = 1)
         
         if (num_phys > 3) {
           first_name_physician<<-first_name_physician4
@@ -509,8 +509,8 @@ blood_uploader <- function(epochh,vmac) {
           output <- paste0(out_path,"MAP_",input,"_",ep,"_blood_phys4_incidental.docx")
           renderInlineCode(phys_temp, output)
           
-          importFiles(rcon = pdb, file = output, record = record, field = "feedback_incidental_stat_blood_physician4_letter",event = events[e+1],
-                      overwrite = TRUE, repeat_instance = 1)
+          #importFiles(rcon = pdb, file = output, record = record, field = "feedback_incidental_stat_blood_physician4_letter",event = events[e+1],
+          #            overwrite = TRUE, repeat_instance = 1)
           
           if (is.na(first_name_physician5)==FALSE) {
             first_name_physician<<-first_name_physician5
@@ -524,8 +524,8 @@ blood_uploader <- function(epochh,vmac) {
             output <- paste0(out_path,"MAP_",input,"_",ep,"_blood_phys5_incidental.docx")
             renderInlineCode(phys_temp, output)
             
-            importFiles(rcon = pdb, file = output, record = record, field = "feedback_incidental_stat_blood_physician5_letter",event = events[e+1],
-                        overwrite = TRUE, repeat_instance = 1)
+            #importFiles(rcon = pdb, file = output, record = record, field = "feedback_incidental_stat_blood_physician5_letter",event = events[e+1],
+            #            overwrite = TRUE, repeat_instance = 1)
           }}}}}
   
   return(err)
