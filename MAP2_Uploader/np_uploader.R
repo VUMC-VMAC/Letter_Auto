@@ -60,6 +60,8 @@ np_uploader<<- function(epochh,vmac) {
   dde_data <- dde2_datas[grep(input,dde2_datas$record_id),]
   ij <- grep("--1",dde_data$record_id)
   
+  dde_data[dde_data == "-9999" | dde_data == "-8888" | dde_data == "-7777" | is.na(dde_data)] <- NA
+  
   record_id <- dde_data[1,"record_id"]
   
   edc_datas <- edc_datas[which(edc_datas$map_id==as.integer(map_id)),]
@@ -118,6 +120,7 @@ np_uploader<<- function(epochh,vmac) {
   } else {gds <- edc_data$gds_total_score}
   
   if (e == 1) {
+    
     # CVLT
     np_cvlt1to5_tscore <- edc_data["np_cvlt1to5_tscore"]
     np_cvlt1to5_z <- (np_cvlt1to5_tscore[[1]] - 50)/10
