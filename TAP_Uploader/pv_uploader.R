@@ -349,7 +349,7 @@ pv_uploader <- function(epoch,vmac) {
     proxy_require <- pdb_data[,"visit_proxy_require"]
     if (is.na(proxy_require)) {proxy_require<-"No"}
     if (proxy_require == "Yes") {
-      p_req <<- "Your presence is required for all study visits. Feel free to bring a book or other form of entertainment to keep you occupied during your waiting period."
+      p_req <<- "Feel free to bring a book or other form of entertainment to keep you occupied during your waiting period."
       p_imp <<- paste0("In addition to your questionnaires, please complete the following forms & questionnaires on behalf of ",first_name,": The Medical Authorization of Release, Health History Questionnaire, Minnesota Leisure, Quick Food Scan, CHAMPS, and Pittsburgh Sleep Quality Index.")
       #histor <<- ""
     } else {
