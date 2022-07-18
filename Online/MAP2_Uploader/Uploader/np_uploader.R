@@ -51,7 +51,7 @@ np_uploader<<- function(epochh,vmac) {
     pdb_data <- map_data
   }
   
-  map_id <- pdb_data$map_id
+  map_id <- as.character(pdb_data$map_id)
   if (nchar(map_id)==1) {input<<- paste0("00",map_id)} else if (nchar(map_id)==2) {input<<- paste0("0",map_id)} else {input<<- map_id}
   
   dde_datas <- exportReports(dde, 275632)
