@@ -227,9 +227,9 @@ np_uploader<<- function(epochh,vmac) {
   
   if (e > 1) {
     
-    e1 <- which(echo_datas$redcap_event_name == events[2]); e3 <- which(map_data$redcap_event_name == events[2])
-    p21 <- which(echo_datas$redcap_event_name == events[e-1]); p23 <- which(map_data$redcap_event_name == events[e-1])
-    p1 <- which(echo_datas$redcap_event_name == events[e]); p3 <- which(map_data$redcap_event_name == events[e])
+    e1 <- which(edc_datas$redcap_event_name == events[2]); e3 <- which(map_data$redcap_event_name == events[2])
+    p21 <- which(edc_datas$redcap_event_name == events[e-1]); p23 <- which(map_data$redcap_event_name == events[e-1])
+    p1 <- which(edc_datas$redcap_event_name == events[e]); p3 <- which(map_data$redcap_event_name == events[e])
     
     dog <- cbind(pdb_data,edc_data)
     dog_e <- cbind(map_data[e3,],edc_datas[e2,])
