@@ -232,9 +232,9 @@ np_uploader<<- function(epochh,vmac) {
     p1 <- which(edc_datas$redcap_event_name == events[e]); p3 <- which(map_data$redcap_event_name == events[e])
     
     dog <- cbind(pdb_data,edc_data)
-    dog_e <- cbind(map_data[e3,],edc_datas[e2,])
-    dog_p2 <- cbind(map_data[p23,],edc_datas[p22,])
-    dog_p <- cbind(map_data[p3,],edc_datas[p2,])
+    dog_e <- cbind(map_data[e3,],edc_datas[e1,])
+    dog_p2 <- cbind(map_data[p23,],edc_datas[p21,])
+    dog_p <- cbind(map_data[p3,],edc_datas[p1,])
     dog_m <- rbind(dog_e,dog_p2,dog_p,dog)
     
     i<-1
@@ -261,17 +261,17 @@ np_uploader<<- function(epochh,vmac) {
     np_tmta_ss <- dog_m$np_tmta_sscore
     
     # transform variables
-    np_cvlt1to5_z <- (nnp$np_cvlt1to5_tscore - 50)/10
-    np_anim_z <- (nnp$np_anim_tscore-50)/10
-    np_tower_z <- (nnp$np_tower_ss-10)/3
-    np_inhibit_z <- (nnp$np_inhibit_ss-10)/3
-    np_fas_z <- (nnp$np_fas_tscore-50)/10
-    np_tmtb_z <- (nnp$np_tmtb_ss-10)/3
-    np_hvot_z <- -(nnp$np_hvot_tscore-50)/10
-    np_digsymb_z <- (nnp$np_digsymb_ss-10)/3
-    np_color_z <- (nnp$np_color_ss-10)/3
-    np_word_z <- (nnp$np_word_ss-10)/3
-    np_tmta_z <- (nnp$np_tmta_ss-10)/3
+    np_cvlt1to5_z <- (np_cvlt1to5_tscore - 50)/10
+    np_anim_z <- (np_anim_tscore-50)/10
+    np_tower_z <- (np_tower_ss-10)/3
+    np_inhibit_z <- (np_inhibit_ss-10)/3
+    np_fas_z <- (np_fas_tscore-50)/10
+    np_tmtb_z <- (np_tmtb_ss-10)/3
+    np_hvot_z <- -(np_hvot_tscore-50)/10
+    np_digsymb_z <- (np_digsymb_ss-10)/3
+    np_color_z <- (np_color_ss-10)/3
+    np_word_z <- (np_word_ss-10)/3
+    np_tmta_z <- (np_tmta_ss-10)/3
     
     #### If Norm Scores are not available ####
     
