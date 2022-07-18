@@ -95,21 +95,21 @@ np_uploader<<- function(epochh,vmac) {
   
   print("Compiling Memory results")
   
-  age <- pdb_data$age
+  age <- as.integer(pdb_data$age)
   if (age < 55) {age_r <- "50-54"}; if (age < 60 & age >= 55) {age_r <- "55-59"}; if (age < 65 & age >= 60) {age_r <- "60-64"}
   if (age < 70 & age >= 65) {age_r <- "65-69"}; if (age < 75 & age >= 70) {age_r <- "70-74"} 
   if (age < 80 & age >= 75) {age_r <- "75-79"}; if (age >= 80) {age_r <- "80-85"}
   
-  ra <- pdb_data$race
+  ra <- as.character(pdb_data$race)
   if (ra != "White/Caucasian" & ra != "African American/Black") {ra <- pdb_data$np_norm_race}
   r_conv <- c("White/Caucasian" = "C","African American/Black" = "AA")
   race <- r_conv[ra]
   
-  sex <- pdb_data$sex
+  sex <- as.character(pdb_data$sex)
   s_conv <- c("Male" = "M", "Female" = "F")
   sex_r <- s_conv[sex]
   
-  edu <- pdb_data$education
+  edu <- as.integer(pdb_data$education)
   if (edu < 9) {edu_r <- "7-8"}; if (edu >= 9 & edu < 12 ) {edu_r <- "9-11"}; if (edu == 12 ) {edu_r <- "12"}
   if (edu >= 13 & edu < 16 ) {edu_r <- "13-15"}; if (edu >= 16 & edu < 18 ) {edu_r <- "16-17"}
   if (edu >= 18) {edu_r <- "18-20"}
